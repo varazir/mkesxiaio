@@ -30,13 +30,13 @@
 
 
 #  Array
-array_dir=(										#	Work folders (Array)
+array_work_dir=(								#	Work directories (Array)
 esx-cd 											#0	Mount point for the ISO file will
 esx-temp 										#1	Where the install.tgz will be extracted
 esx-ienv 										#2	Where the ienviron.tgz will be extracted
 esx-oem 										#3	Where the OEM file will be extracted
 esx-5 											#4	Mount point for the dd file
-esx-build										#5	The work folder
+esx-build										#5	The work directory
 esx-usb											#6	Mount point for the USB drive
 esx-ftp											#7	Where the proftpd.zip will be extracted
 )
@@ -51,10 +51,10 @@ nano											#5	Used to manually edit files
 tar												#6	Used to extract files from compressed files 
 bzip2											#7	Used to compress the dd file 
 bunzip2											#8	Used to extract bz2 files
-#udevadm										#9	Needed to check for USB devices
 )
 
 array_main_menu=(								#	For case menus (Array)
+" Adding customized files to a VMware ESXi installation"
 "ISO installation"								#0	To create a ISO file to burn on a CD for installation
 "USB installation"								#1	Creates custom made files that can be copied to a bootable USB drive for installation
 "USB boot"										#2	Creates a custom DD file that can be written to a USB to boot and run ESXi
@@ -78,18 +78,18 @@ array_version_menu=(
 "3.5"
 )
 
-array_auto_com=(
+array_auto_flag=(
 -a							#0	Need to be there to run the script non interactiv
 -s							#1	If you like to enable ONLY SSH
 -e							#2	If you like downloading wget and rsync from vm-help.com
--c							#3	If you have more files in the custom-esx folder
+-c							#3	If you have more files in the custom-esx directory
 -v							#4	Version you are going to make
 -d							#5	USB device 
 -i							#6	Installtion typ
 -h							#7	Help
 )
 
-array_auto_exe=(
+array_auto_func=(
 esxi_auto_a					#0
 esxi_add_ssh_ftp_menu_s		#1
 esxi_add_ssh_ftp_e			#2
@@ -102,29 +102,39 @@ esxi_help					#7
 
 array_auto_help_text=(		#	The help text 
 "Need to be there to run the script non interactiv"
-"If you like to enable SSH FTP or No eg. --s=SSH --s=SHHFTP defult is No"
+"If you like to enable SSH FTP or No eg. -s=SSH -s=SHHFTP defult is No"
 "Downloading wget and rsync from vm-help.com."
-"If you have more files in the custom-esx folder."
+"If you have more files in the custom-esx directory."
 "Version you are going to create 3.5 or 4.0"
-"If you are creating a USB installtion or boot. ONLY used with --i=USB or --i=DD  --d=/dev/ "
+"If you are creating a USB installtion or boot. ONLY used with -i=USB or -i=DD  -d=/dev/ "
 "Installtion typ ISO USB(install from USB) DD (Boot from USB)"
 "This help"
 )
 
 #	Variables 
 
-ipath="$PWD"									#	Work path
-custom_name="VMware_esxi_custom_"				#	The name of the custom made file/folder
-save_dir="save"									#	The folder where the custom file/folder will be  saved
-custom_esxi_dir="custom-esx"							#	Add files in custom-esx that is going to be in the oem.tgz file.
-ibin="apt-get -qq -y --force-yes install"	#	The command string used to install 
-
-#esx_bytes="bytes"								#	The default search parameter in the fdisk function
+install_path="$PWD"										#	Work path
+custom_name="VMware_esxi_custom_"						#	The name of the custom made file/directory
+save_dir="save"											#	The directory where the custom file/directories  will be  saved
+custom_oem_dir="custom-esx"								#	Add files in custom-esx that is going to be in the oem.tgz file.
+install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to install 
 
 usb_check_cmd="udevadm"
 
 #	Extra options 
 
-shopt -s dotglob								#	To make * include hidden folders/files 
+shopt -s dotglob										#	To make * include hidden directorys/files 
 
 #	Functions
+
+function func_text_done() {								#	The [Done] echo after every step
+	echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
+}
+
+function func_text_green() {							#	Change the text to Green
+	printf "\e[01;32m$*\e[00m"
+}
+
+function func_text_red() {								#	Change the text to red
+	printf "\e[00;31m$*\e[00m"
+}
