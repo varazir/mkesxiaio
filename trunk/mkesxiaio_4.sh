@@ -86,7 +86,7 @@ array_auto_flag=(
 -v							#4	Version you are going to make
 -d							#5	USB device 
 -i							#6	Installtion typ
---h							#7	Help
+-h							#7	Help
 )
 
 array_auto_func=(
