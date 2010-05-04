@@ -97,7 +97,7 @@ esxi_add_ssh_ftp_c			#3
 esxi_version				#4
 esxi_esx_usb_install		#5
 esxi_auto_dest				#6
-esxi_help					#7
+func_help_info				#7
 )
 
 array_auto_help_text=(		#	The help text 
@@ -138,3 +138,54 @@ function func_text_green() {							#	Change the text to Green
 function func_text_red() {								#	Change the text to red
 	printf "\e[00;31m$*\e[00m"
 }
+
+function func_help_info() {								#	The help menu 
+	echo
+	func_text_green "$0 ${func_auto_flag[@]}"
+	echo
+	echo
+	for index in ${!func_auto_flag[@]};
+		do
+			printf "	%s	%s " "${func_auto_flag[index]}" "${func_auto_help_text[index]}"
+			echo
+		done
+	echo
+	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSHFTP"
+	echo
+	echo
+	exit
+}
+
+function func_auto_flag() {									#	To grep the flags used when running the script noninteractiv 
+	
+	local flag=$1
+	shift
+	while [[ $1 == -* ]]; do
+		case "$1" in
+			-) return 1;; # by convention, -- is end of options
+			"$flag="*) echo "${1#"$flag="}"; return 0;;
+			"$flag") return 0 ;;
+		esac
+		shift
+	done
+	return 1
+}
+
+function func_auto_loop(){				#	Noninteractiv loop 
+
+	local flag
+	for i in "${!array_auto_flag[@]}"; do 
+		if flag=$(func_auto_flag ${array_auto_flag[i]} "$@"); then
+			if [[ $flag ]]; then
+				${array_auto_func[i]} "$flag"
+			else
+				${array_auto_func[i]}
+			fi
+		fi
+				
+
+	done
+
+}
+
+func_auto_flag "$@"											#	To make the script nonintractiv
