@@ -189,4 +189,69 @@ function func_auto_loop(){								#	Noninteractiv loop
 
 }
 
+function func_checkRoot() {								#	To check if the script is run as a superuser
+    if [ ! $( id -u ) -eq 0 ]
+		then
+			sudo $0
+	fi
+}
+
+function func_clean(){									#	Cleans up after the script 
+
+	esx_cd=$(mount | awk -v mfold="${array_work_dir[0]}" '$0 ~ mfold {print $3}')
+
+	if [ -n "$esx_cd" ]																		#	Checking if there is anything mounted to esx-cd
+		then
+			echo
+			func_text_green "U mounting ${array_work_dir[0]}s"
+			umount $ipath/${array_work_dir[0]}
+			func_text_done
+			sleep 5
+	fi
+
+	esx_5=$(mount | awk -v mfold="${array_work_dir[4]}" '$0 ~ mfold {print $3}')
+
+	if [ -n "$esx_5" ]																		#	Checking if there is anything mounted to esx-5
+		then
+			echo
+			func_text_green "U mounting ${array_work_dir[4]}"
+			umount $ipath/${array_work_dir[4]}
+			func_text_done
+			sleep 5
+	fi
+
+
+	esx_usb=$(mount | awk -v mfold="${array_work_dir[6]}" '$0 ~ mfold {print $3}')
+
+	if [ -n "$esx_usb" ]																	#	Checking if there is anything mounted to esx-usb
+		then
+			echo
+			func_text_green "U mounting ${array_work_dir[6]}"
+			umount $ipath/${array_work_dir[6]}
+			func_text_done
+			sleep 5
+	fi
+
+	cd $ipath
+	
+	shopt -s nullglob
+	rm_dirs=(esx-*)
+	
+	if [[ "${#rm_dirs[@]}" -gt 0 ]]															#	If there is folder left to delete
+		then
+			func_text_green "Removing working folders (esx-*)"
+			rm -R $ipath/esx-*																#	Cleaning up, removing the folders
+			func_text_done
+			sleep 5
+	fi
+	shopt -u nullglob
+
+	if [[ -u "$custom_name" ]]
+		then
+			chown --from=$USER $SUDO_UID:$SUDO_GID $ipath/*
+	fi
+}
+
+func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
+func_clean												#	Deletes work folders if there is any
