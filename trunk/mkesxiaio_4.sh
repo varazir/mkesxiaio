@@ -86,7 +86,7 @@ array_auto_flag=(
 -v							#4	Version you are going to make
 -d							#5	USB device 
 -i							#6	Installtion typ
--h							#7	Help
+--h							#7	Help
 )
 
 array_auto_func=(
@@ -141,12 +141,12 @@ function func_text_red() {								#	Change the text to red
 
 function func_help_info() {								#	The help menu 
 	echo
-	func_text_green "$0 ${func_auto_flag[@]}"
+	func_text_green "$0 ${array_auto_flag[@]}"
 	echo
 	echo
-	for index in ${!func_auto_flag[@]};
+	for index in ${!array_auto_flag[@]};
 		do
-			printf "	%s	%s " "${func_auto_flag[index]}" "${func_auto_help_text[index]}"
+			printf "	%s	%s " "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
 			echo
 		done
 	echo
@@ -156,13 +156,13 @@ function func_help_info() {								#	The help menu
 	exit
 }
 
-function func_auto_flag() {									#	To grep the flags used when running the script noninteractiv 
+function func_auto_flag() {								#	To grep the flags used when running the script noninteractiv 
 	
 	local flag=$1
 	shift
 	while [[ $1 == -* ]]; do
 		case "$1" in
-			-) return 1;; # by convention, -- is end of options
+			--) return 1;; # by convention, -- is end of options
 			"$flag="*) echo "${1#"$flag="}"; return 0;;
 			"$flag") return 0 ;;
 		esac
@@ -171,13 +171,14 @@ function func_auto_flag() {									#	To grep the flags used when running the sc
 	return 1
 }
 
-function func_auto_loop(){				#	Noninteractiv loop 
+function func_auto_loop(){								#	Noninteractiv loop 
 
-	local flag
+	local flags
+	
 	for i in "${!array_auto_flag[@]}"; do 
-		if flag=$(func_auto_flag ${array_auto_flag[i]} "$@"); then
+		if flags=$(func_auto_flag ${array_auto_flag[i]} "$@"); then
 			if [[ $flag ]]; then
-				${array_auto_func[i]} "$flag"
+				${array_auto_func[i]} "$flags"
 			else
 				${array_auto_func[i]}
 			fi
@@ -188,4 +189,4 @@ function func_auto_loop(){				#	Noninteractiv loop
 
 }
 
-func_auto_flag "$@"											#	To make the script nonintractiv
+func_auto_loop "$@"										#	To make the script nonintractiv
