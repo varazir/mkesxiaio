@@ -173,6 +173,7 @@ esx_menu=(										#	For case menus (Array)
 )
 
 esx_version=(
+"4.1"
 "4.0"
 "3.5"
 )
@@ -268,9 +269,11 @@ function esxi_version() {			#	Version ? $esxi
 		then
 			esxi_green  "  Which version of ESXi are you going to do "
 			echo
-			esxi_green  "  [1] ${esx_version[0]}"
+			esxi_green  "  [1] ${esx_version[2]}"
 			echo
 			esxi_green  "  [2] ${esx_version[1]}"
+			echo
+			esxi_green  "  [3] ${esx_version[0]}"
 			echo
 			esxi_green  "  Choose what you like to do: "
 			read esx_ver
@@ -290,12 +293,17 @@ function esxi_version() {			#	Version ? $esxi
 	fi
 
 	case "$esx_ver" in
-		1 | 4.0 ) 
+		2 | 4.0 ) 
 			esxi="4.0"
 			clear
 		;;
-		2 | 3.5 )
+		1 | 3.5 )
 			esxi="3.5"
+			clear
+		;;
+		3 | 4.1 )
+			esxi="4.0"
+			esxi1="4.1"
 			clear
 		;;
 		* )
@@ -965,28 +973,41 @@ function esxi_dd_start(){			#	Extracting DD file
 			esxi_green "Untar install.tgz to $ipath/${esx_folders[1]}"
 			${esx_pkg_install[6]} -xzf $ipath/${esx_folders[5]}/install.tgz -C $ipath/${esx_folders[1]}						#	Untaring the installation.tgz file to get the dd file
 			esxi_done
+			cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer/
+
 		else
-			esxi_green "Untar image.tgz to $ipath/${esx_folders[1]}"
-			${esx_pkg_install[6]} -xzf $ipath/${esx_folders[5]}/image.tgz -C $ipath/${esx_folders[1]}						#	Untaring the installation.tgz file to get the dd file
-			esxi_done
+			if [[ $esxi1 == "" ]]
+				then
+					esxi_green "Untar image.tgz to $ipath/${esx_folders[1]}"
+					${esx_pkg_install[6]} -xzf $ipath/${esx_folders[5]}/image.tgz -C $ipath/${esx_folders[1]}						#	Untaring the installation.tgz file to get the dd file
+					esxi_done
+					cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer/
+
+			fi
 	fi
-
-	cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer/
-
+	
+	if [[ $esxi1 == "4.1" ]]
+		then cd $ipath/${esx_folders[1]}/
+	fi
+	
 	esx_ddf=(*.bz2)
 
 	esxi_green "Bunzip2 ${esx_ddf[0]} "
 	bunzip2 ${esx_ddf[0]}																	#	Uncompressing the bz2 file
 	esxi_done
 
-	esx_ddf=(*.dd)
+	esx_ddf=(*dd)
 }
 
 function esxi_dd_end(){				#	Add the customized to the DD file and the build folder
 
 	cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
+
+	if [[ $esxi1 == "4.1" ]]
+		then cd $ipath/${esx_folders[1]}/
+	fi
 	
-	esx_ddf=(*.dd)
+	esx_ddf=(*dd)
 	
 	if hash fdisk 2>>/dev/null
 		then 
