@@ -1,6 +1,6 @@
 #!/bin/bash
 #exec > >(tee vars1.log) 2>&1
-#set -x
+set -x
 #set logs.log
 
 
