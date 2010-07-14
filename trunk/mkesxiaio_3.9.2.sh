@@ -129,6 +129,10 @@
 #	OBS It works ONLY in Enlish Ubuntu/debian 
 #
 
+#	Version 3.9.1
+#	Added udevadm into a $esx_usb_check_cmd and replced it in the function NOT TESTED 
+#
+
 #  Array
 esx_folders=(									#	Work folders (Array)
 esx-cd 											#0	Mount point for the ISO file will
@@ -213,7 +217,7 @@ esx_save="save"									#	The folder where the custom file/folder will be  saved
 custom_esx="custom-esx"							#	Add files in custom-esx that is going to be in the oem.tgz file.
 esx_ibin="apt-get -qq -y --force-yes install"	#	The command string used to install 
 esx_bytes="bytes"								#	The default search parameter in the fdisk function
-
+esx_usb_check_cmd="udevadm"
 #	Extra options 
 
 shopt -s dotglob								#	To make * include hidden folders/files 
@@ -1082,12 +1086,12 @@ function esxi_check_usb() {			#	Gather data for the USB menu
 
 	for i in /sys/block/[sh]d?
 		do
-			if udevadm info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"									#	Checking witch device is a USB
+			if $esx_usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"									#	Checking witch device is a USB
 				then
 					esx_usb_dev_info=("${i##*/}")																						#	Sets the device
 					esx_usb_dev=$(fdisk -l /dev/$esx_usb_dev_info | awk '/^\/dev/ {print $1}')											#	Checks witch partition to use / mount
-					esx_usb_name_info=$(udevadm info -a -p "/sys/block/$esx_usb_dev_info" | awk '/ATTRS{product}==/ { print $0;exit }')		#	Get's the product name of the USB
-					esx_usb_name_mfg=$(udevadm info -a -p "/sys/block/$esx_usb_dev_info" | awk '/ATTRS{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
+					esx_usb_name_info=$($esx_usb_check_cmd info -a -p "/sys/block/$esx_usb_dev_info" | awk '/ATTRS{product}==/ { print $0;exit }')		#	Get's the product name of the USB
+					esx_usb_name_mfg=$($esx_usb_check_cmd info -a -p "/sys/block/$esx_usb_dev_info" | awk '/ATTRS{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
 					esx_usb_size=$(fdisk -l "/dev/$esx_usb_dev_info" | awk '/dev/ { print $3;exit }')									#	The size of the USB in MB
 					esx_usb_size_name=$(fdisk -l "/dev/$esx_usb_dev_info" | awk '/dev/ { print $4;exit }')
 					esx_usb_name_col=${esx_usb_name_info%\"*}																			#	Removing the " and the text after it
