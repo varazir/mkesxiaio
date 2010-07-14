@@ -987,7 +987,7 @@ function esxi_dd_start(){			#	Extracting DD file
 	fi
 	
 	if [[ $esxi1 == "4.1" ]]
-		then cd $ipath/${esx_folders[1]}/
+		then cd $ipath/${esx_folders[5]}/
 	fi
 	
 	esx_ddf=(*.bz2)
@@ -1001,10 +1001,11 @@ function esxi_dd_start(){			#	Extracting DD file
 
 function esxi_dd_end(){				#	Add the customized to the DD file and the build folder
 
-	cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
-
 	if [[ $esxi1 == "4.1" ]]
-		then cd $ipath/${esx_folders[1]}/
+		then 
+			cd $ipath/${esx_folders[5]}/
+		else
+			cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
 	fi
 	
 	esx_ddf=(*dd)
