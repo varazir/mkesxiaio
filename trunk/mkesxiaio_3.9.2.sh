@@ -1,6 +1,6 @@
 #!/bin/bash
 #exec > >(tee vars1.log) 2>&1
-set -x
+#set -x
 #set logs.log
 
 
@@ -387,7 +387,12 @@ function esxi_check_iso() {			#	Check if there is more then one iso file $esx_is
 	
 	if [[ $esxi == "4.0" ]]
 		then
-			esx_custom=${esx_custom}${esxi}_
+			if [[ $esxi1 == "4.1" ]]
+				then
+					esx_custom=${esx_custom}${esxi1}_
+				else
+					esx_custom=${esx_custom}${esxi}_
+			fi
 		else
 			esx_iso_file_temp=${esx_iso_file#*_}
 			esx_update=${esx_iso_file_temp%-*}
