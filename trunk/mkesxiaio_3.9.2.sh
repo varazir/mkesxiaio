@@ -156,6 +156,7 @@ tar												#6	Used to extract files from compressed files
 bzip2											#7	Used to compress the dd file 
 bunzip2											#8	Used to extract bz2 files
 #udevadm										#9	Needed to check for USB devices
+md5sum											#10	To create the hash file for 4.1 
 )
 
 esx_menu=(										#	For case menus (Array)
@@ -1067,7 +1068,13 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 			if [[ $esxi1 == "4.1" ]]
 				then
 					cd $ipath/${esx_folders[5]}/
-				else
+					esxi_green "Bzip2 the $esx_ddf"
+					${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
+					esxi_done
+					esx_ddf=(*.bz2)
+					${esx_pkg_install[10]} $esx_ddf{0} > ${esx_ddf%.bz2}.md5
+					break
+			else
 					cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
 					esxi_green "Bzip2 the $esx_ddf"
 					${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
