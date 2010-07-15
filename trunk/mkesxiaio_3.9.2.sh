@@ -1074,8 +1074,9 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 					esxi_done
 					esx_ddf=(*.bz2)
 					sleep 30
-					exit
 					${esx_pkg_install[9]} $esx_ddf > ${esx_ddf%.bz2}.md5
+					esxi_edit_file "$esx_ddf" "VMware-VMvisor-big-260247-x86_64.dd.bz2" ${esx_ddf%.bz2}.md5
+					exit
 			else
 					cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
 					esxi_green "Bzip2 the $esx_ddf"
