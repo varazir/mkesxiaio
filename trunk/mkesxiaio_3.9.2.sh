@@ -1064,22 +1064,30 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 
 	if [[ $esx_inst_type != dd ]]
 		then 
-			cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
-			esxi_green "Bzip2 the $esx_ddf"
-			${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
-			esxi_done
-			if [[ $esxi == "3.5" ]]
+			if [[ $esxi1 == "4.1" ]]
 				then
-					esxi_green "Rebuilding install.tgz"
-					cd $ipath/${esx_folders[1]}/
-					${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
-					esxi_done
+					cd $ipath/${esx_folders[5]}/
 				else
-					esxi_green "Rebuilding image.tgz"
-					cd $ipath/${esx_folders[1]}/
-					${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/image.tgz usr/				#	Rebuilding install.tgz
+					cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
+					esxi_green "Bzip2 the $esx_ddf"
+					${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
 					esxi_done
 			fi
+					if [[ $esxi == "3.5" ]]
+						then
+							esxi_green "Rebuilding install.tgz"
+							cd $ipath/${esx_folders[1]}/
+							${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
+							esxi_done
+						else
+							if [[ $esxi1 != "4.1" ]]
+								then
+									esxi_green "Rebuilding image.tgz"
+									cd $ipath/${esx_folders[1]}/
+									${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/image.tgz usr/				#	Rebuilding install.tgz
+									esxi_done
+							fi
+					fi
 
 			esxi_file_rights
 	fi 
