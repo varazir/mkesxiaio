@@ -1072,8 +1072,9 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 					${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
 					esxi_done
 					esx_ddf=(*.bz2)
-					${esx_pkg_install[10]} $esx_ddf{0} > ${esx_ddf%.bz2}.md5
-					break
+					sleep 30
+					${esx_pkg_install[10]} $esx_ddf > ${esx_ddf%.bz2}.md5
+					exit
 			else
 					cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
 					esxi_green "Bzip2 the $esx_ddf"
