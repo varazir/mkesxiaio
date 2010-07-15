@@ -133,6 +133,10 @@
 #	Added udevadm into a $esx_usb_check_cmd and replced it in the function NOT TESTED 
 #
 
+#	Version 3.9.2 
+#	Add support for 4.1 
+#
+
 #  Array
 esx_folders=(									#	Work folders (Array)
 esx-cd 											#0	Mount point for the ISO file will
