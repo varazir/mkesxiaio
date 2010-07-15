@@ -155,9 +155,10 @@ nano											#5	Used to manually edit files
 tar												#6	Used to extract files from compressed files 
 bzip2											#7	Used to compress the dd file 
 bunzip2											#8	Used to extract bz2 files
-#udevadm										#9	Needed to check for USB devices
-md5sum											#10	To create the hash file for 4.1 
+md5sum											#9	To create the hash file for 4.1 
 )
+#udevadm										#9	Needed to check for USB devices
+
 
 esx_menu=(										#	For case menus (Array)
 "ISO installation"								#0	To create a ISO file to burn on a CD for installation
@@ -1073,7 +1074,7 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 					esxi_done
 					esx_ddf=(*.bz2)
 					sleep 30
-					${esx_pkg_install[10]} $esx_ddf > ${esx_ddf%.bz2}.md5
+					${esx_pkg_install[9]} $esx_ddf > ${esx_ddf%.bz2}.md5
 					exit
 			else
 					cd $ipath/${esx_folders[1]}/usr/lib/vmware/installer
