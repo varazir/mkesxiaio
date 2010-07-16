@@ -137,6 +137,10 @@
 #	Add support for 4.1 
 #
 
+#	Version 3.9.3
+#	Changed the non english systems part, hard set esx_bytes=512
+#
+
 #  Array
 esx_folders=(									#	Work folders (Array)
 esx-cd 											#0	Mount point for the ISO file will
