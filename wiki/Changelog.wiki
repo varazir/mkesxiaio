@@ -107,3 +107,6 @@ Add support for 4.1
 
 Version 3.9.3
 Changed the non english systems part, hard set esx_bytes=512
+
+Version 3.9.4
+Bug fix, adding the oem.tgz into the isolinux.cfg failed due to change in names of the other files
