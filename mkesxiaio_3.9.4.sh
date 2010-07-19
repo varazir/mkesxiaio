@@ -141,6 +141,10 @@
 #	Changed the non english systems part, hard set esx_bytes=512
 #
 
+#	Version 3.9.4
+#	Bug fix, adding the oem.tgz into the isolinux.cfg failed due to change in names of the other files
+#
+
 #  Array
 esx_folders=(									#	Work folders (Array)
 esx-cd 											#0	Mount point for the ISO file will
@@ -1245,8 +1249,13 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 
 	if [[ $esxi == "4.0" ]]
 		then
-			sed -i 's/install.tgz/install.tgz --- oem.tgz/g' $ipath/${esx_folders[5]}/isolinux.cfg
-	fi
+			if [[ $esxi1 == "4.1" ]]
+				then
+					sed -i 's/install.vgz/install.vgz --- oem.tgz/g' $ipath/${esx_folders[5]}/isolinux.cfg
+				else
+					sed -i 's/install.tgz/install.tgz --- oem.tgz/g' $ipath/${esx_folders[5]}/isolinux.cfg
+			fi
+	fi	
 	
 	esxi_move_files $ipath/${esx_folders[5]}											#	Rename the build folder
 	
