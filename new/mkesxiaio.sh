@@ -51,23 +51,24 @@ nano											#5	Used to manually edit files
 tar												#6	Used to extract files from compressed files 
 bzip2											#7	Used to compress the dd file 
 bunzip2											#8	Used to extract bz2 files
+md5sum											#9	Is need to create the md5 file on the 4.1 iso
 )
 
 array_main_menu=(								#	For case menus (Array)
-" Adding customized files to a VMware ESXi installation"
-"ISO installation"								#0	To create a ISO file to burn on a CD for installation
-"USB installation"								#1	Creates custom made files that can be copied to a bootable USB drive for installation
-"USB boot"										#2	Creates a custom DD file that can be written to a USB to boot and run ESXi
-"USB installation without custom files"			#3	Copies the files from the ISO and make the USB bootable
-"USB boot without custom files"					#4	Extract the DD and writes it to a USB drive to boot and run ESXi
+"1)	Adding customized files to a VMware ESXi installation"
+"2)	ISO installation"							#0	To create a ISO file to burn on a CD for installation
+"3)	USB installation"							#1	Creates custom made files that can be copied to a bootable USB drive for installation
+"4)	USB boot"									#2	Creates a custom DD file that can be written to a USB to boot and run ESXi
+"5)	USB installation without custom files"		#3	Copies the files from the ISO and make the USB bootable
+"6)	USB boot without custom files"				#4	Extract the DD and writes it to a USB drive to boot and run ESXi
 "Exit!"											#5	Just exiting the script
 )
 
 array_extra_menu=(
-"FTP support"									#6	If there are going to be FTP support enabled
-"SSH support"									#7	If there are going to be SSH support enabled
-"SSH + FTP support"								#8	If there are going to be FTP and SSH support enabled
-"Continue without any of them"					#9	Exit the ssh/ftp menu without doing anything
+"1)	FTP support"								#6	If there are going to be FTP support enabled
+"2)	SSH support"								#7	If there are going to be SSH support enabled
+"3)	SSH + FTP support"							#8	If there are going to be FTP and SSH support enabled
+"4)	Continue without any of them"				#9	Exit the ssh/ftp menu without doing anything
 )
 array_=(
 "Installing ${esx_pkg_install[*]}"				#10	Install app info
@@ -198,9 +199,9 @@ function func_checkRoot() {								#	To check if the script is run as a superuse
 
 function func_clean(){									#	Cleans up after the script 
 
-	esx_cd=$(mount | awk -v mfold="${array_work_dir[0]}" '$0 ~ mfold {print $3}')
+	clean_cd=$(mount | awk -v mfold="${array_work_dir[0]}" '$0 ~ mfold {print $3}')
 
-	if [ -n "$esx_cd" ]																		#	Checking if there is anything mounted to esx-cd
+	if [ -n "$clean_cd" ]																		#	Checking if there is anything mounted to esx-cd
 		then
 			echo
 			func_text_green "U mounting ${array_work_dir[0]}s"
@@ -209,9 +210,9 @@ function func_clean(){									#	Cleans up after the script
 			sleep 5
 	fi
 
-	esx_5=$(mount | awk -v mfold="${array_work_dir[4]}" '$0 ~ mfold {print $3}')
+	clean_5=$(mount | awk -v mfold="${array_work_dir[4]}" '$0 ~ mfold {print $3}')
 
-	if [ -n "$esx_5" ]																		#	Checking if there is anything mounted to esx-5
+	if [ -n "$clean_5" ]																		#	Checking if there is anything mounted to esx-5
 		then
 			echo
 			func_text_green "U mounting ${array_work_dir[4]}"
@@ -223,7 +224,7 @@ function func_clean(){									#	Cleans up after the script
 
 	esx_usb=$(mount | awk -v mfold="${array_work_dir[6]}" '$0 ~ mfold {print $3}')
 
-	if [ -n "$esx_usb" ]																	#	Checking if there is anything mounted to esx-usb
+	if [ -n "$clean_usb" ]																		#	Checking if there is anything mounted to esx-usb
 		then
 			echo
 			func_text_green "U mounting ${array_work_dir[6]}"
@@ -237,10 +238,10 @@ function func_clean(){									#	Cleans up after the script
 	shopt -s nullglob
 	rm_dirs=(esx-*)
 	
-	if [[ "${#rm_dirs[@]}" -gt 0 ]]															#	If there is folder left to delete
+	if [[ "${#rm_dirs[@]}" -gt 0 ]]																#	If there is folder left to delete
 		then
 			func_text_green "Removing working folders (esx-*)"
-			rm -R $ipath/esx-*																#	Cleaning up, removing the folders
+			rm -R $ipath/esx-*																	#	Cleaning up, removing the folders
 			func_text_done
 			sleep 5
 	fi
