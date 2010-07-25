@@ -145,6 +145,15 @@
 #	Bug fix, adding the oem.tgz into the isolinux.cfg failed due to change in names of the other files
 #
 
+#	Version 3.9.5
+#	Changed so the dd push would work
+#
+
+#	Version 3.9.6
+#	Fixed bug in the non english and the dd copy that I added in 3.9.5
+#
+
+
 #  Array
 esx_folders=(									#	Work folders (Array)
 esx-cd 											#0	Mount point for the ISO file will
