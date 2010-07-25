@@ -55,13 +55,14 @@ md5sum											#9	Is need to create the md5 file on the 4.1 iso
 )
 
 array_main_menu=(								#	For case menus (Array)
-"1)	Adding customized files to a VMware ESXi installation"
-"2)	ISO installation"							#0	To create a ISO file to burn on a CD for installation
-"3)	USB installation"							#1	Creates custom made files that can be copied to a bootable USB drive for installation
-"4)	USB boot"									#2	Creates a custom DD file that can be written to a USB to boot and run ESXi
-"5)	USB installation without custom files"		#3	Copies the files from the ISO and make the USB bootable
-"6)	USB boot without custom files"				#4	Extract the DD and writes it to a USB drive to boot and run ESXi
-"Exit!"											#5	Just exiting the script
+"	Adding customized files to a VMware ESXi installation"	#0	Topic
+"	Using $esx_iso_file"									#1	Iso file going to be used
+"1)	ISO installation"										#2	To create a ISO file to burn on a CD for installation
+"2)	USB installation"										#3	Creates custom made files that can be copied to a bootable USB drive for installation
+"3)	USB boot"												#4	Creates a custom DD file that can be written to a USB to boot and run ESXi
+"4)	USB installation without custom files"					#5	Copies the files from the ISO and make the USB bootable
+"5)	USB boot without custom files"							#6	Extract the DD and writes it to a USB drive to boot and run ESXi
+"Exit!"														#7	Just exiting the script
 )
 
 array_extra_menu=(
@@ -252,6 +253,30 @@ function func_clean(){									#	Cleans up after the script
 			chown --from=$USER $SUDO_UID:$SUDO_GID $ipath/*
 	fi
 }
+
+function func_menu(){									#	Menu function 
+
+	array_func_menu=(${@});
+	
+	 See if a value is in an array: inarray() { local tofind=$1 element; shift; for element; do [[ $element = "$tofind" ]] && return;
+                 done; return 1; } # Usage: inarray "$value" "${array[@]}"
+
+
+	clear 												# 	Clear the screen.
+	
+	if [[ -z $auto_flag ]]
+		then
+			for index in 1 
+				printf "s% /n /n" "$1{array_func_menu[index]}"
+		
+			read menu
+		else
+	fi
+
+
+
+{
+
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
