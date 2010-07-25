@@ -1333,13 +1333,13 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 
 function esxi_dd_finish(){			#	To confirm that the user really like to continue with the USB installation 	Moving and renaming the DD ( USB boot file)
 
-	if [[ esxi1 == "4.1" ]]
+	if [[ $esxi1 == "4.1" ]]
 		then
 			esxi_move_files $ipath/${esx_folders[5]}/$esx_ddf
 		else
 			esxi_move_files $ipath/${esx_folders[1]}/usr/lib/vmware/installer/$esx_ddf
 	fi
-
+	
 	if [[ -z $esx_auto ]]
 		then
 			esxi_usb_use			#	Getting the usb device to use
