@@ -224,10 +224,10 @@ esxi_help					#7
 
 esx_auto_help=(				#	The help text 
 "Need to be there to run the script non interactiv"
-"If you like to enable SSH FTP or No eg. --s=SSH --s=SSHFTP defult is No"
+"If you like to enable SSH FTP or No eg. --s=SSH --s=SSHFTP --s=FTP defult is No"
 "Downloading wget and rsync from vm-help.com."
 "If you have more files in the custom-esx folder."
-"Version you are going to create 3.5 or 4.0"
+"Version you are going to create 3.5 , 4.0 or 4.1 "
 "If you are creating a USB installtion or boot. ONLY used with --i=USB or --i=DD  --d=/dev/ "
 "Installtion typ ISO USB(install from USB) DD (Boot from USB)"
 "This help"
