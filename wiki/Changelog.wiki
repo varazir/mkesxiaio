@@ -111,5 +111,8 @@ Changed the non english systems part, hard set esx_bytes=512
 Version 3.9.4
 Bug fix, adding the oem.tgz into the isolinux.cfg failed due to change in names of the other files
 
-Version 3.9.4
-Changed so the dd push would work 
+Version 3.9.5
+Changed so the dd push would work
+
+Version 3.9.6
+Fixed bug in the non english and the dd copy that I added in 3.9.5
