@@ -1356,7 +1356,7 @@ function esxi_dd_finish(){			#	To confirm that the user really like to continue 
 
 	clear 							#	Clear the screen.
 	echo
-	esxi_red " Next step will be to make the USB drive bootable. \n It will write the boot image to the USB drive \n ALL files will be lost !!! \n Do not use a USB stick that is under 700MB "
+	esxi_red " Next step will be to make the USB drive bootable. \n It will write the boot image to the USB drive \n ALL files will be lost !!! \n Do not use a USB stick that is under 1GB "
 	echo
 	esxi_red " Using "$esx_usb_install
 	echo
