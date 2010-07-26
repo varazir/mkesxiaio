@@ -1374,7 +1374,7 @@ function esxi_dd_finish(){			#	To confirm that the user really like to continue 
 			"Y" | "y" )
 
 			esxi_green "Writing DD image to the usb device $esx_usb_install "
-			dd bs=1M if=$ipath/$esx_save/$esx_finish of=${esx_usb_install%[0-9]}
+			dd bs=1M if=$ipath/$esx_save/$esx_finish of=${esx_usb_install%[0-9]} 2>>/dev/null
 			esxi_done
 			sleep 2
 			esxi_redo esxi_dd_finish
