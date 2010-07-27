@@ -330,7 +330,7 @@ function func_menu(){ 									#	Menu function
 		then
 			for index in ${#array_func_menu[@]}
 				do
-					printf "%s" "${array_func_menu[index]}";
+					printf "%s\n" "${array_func_menu[index]}";
 				done
 			read menu
 		else
