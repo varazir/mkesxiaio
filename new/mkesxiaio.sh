@@ -325,7 +325,6 @@ function func_menu(){ 									#	Menu function
 	clear 												# 	Clear the screen.
 	echo ${#array_func_menu[@]}
 	echo ${array_func_menu[@]:0}
-	sleep 60
 	if [[ -z $auto_flag ]]
 		then
 			for index in ${#array_func_menu[@]}
