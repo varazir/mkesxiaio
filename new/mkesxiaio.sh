@@ -327,7 +327,7 @@ function func_menu(){									#	Menu function
 	if [[ -z $auto_flag ]]
 		then
 			for index in ${!array_func_menu[@]} 
-				printf "	s% /n " "${array_func_menu[index]}"
+				printf "	s% /n " "${array_func_menu[index]}";
 			done
 			read menu
 		else
@@ -335,7 +335,7 @@ function func_menu(){									#	Menu function
 	fi
 	case "$menu" in
 		for index in ${!array_func_cmd[@]} 
-		printf "s% /n " "${array_func_cmd[index]}"
+		printf "s% /n " "${array_func_cmd[index]}";
 		done
 	esac
 
