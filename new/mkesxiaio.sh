@@ -317,7 +317,7 @@ function func_set_menu_array_iso(){
 	
 }
 
-function func_menu(){									#	Menu function 
+function func_menu(){ 									#	Menu function 
 	
 	#array_func_menu=""
 	#array_func_cmd=""
@@ -342,8 +342,8 @@ function func_menu(){									#	Menu function
 	#			done
 	esac
 
-
-{
+exit
+}
 
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
