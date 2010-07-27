@@ -116,3 +116,6 @@ Changed so the dd push would work
 
 Version 3.9.6
 Fixed bug in the non english and the dd copy that I added in 3.9.5
+
+Version 3.9.7
+Removed old code that isn't in use and fixed a bug in the ISO finish part of the script 
