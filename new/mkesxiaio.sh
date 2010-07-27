@@ -65,6 +65,8 @@ array_main_menu=(								#	For case menus (Array)
 "4) USB installation without custom files"					#7	Copies the files from the ISO and make the USB bootable
 "5) USB boot without custom files"							#8	Extract the DD and writes it to a USB drive to boot and run ESXi
 "6) Exit!"													#9	Just exiting the script
+""
+"Choose what you like to do: "
 )
 array_main_cmd=(
 "1 | ISO | iso )"		#0	Option
@@ -337,12 +339,12 @@ function func_menu(){ 									#	Menu function
 			menu=$1
 	fi
 	
-#	case "$menu" in
+	case "$menu" in
 			for index in ${!array_func_cmd[@]}
 				do
-					printf "%s\n" "${array_func_cmd[index]}";
+					"%s\n" "${array_func_cmd[index]}";
 				done
-#	esac
+	esac
 
 exit
 }
