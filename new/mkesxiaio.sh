@@ -269,8 +269,8 @@ function func_clean(){									#	Cleans up after the script
 
 function func_set_menu_array_main(){
 
-	array_func_menu=(${array_main_menu[@]})
-	array_func_cmd=(${array_main_cmd[@]})
+	array_func_menu="(${array_main_menu[@]})"
+	array_func_cmd="(${array_main_cmd[@]})"
 	func_menu
 	array_func_menu=""
 	array_func_cmd=""
