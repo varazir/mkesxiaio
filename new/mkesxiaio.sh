@@ -339,12 +339,12 @@ function func_menu(){ 									#	Menu function
 			menu=$1
 	fi
 	
-	case "$menu" in
+#	case "$menu" in
 			for index in ${!array_func_cmd[@]}
 				do
 					echo -n "${array_func_cmd[index]}";
 				done
-	esac
+#	esac
 
 exit
 }
