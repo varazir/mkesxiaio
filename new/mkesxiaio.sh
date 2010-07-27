@@ -335,7 +335,7 @@ function func_menu(){									#	Menu function
 	fi
 	case "$menu" in
 		for index in ${!array_func_cmd[@]} 
-		printf "s% /n " "${array_func_cmd[index]}";
+		printf "%s /n " "${array_func_cmd[index]}";
 		done
 	esac
 
