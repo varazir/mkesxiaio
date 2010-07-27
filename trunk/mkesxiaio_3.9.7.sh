@@ -153,6 +153,10 @@
 #	Fixed bug in the non english and the dd copy that I added in 3.9.5
 #
 
+#	Version 3.9.7
+#	Fixed bug in the non english ( cleaned up the code abit ) and bug in the ISO finish part. 
+#
+
 
 #  Array
 esx_folders=(									#	Work folders (Array)
