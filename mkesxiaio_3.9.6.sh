@@ -185,8 +185,8 @@ esx_menu=(										#	For case menus (Array)
 "ISO installation"								#0	To create a ISO file to burn on a CD for installation
 "USB installation"								#1	Creates custom made files that can be copied to a bootable USB drive for installation
 "USB boot"										#2	Creates a custom DD file that can be written to a USB to boot and run ESXi
-"USB installation without custom files"		#3	Copies the files from the ISO and make the USB bootable
-"USB boot without custom files"				#4	Extract the DD and writes it to a USB drive to boot and run ESXi
+"USB installation without custom files"			#3	Copies the files from the ISO and make the USB bootable
+"USB boot without custom files"					#4	Extract the DD and writes it to a USB drive to boot and run ESXi
 "Exit!"											#5	Just exiting the script
 "FTP support"									#6	If there are going to be FTP support enabled
 "SSH support"									#7	If there are going to be SSH support enabled
@@ -1043,35 +1043,20 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 			esx_sector=$( fdisk -ul ${esx_ddf[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 			if [[ -z $esx_sector ]]
 				then
-					#esxi_red "Can't find find the word $esx_bytes when doing fdisk, please specify it below"
-					#echo
-					#fdisk -ul ${esx_ddf[0]}
-					#echo
-					#esxi_green "Please type in the word now"
-					#read esx_fd
 					esx_bytes="512"
-					esxi_dd_end
 			fi
 			esx_number=$( fdisk -ul ${esx_ddf[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 								#	Checking where the 5th partition starts
-		
+
 		else 
 			esx_fdisk=(find / -name fdisk)
 			esx_sector=$( $esx_fdisk -ul ${esx_ddf[0]} 2>>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
 			
-			 if [[ -z $esx_sector ]]
+			if [[ -z $esx_sector ]]
 				then
-					#esxi_red "Can't find find the word bytes when doing fdisk, please specify it below"
-					#echo
-					#fdisk -ul ${esx_ddf[0]}
-					#echo
-					#esxi_green "Please type in the word now"
-					#read esx_fd
 					esx_bytes="512"
-					esxi_dd_end
 			fi
 	
 			esx_number=$( $esx_fdisk -ul ${esx_ddf[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )	#	Checking where the 5th partition starts
-			echo $esx_number
 	fi
 
 	esxi_green "Mounting $ddf to $ipath/${esx_folders[4]}"
@@ -1095,7 +1080,6 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 					${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
 					esxi_done
 					esx_ddf=(*.bz2)
-					sleep 30
 					${esx_pkg_install[9]} $esx_ddf > ${esx_ddf%.bz2}.md5
 					esxi_edit_file "$esx_ddf" "VMware-VMvisor-big-260247-x86_64.dd.bz2" ${esx_ddf%.bz2}.md5
 			else
@@ -1104,21 +1088,22 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 					${esx_pkg_install[7]} $esx_ddf															#	Compressing the dd file
 					esxi_done
 			fi
-					if [[ $esxi == "3.5" ]]
+			
+			if [[ $esxi == "3.5" ]]
+				then
+					esxi_green "Rebuilding install.tgz"
+					cd $ipath/${esx_folders[1]}/
+					${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
+					esxi_done
+				else
+					if [[ $esxi1 != "4.1" ]]
 						then
-							esxi_green "Rebuilding install.tgz"
+							esxi_green "Rebuilding image.tgz"
 							cd $ipath/${esx_folders[1]}/
-							${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
+							${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/image.tgz usr/		#	Rebuilding install.tgz
 							esxi_done
-						else
-							if [[ $esxi1 != "4.1" ]]
-								then
-									esxi_green "Rebuilding image.tgz"
-									cd $ipath/${esx_folders[1]}/
-									${esx_pkg_install[6]} czf $ipath/${esx_folders[5]}/image.tgz usr/				#	Rebuilding install.tgz
-									esxi_done
-							fi
 					fi
+			fi
 
 			esxi_file_rights
 	fi 
@@ -1132,10 +1117,15 @@ function esxi_iso_finish(){			#	Making the ISO file
 	echo
 	cd $ipath/${esx_folders[5]}
 	
-	if [[ $esxi == "4." ]]
+	if [[ $esxi == "4.0" ]]
 		then
-			sed -i 's/install.tgz/install.tgz --- oem.tgz/g' isolinux.cfg
-	fi
+			if [[ $esxi1 == "4.1" ]]
+				then
+					sed -i 's/install.vgz/install.vgz --- oem.tgz/g' $ipath/${esx_folders[5]}/isolinux.cfg
+				else
+					sed -i 's/install.tgz/install.tgz --- oem.tgz/g' $ipath/${esx_folders[5]}/isolinux.cfg
+			fi
+	fi	
 	
 	${esx_pkg_install[0]} -o $ipath/$esx_save/$esx_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${esx_folders[5]} 2>>/dev/null
 	echo
