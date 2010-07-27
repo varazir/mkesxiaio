@@ -323,12 +323,14 @@ function func_menu(){ 									#	Menu function
 	#array_func_cmd=""
 	
 	clear 												# 	Clear the screen.
-	
+	echo ${#array_func_menu[@]}
+	echo ${array_func_menu[@]}
+	sleep 60
 	if [[ -z $auto_flag ]]
 		then
 			for index in ${#array_func_menu[@]}
 				do
-					printf "%s\n" "${array_func_menu[index]}";
+					printf "%s" "${array_func_menu[index]}";
 				done
 			read menu
 		else
