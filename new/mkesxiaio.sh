@@ -342,7 +342,7 @@ function func_menu(){ 									#	Menu function
 #	case "$menu" in
 			for index in ${!array_func_cmd[@]}
 				do
-					echo -n "${array_func_cmd[index]}";
+					echo -n "${array_func_cmd[$index]}";
 				done
 #	esac
 
