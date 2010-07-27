@@ -328,7 +328,7 @@ function func_menu(){ 									#	Menu function
 		then
 			for index in ${!array_func_menu[@]}
 				do
-					printf "	%s /n " "${array_func_menu[index]}";
+					printf "	%s\n" "${array_func_menu[index]}";
 				done
 			read menu
 		else
@@ -336,10 +336,10 @@ function func_menu(){ 									#	Menu function
 	fi
 	
 	case "$menu" in
-	#		for index in ${!array_func_cmd[@]}
-	#			do
-	#				printf "%s /n " "${array_func_cmd[index]}";
-	#			done
+			for index in ${!array_func_cmd[@]}
+				do
+					printf "%s\n" "${array_func_cmd[index]}";
+				done
 	esac
 
 exit
