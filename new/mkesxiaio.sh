@@ -336,10 +336,10 @@ function func_menu(){									#	Menu function
 	fi
 	
 	case "$menu" in
-		for i in ${!array_func_cmd[@]} 
-			do
-				printf "%s /n " "${array_func_cmd[i]}";
-			done
+			for index in ${!array_func_cmd[@]}
+				do
+					printf "%s /n " "${array_func_cmd[index]}";
+				done
 	esac
 
 
