@@ -1270,7 +1270,7 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 	
 	clear 																										#	Clear the screen.
 	echo
-	esxi_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it"
+	esxi_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it.\n		OBS !!! You need 700 MB free on the USB"
 	echo
 	esxi_red "Using $esx_usb_install"
 	echo
