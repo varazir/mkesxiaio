@@ -1047,7 +1047,7 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 			esx_sector=$( fdisk -ul ${esx_ddf[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 			if [[ -z $esx_sector ]]
 				then
-					esx_bytes="512"
+					esx_sector="512"
 			fi
 			esx_number=$( fdisk -ul ${esx_ddf[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 								#	Checking where the 5th partition starts
 
@@ -1057,7 +1057,7 @@ function esxi_dd_end(){				#	Add the customized to the DD file and the build fol
 			
 			if [[ -z $esx_sector ]]
 				then
-					esx_bytes="512"
+					esx_sector="512"
 			fi
 	
 			esx_number=$( $esx_fdisk -ul ${esx_ddf[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )	#	Checking where the 5th partition starts
