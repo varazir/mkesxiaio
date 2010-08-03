@@ -179,8 +179,9 @@ ed												#4	Used to edit text inside files
 nano											#5	Used to manually edit files
 tar												#6	Used to extract files from compressed files 
 bzip2											#7	Used to compress the dd file 
-bunzip2											#8	Used to extract bz2 files
+bunzip2										#8	Used to extract bz2 files
 md5sum											#9	To create the hash file for 4.1 
+parted											#10	add the Boot flag to the USB 
 )
 #udevadm										#9	Needed to check for USB devices
 
@@ -1288,7 +1289,8 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 			"Y" | "y" )
 			
 			esxi_green "Making the USB bootable"
-			${esx_pkg_install[1]} $esx_usb_install																			#	Using syslinux to make the USB bootable
+			${esx_pkg_install[1]} $esx_usb_install																#	Using syslinux to make the USB bootable
+			# ${esx_pkg_install[10]} $esx_usb_install																#	Add the boot flag to the USB 
 			esxi_done
 
 			esxi_green "Mounting the $esx_usb_install to $ipath/${esx_folders[6]}/ "
@@ -1296,7 +1298,7 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 			esxi_done
 
 			esxi_green "Copy the installation media to the mounted USB"
-			cp $ipath/$esx_save/$esx_finish/* $ipath/${esx_folders[6]}/											#	Copying the files from the installation folder to the USB
+			cp $ipath/$esx_save/$esx_finish/* $ipath/${esx_folders[6]}/										#	Copying the files from the installation folder to the USB
 			esxi_done
 
 			esxi_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
@@ -1304,7 +1306,7 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 			esxi_done
 
 			esxi_green "U mounting the USB drive"
-			umount $ipath/${esx_folders[6]}/																	#	U mounting the usb drive
+			umount $ipath/${esx_folders[6]}/																		#	U mounting the usb drive
 			esxi_done
 			echo
 			esxi_green "Now your usb ready to install from \n just plug it into the system you like to install ESXi on"
