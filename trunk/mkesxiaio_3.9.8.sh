@@ -1245,7 +1245,7 @@ function esxi_usb_use(){			#	Witch USB drive to use menu
 }
 
 function esxi_usb_finish(){			#	To confirm that the user really like to continue with the USB installation 	$esx_usb_install
-									#	Moving the and renaming the USB installation folder
+										#	Moving the and renaming the USB installation folder
 	if [[ "$esx_custom" != "$esx_iso_file" ]]
 		then		
 			esxi_file_rights
@@ -1290,7 +1290,7 @@ function esxi_usb_finish(){			#	To confirm that the user really like to continue
 			
 			esxi_green "Making the USB bootable"
 			${esx_pkg_install[1]} $esx_usb_install																#	Using syslinux to make the USB bootable
-			# ${esx_pkg_install[10]} $esx_usb_install																#	Add the boot flag to the USB 
+			${esx_pkg_install[10]} ${esx_usb_install:0:8} set ${esx_usb_install: -1} boot on						#	Add the boot flag to the USB 
 			esxi_done
 
 			esxi_green "Mounting the $esx_usb_install to $ipath/${esx_folders[6]}/ "
