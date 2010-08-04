@@ -194,8 +194,8 @@ esx_menu=(										#	For case menus (Array)
 "USB boot without custom files"					#4	Extract the DD and writes it to a USB drive to boot and run ESXi
 "Exit!"											#5	Just exiting the script
 "FTP support"									#6	If there are going to be FTP support enabled
-"SSH support"									#7	If there are going to be SSH support enabled
-"SSH + FTP support"								#8	If there are going to be FTP and SSH support enabled
+"SSH support  DO NOT USE WITH 4.1"				#7	If there are going to be SSH support enabled
+"SSH + FTP support   DO NOT USE WITH 4.1"		#8	If there are going to be FTP and SSH support enabled
 "Continue without any of them"					#9	Exit the ssh/ftp menu without doing anything
 "Installing ${esx_pkg_install[*]}"				#10	Install app info
 )
