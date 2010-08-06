@@ -157,6 +157,10 @@
 #	Fixed bug in the non english ( cleaned up the code abit ) and bug in the ISO finish part. 
 #
 
+#	Version 3.9.8
+#	USB installation stoped working so I added a new command to add the bootflag to the device 
+#	Some smal text changes to the menus
+#
 
 #  Array
 esx_folders=(									#	Work folders (Array)
