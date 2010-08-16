@@ -446,7 +446,8 @@ function esxi_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
 	
 	if [[ $esxi1 == "4.1" ]]
 		then
-			wget -r http://mkesxiaio.googlecode.com/svn/new/inetd.conf $ipath/
+			wget -r http://mkesxiaio.googlecode.com/svn/new/inetd.conf
+			cp $ipath/mkesxiaio.googlecode.com/svn/new/inetd.conf $ipath/
 	fi
 	
 	esx_check=(inetd.conf "*inetd*")
