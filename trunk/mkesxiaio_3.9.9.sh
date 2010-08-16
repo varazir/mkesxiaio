@@ -448,6 +448,7 @@ function esxi_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
 		then
 			wget -r http://mkesxiaio.googlecode.com/svn/new/inetd.conf
 			cp $ipath/mkesxiaio.googlecode.com/svn/new/inetd.conf $ipath/
+			rm -r $ipath/mkesxiaio.googlecode.com
 	fi
 	
 	esx_check=(inetd.conf "*inetd*")
