@@ -446,7 +446,7 @@ function esxi_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
 	
 	if [[ $esxi1 == "4.1" ]]
 		then
-			wget -r http://mkesxiaio.googlecode.com/svn/new/inetd.conf
+			wget -r -q http://mkesxiaio.googlecode.com/svn/new/inetd.conf 2>>/dev/null
 			cp $ipath/mkesxiaio.googlecode.com/svn/new/inetd.conf $ipath/
 			rm -r $ipath/mkesxiaio.googlecode.com
 	fi
@@ -695,7 +695,7 @@ function esxi_add_ssh_ftp() {		#	Extracting inetd.conf from ienviron.tgz and cop
 					then 
 						cp $ipath/$esx_inetd_file $ipath/${esx_folders[3]}/etc
 					else
-					esxi_edit $ipath/${esx_folders[3]}/etc/inetd.conf
+						esxi_edit $ipath/${esx_folders[3]}/etc/inetd.conf
 				fi
 		fi
 
