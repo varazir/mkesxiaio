@@ -446,8 +446,14 @@ function esxi_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
 	
 	if [[ $esxi1 == "4.1" ]]
 		then
+			cd $ipath
 			wget -r -q http://mkesxiaio.googlecode.com/svn/new/inetd.conf 2>>/dev/null
 			cp $ipath/mkesxiaio.googlecode.com/svn/new/inetd.conf $ipath/
+			rm -r $ipath/mkesxiaio.googlecode.com
+		else
+			cd $ipath
+			wget -r -q http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf 2>>/dev/null
+			cp $ipath/mkesxiaio.googlecode.com/svn/trunk/inetd.conf $ipath/
 			rm -r $ipath/mkesxiaio.googlecode.com
 	fi
 	
@@ -801,10 +807,13 @@ function esxi_add_ssh_ftp_menu() {	#	Menu for ftp / ssh support
 			echo
 			esxi_green  "  [1] ${esx_menu[6]}"	#	If there are going to be FTP support enabled
 			echo
-			esxi_green  "  [2] ${esx_menu[7]}"	#	If there are going to be SSH support enabled
-			echo
-			esxi_green  "  [3] ${esx_menu[8]}"	#	If there are going to be FTP + SSH support enabled
-			echo
+			if [[ $esxi1 != "4.1" ]]
+				then
+					esxi_green  "  [2] ${esx_menu[7]}"	#	If there are going to be SSH support enabled
+					echo
+					esxi_green  "  [3] ${esx_menu[8]}"	#	If there are going to be FTP + SSH support enabled
+					echo
+			fi
 			esxi_green  "  [4] ${esx_menu[9]}"	#	Exit and continue
 			echo
 			esxi_green "  Do you like to add: "
