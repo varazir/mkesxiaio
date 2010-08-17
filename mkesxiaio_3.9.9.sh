@@ -163,7 +163,8 @@
 #
 
 #	Version 3.9.9
-#	New way the inetd.conf is handel in 4.1
+#	New way the inetd.conf is handel in 4.1.
+#	removed the need for inetd.conf for all versions
 #
 
 #  Array
