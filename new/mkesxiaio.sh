@@ -264,9 +264,9 @@ function func_menu(){ 									#	Menu function
 
 	if [[ -z $auto_flag ]]
 		then
-			for index in ${!array_func_menu[@]}
+			for index in ${!array_main_menu[@]}
 				do
-					printf "	%s\n" "${array_func_menu[index]}";
+					printf "	%s\n" "${array_main_menu[index]}";
 				done
 			read menu
 		else
