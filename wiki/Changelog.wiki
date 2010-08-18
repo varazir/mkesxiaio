@@ -122,3 +122,8 @@ Removed old code that isn't in use and fixed a bug in the ISO finish part of the
 
 Version 3.9.8
 USB installation stoped working so I added a new command to add the bootflag to the device  and some smal text changes to the menus
+
+
+Version 3.9.9
+New way the inetd.conf is handel in 4.1.
+Removed the need for inetd.conf for all versions
