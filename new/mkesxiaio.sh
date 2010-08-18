@@ -271,14 +271,8 @@ function func_menu(){ 									#	Menu function
 			read menu
 		else
 			menu=$1
-	fi
+	fi 
 	
-	case "$menu" in
-			for index in ${!array_func_cmd[@]}
-				do
-					echo -n "${array_func_cmd[$index]}";
-				done
-	esac
 
 exit
 }
