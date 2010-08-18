@@ -66,7 +66,6 @@ array_main_menu=(								#	For case menus (Array)
 "5) USB boot without custom files"							#8	Extract the DD and writes it to a USB drive to boot and run ESXi
 "6) Exit!"													#9	Just exiting the script
 ""
-"Choose what you like to do: "
 )
 
 array_extra_menu=(
@@ -268,6 +267,7 @@ function func_menu(){ 									#	Menu function
 				do
 					printf "	%s\n" "${array_main_menu[index]}";
 				done
+			echo "Choose what you like to do: "
 			read menu
 		else
 			menu=$1
