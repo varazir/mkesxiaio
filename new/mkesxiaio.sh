@@ -68,20 +68,7 @@ array_main_menu=(								#	For case menus (Array)
 ""
 "Choose what you like to do: "
 )
-array_main_cmd=(
-"1 | ISO | iso )"		#0	Option
-esx_inst_type="iso"		#1	Setting the installation type to ISO
-esxi_check_oem			#2	Check witch OEM file to use
-esxi_cd					#3	Copy the files from the iso file
-esxi_add_ssh_ftp		#4	Adds SSH or FTP or both to the inetd.conf and copy it into the oem file
-esxi_file_name			#5	Set's the file/folder name
-esxi_check_old			#6	Check if there is any iso/dd/folder created with this custom files
-esxi_dd_start			#7	Extract the DD file
-esxi_dd_end				#8	Uncompress the dd and mount it. Uncompress environ.tgz copy inetd.conf. Copy the OEM file and unmount, Compress the dd file and rebuild the install.tgz copy the OEM file
-esxi_iso_finish			#9	Making the ISO file
-esxi_clean				#10	Clean up the folders
-";;"
-)
+
 array_extra_menu=(
 "1)	FTP support"								#6	If there are going to be FTP support enabled
 "2)	SSH support"								#7	If there are going to be SSH support enabled
@@ -271,60 +258,7 @@ function func_clean(){									#	Cleans up after the script
 	fi
 }
 
-function func_set_menu_array_main(){
-
-	array_func_menu=( "${array_main_menu[@]}" )
-	array_func_cmd=( "${array_main_cmd[@]}" )
-	func_menu
-	array_func_menu=""
-	array_func_cmd=""
-
-}
-
-function func_set_menu_array_extra(){
-
-	array_func_menu=(${array_extra_menu})
-	array_func_cmd=(${array_extra_cmd})
-	func_menu
-	array_func_menu=""
-	array_func_cmd=""
-
-}
-
-function func_set_menu_array_version(){
-
-	array_func_menu=(${array_version_menu})
-	array_func_cmd=(${array_version_cmd})
-	func_menu
-	array_func_menu=""
-	array_func_cmd=""
-	
-}
-
-function func_set_menu_array_oem(){
-
-	array_func_menu=(${array_oem_menu})
-	array_func_cmd=(${array_oem_cmd})
-	func_menu
-	array_func_menu=""
-	array_func_cmd=""
-	
-}
-
-function func_set_menu_array_iso(){
-
-	array_func_menu=(${array_iso_menu})
-	array_func_cmd=(${array_iso_cmd})
-	func_menu
-	array_func_menu=""
-	array_func_cmd=""
-	
-}
-
 function func_menu(){ 									#	Menu function 
-	
-	#array_func_menu=""
-	#array_func_cmd=""
 	
 	clear 												# 	Clear the screen.
 
@@ -339,12 +273,12 @@ function func_menu(){ 									#	Menu function
 			menu=$1
 	fi
 	
-#	case "$menu" in
+	case "$menu" in
 			for index in ${!array_func_cmd[@]}
 				do
 					echo -n "${array_func_cmd[$index]}";
 				done
-#	esac
+	esac
 
 exit
 }
