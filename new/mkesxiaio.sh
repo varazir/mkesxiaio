@@ -132,7 +132,7 @@ shopt -s dotglob										#	To make * include hidden directorys/files
 
 #	Functions
 
-function func_text_done() {								#	The [Done] echo after every step
+function func_text_done() {							#	The [Done] echo after every step
 	echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
 }
 
@@ -144,7 +144,7 @@ function func_text_red() {								#	Change the text to red
 	printf "\e[00;31m$*\e[00m"
 }
 
-function func_help_info() {								#	The help menu 
+function func_help_info() {							#	The help menu 
 	echo
 	func_text_green "$0 ${array_auto_flag[@]}"
 	echo
@@ -161,7 +161,7 @@ function func_help_info() {								#	The help menu
 	exit
 }
 
-function func_auto_flag() {								#	To grep the flags used when running the script noninteractiv 
+function func_auto_flag() {							#	To grep the flags used when running the script noninteractiv 
 	
 	local flag=$1
 	shift
@@ -194,7 +194,7 @@ function func_auto_loop(){								#	Noninteractiv loop
 
 }
 
-function func_checkRoot() {								#	To check if the script is run as a superuser
+function func_checkRoot() {							#	To check if the script is run as a superuser
     if [ ! $( id -u ) -eq 0 ]
 		then
 			sudo $0
@@ -265,9 +265,9 @@ function func_menu(){ 									#	Menu function
 		then
 			for index in ${!array_main_menu[@]}
 				do
-					printf "	%s\n" "${array_main_menu[index]}";
+					func_text_green "	%s\n" "${array_main_menu[index]}";
 				done
-			echo "Choose what you like to do: "
+			func_text_green " Choose what you like to do: "
 			read menu
 		else
 			menu=$1
