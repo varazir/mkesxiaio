@@ -55,16 +55,16 @@ md5sum											#9	Is need to create the md5 file on the 4.1 iso
 )
 
 array_main_menu=(								#	For case menus (Array)
-"	Adding customized files to a VMware ESXi installation"		#0	Topic
+"Adding customized files to a VMware ESXi installation"		#0	Topic
 ""																#1
 "   	Using $esx_iso_file"									#2	Iso file going to be used
 ""																#3
-"	1) ISO installation"										#4	To create a ISO file to burn on a CD for installation
-"	2) USB installation"										#5	Creates custom made files that can be copied to a bootable USB drive for installation
-"	3) USB boot"												#6	Creates a custom DD file that can be written to a USB to boot and run ESXi
-"	4) USB installation without custom files"					#7	Copies the files from the ISO and make the USB bootable
-"	5) USB boot without custom files"							#8	Extract the DD and writes it to a USB drive to boot and run ESXi
-"	6) Exit!"													#9	Just exiting the script
+"1) ISO installation"										#4	To create a ISO file to burn on a CD for installation
+"2) USB installation"										#5	Creates custom made files that can be copied to a bootable USB drive for installation
+"3) USB boot"												#6	Creates a custom DD file that can be written to a USB to boot and run ESXi
+"4) USB installation without custom files"					#7	Copies the files from the ISO and make the USB bootable
+"5) USB boot without custom files"							#8	Extract the DD and writes it to a USB drive to boot and run ESXi
+"6) Exit!"													#9	Just exiting the script
 ""
 )
 
