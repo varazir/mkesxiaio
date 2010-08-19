@@ -119,8 +119,6 @@ array_auto_help_text=(		#	The help text
 "	If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
 "	Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
 "	This help"
-" "
-"	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSHFTP"
 )
 
 #	Variables 
@@ -160,6 +158,8 @@ function func_help_info() {							#	The help menu
 			func_text_green "  %s%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
 			echo
 		done
+	echo
+	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSHFTP"
 	echo
 	echo
 	exit
