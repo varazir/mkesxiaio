@@ -338,7 +338,9 @@ echo $1
 }
 function func_auto_add_ssh_ftp(){ 
 
-echo ${1[@]}
+local extra+=($1)
+
+echo $extra
 
 }
 function func_auto_add_extra(){ 
@@ -370,5 +372,5 @@ echo $1
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
-func_menu
+# func_menu
 func_clean												#	Deletes work folders if there is any
