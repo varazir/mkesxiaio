@@ -89,14 +89,14 @@ array_version=(				#	Versions
 )
 
 array_auto_flag=(
-"-a"							#0	Need to be there to run the script non interactiv
-"-s"							#1	If you like to enable ONLY SSH
-"-e"							#2	If you like downloading wget and rsync from vm-help.com
-"-c"							#3	If you have more files in the custom-esx directory
-"-v"							#4	Version you are going to make
-"-d"							#5	USB device 
-"-i"							#6	Installtion typ
-"-h"							#7	Help
+-a							#0	Need to be there to run the script non interactiv
+-s							#1	If you like to enable ONLY SSH
+-e							#2	If you like downloading wget and rsync from vm-help.com
+-c							#3	If you have more files in the custom-esx directory
+-v							#4	Version you are going to make
+-d							#5	USB device 
+-i							#6	Installtion typ
+-h							#7	Help
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -155,7 +155,7 @@ function func_help_info() {							#	The help menu
 	echo
 	for index in ${!array_auto_flag[@]};
 		do
-			func_text_green "	%s	%s " "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
+			func_text_green "%s%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
 			echo
 		done
 	echo
