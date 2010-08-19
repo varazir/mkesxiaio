@@ -338,14 +338,16 @@ echo $1
 }
 function func_auto_add_ssh_ftp(){ 
 
+echo "$1"
+
 array0=( "${array0[@]}" "$1" )
 
-echo $array0
+echo "$array0"
 
 }
 function func_auto_add_extra(){ 
 
-echo $1
+echo "$1"
 
 }
 function func_auto_add_custom_files(){ 
