@@ -186,7 +186,7 @@ function func_auto_loop(){								#	Noninteractiv loop
 	
 	for i in "${!array_auto_flag[@]}"; do 
 		if flags=$(func_auto_flag ${array_auto_flag[i]} "$@"); then
-			if [[ $flag ]]; then
+			if [[ $flags ]]; then
 				${array_auto_func[i]} "$flags"
 			else
 				${array_auto_func[i]}
