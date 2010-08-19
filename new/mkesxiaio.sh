@@ -50,12 +50,12 @@ ed												#4	Used to edit text inside files
 nano											#5	Used to manually edit files
 tar												#6	Used to extract files from compressed files 
 bzip2											#7	Used to compress the dd file 
-bunzip2											#8	Used to extract bz2 files
+bunzip2										#8	Used to extract bz2 files
 md5sum											#9	Is need to create the md5 file on the 4.1 iso
 )
 
-array_main_menu=(								#	For case menus (Array)
-"Adding customized files to a VMware ESXi installation"		#0	Topic
+array_main_menu=(												#	Main menu (Array)
+"Adding customized files to a VMware ESXi installation"			#0	Topic
 ""																#1
 "   	Using $esx_iso_file"									#2	Iso file going to be used
 ""																#3
@@ -69,19 +69,23 @@ array_main_menu=(								#	For case menus (Array)
 " "
 )
 
-array_extra_menu=(
-"1)	FTP support"								#6	If there are going to be FTP support enabled
-"2)	SSH support"								#7	If there are going to be SSH support enabled
-"3)	SSH + FTP support"							#8	If there are going to be FTP and SSH support enabled
-"4)	Continue without any of them"				#9	Exit the ssh/ftp menu without doing anything
+array_extra_menu=(									#	Extra menu
+"     Extra support "
+" "
+"	1)	FTP support"								#0	If there are going to be FTP support enabled
+"	2)	SFTP support"								#1	If there are going to be sFTP support enabled
+"	3)	SSH support"								#2	If there are going to be SSH support enabled
+"	4)	SSH + FTP support"							#3	If there are going to be FTP and SSH support enabled
+"	5)	Continue without any of them"				#4	Exit the ssh/ftp menu without doing anything
 )
-array_=(
-"Installing ${esx_pkg_install[*]}"				#10	Install app info
+array_install_text=(
+"Installing ${array_pkg_install[*]}"				#0	Install app info
 )
 
-array_version_menu=(
-"4.0"
+array_version=(				#	Versions
 "3.5"
+"4.0"
+"4.1"
 )
 
 array_auto_flag=(
@@ -95,14 +99,14 @@ array_auto_flag=(
 -h							#7	Help
 )
 
-array_auto_func=(
-esxi_auto_a					#0
-esxi_add_ssh_ftp_menu_s		#1
-esxi_add_ssh_ftp_e			#2
-esxi_add_ssh_ftp_c			#3
-esxi_version				#4
-esxi_esx_usb_install		#5
-esxi_auto_dest				#6
+array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
+func_auto_set_flag			#0
+func_auto_add_ssh_ftp		#1
+func_auto_add_extra			#2
+func_auto_add_custom_files	#3
+func_auto_version			#4
+func_auto_usb_install		#5
+func_auto_dest				#6
 func_help_info				#7
 )
 
@@ -124,7 +128,6 @@ custom_name="VMware_esxi_custom_"						#	The name of the custom made file/direct
 save_dir="save"											#	The directory where the custom file/directories  will be  saved
 custom_oem_dir="custom-esx"								#	Add files in custom-esx that is going to be in the oem.tgz file.
 install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to install 
-
 usb_check_cmd="udevadm"
 
 #	Extra options 
@@ -246,7 +249,7 @@ function func_clean(){									#	Cleans up after the script
 	if [[ "${#rm_dirs[@]}" -gt 0 ]]																#	If there is folder left to delete
 		then
 			func_text_green "Removing working folders (esx-*)"
-			rm -R $ipath/esx-*																	#	Cleaning up, removing the folders
+			rm -R $ipath/esx-*																		#	Cleaning up, removing the folders
 			func_text_done
 			sleep 5
 	fi
