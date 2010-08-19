@@ -338,7 +338,7 @@ echo $1
 }
 function func_auto_add_ssh_ftp(){ 
 
-echo "auto"
+echo "$1"
 
 array0=( "${array0[@]}" "$1" "test" )
 
