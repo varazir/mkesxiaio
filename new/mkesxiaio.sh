@@ -331,6 +331,42 @@ function func_menu(){ 									#	Menu function
 exit
 }
 
+function func_auto_set_flag(){ 
+
+echo $1
+
+}
+function func_auto_add_ssh_ftp(){ 
+
+echo ${1[@]}
+
+}
+function func_auto_add_extra(){ 
+
+echo $1
+
+}
+function func_auto_add_custom_files(){ 
+
+echo $1
+
+}
+function func_auto_version(){ 
+
+echo $1
+
+}
+function func_auto_usb_install(){ 
+
+echo $1
+
+}
+function func_auto_dest(){ 
+
+echo $1
+
+}
+
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
