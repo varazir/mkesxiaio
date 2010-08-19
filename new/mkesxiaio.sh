@@ -155,7 +155,7 @@ function func_help_info() {							#	The help menu
 	echo
 	for index in ${!array_auto_flag[@]};
 		do
-			func_text_green "  %s    %s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
+			func_text_green "  %s	%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
 			echo
 		done
 	echo
