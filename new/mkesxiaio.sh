@@ -171,7 +171,7 @@ function func_auto_flag() {							#	To grep the flags used when running the scri
 	shift
 	while [[ $1 == -* ]]; do
 		case "$1" in
-			--) return 1;; # by convention, -- is end of options
+			-) return 1;; # by convention, -- is end of options
 			"$flag="*) echo "${1#"$flag="}"; return 0;;
 			"$flag") return 0 ;;
 		esac
