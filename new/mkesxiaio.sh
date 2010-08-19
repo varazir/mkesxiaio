@@ -338,9 +338,9 @@ echo $1
 }
 function func_auto_add_ssh_ftp(){ 
 
-local extra+=($1)
+array0=( "${array0[@]}" "$1" )
 
-echo $extra
+echo $array0
 
 }
 function func_auto_add_extra(){ 
