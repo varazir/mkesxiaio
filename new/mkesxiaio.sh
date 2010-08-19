@@ -111,14 +111,14 @@ func_help_info				#7
 )
 
 array_auto_help_text=(		#	The help text 
-"Need to be there to run the script non interactiv"
-"If you like to enable SSH, FTP or SFTP  eg. -s=SSH -s=FTP -s=SFTP defult is "
-"Downloading wget and rsync from vm-help.com."
-"If you have more files in the custom-esx folder."
-"Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
-"If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
-"Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
-"This help"
+"	Need to be there to run the script non interactiv"
+"	If you like to enable SSH, FTP or SFTP  eg. -s=SSH -s=FTP -s=SFTP defult is "
+"	Downloading wget and rsync from vm-help.com."
+"	If you have more files in the custom-esx folder."
+"	Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
+"	If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
+"	Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
+"	This help"
 )
 
 #	Variables 
@@ -155,7 +155,7 @@ function func_help_info() {							#	The help menu
 	echo
 	for index in ${!array_auto_flag[@]};
 		do
-			func_text_green "  %s	%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
+			func_text_green "  %s%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
 			echo
 		done
 	echo
