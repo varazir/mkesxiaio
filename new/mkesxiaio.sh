@@ -112,12 +112,12 @@ func_help_info				#7
 
 array_auto_help_text=(		#	The help text 
 "Need to be there to run the script non interactiv"
-"If you like to enable SSH FTP or No eg. -s=SSH -s=SSHFTP -s=FTP defult is No"
+"If you like to enable SSH, FTP or SFTP  eg. -s=SSH -s=FTP -s=SFTP defult is "
 "Downloading wget and rsync from vm-help.com."
 "If you have more files in the custom-esx folder."
 "Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
-"If you are creating a USB installtion or boot. ONLY used with -i=USB, -i=DD or -d=/dev/ "
-"Installtion typ ISO USB(install from USB) DD (Boot from USB)"
+"If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
+"Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
 "This help"
 )
 
@@ -261,10 +261,60 @@ function func_clean(){									#	Cleans up after the script
 	fi
 }
 
+function func_version() {								#	Version ? $esxi
+	
+	clear 							#	Clear the screen.
+	
+	local menu
+	
+	if [[ -z $auto_flag ]]
+		then
+			for index in ${!array_extra_menu[@]}
+				do
+					func_text_green "	%s\n" "${array_extra_menu[index]}";
+				done
+			func_text_green " Choose what you like to do: "
+			read menu
+		else
+			menu=$1
+	fi 
+	
+	if [[ -z $menu ]]
+		then 
+			esxi_red "You need to define the version of ESXi you like to create "
+			sleep 4
+			clear
+			exit
+	fi
+
+	case "$menu" in
+		2 | 4.0 ) 
+			esxi_ver="4.0"
+			clear
+		;;
+		1 | 3.5 )
+			esxi_ver="3.5"
+			clear
+		;;
+		3 | 4.1 )
+			esxi_ver="4.1"
+			clear
+		;;
+		* )
+			esxi_red "That's not a valid option"
+			sleep 1
+			clear 					#	Clear the screen.
+			func_version			#	Loop the menu
+		;;
+	esac
+}
+
 function func_menu(){ 									#	Menu function 
 	
 	clear 												# 	Clear the screen.
 
+	local menu
+	
 	if [[ -z $auto_flag ]]
 		then
 			for index in ${!array_main_menu[@]}
