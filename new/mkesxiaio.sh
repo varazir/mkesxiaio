@@ -155,11 +155,11 @@ function func_help_info() {							#	The help menu
 	echo
 	for index in ${!array_auto_flag[@]};
 		do
-			func_text_green "  %s%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
+			func_text_green "%s%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
 			echo
 		done
 	echo
-	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSHFTP"
+	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSH -s=FTP"
 	echo
 	echo
 	exit
