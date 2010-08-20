@@ -429,7 +429,7 @@ function func_version(){
 			echo
 			for index in ${!array_version[@]}
 				do
-					count="$count"+"1"
+					((count++))
 					func_text_green "	[$count] %s\n" "${array_version[index]}";
 				done
 			read menu
