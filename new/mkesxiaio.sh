@@ -399,7 +399,7 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	esxi_inetd_file="$file_to_use"
 }
 
-function func_menu_extra() {								#	Version ? $esxi
+function func_menu_extra() {							#	
 	
 	clear 							#	Clear the screen.
 	
@@ -418,20 +418,21 @@ function func_menu_extra() {								#	Version ? $esxi
 	fi 
 }
 
-function func_version(){
+function func_version(){								#	Version ?
 
 	local menu
 	local count=0
 	
 	if [[ -z $esx_auto ]]
 		then
-			func_text_green  "  Which version of ESXi are you going to do "
+			func_text_green  "  Which version of ESXi are you going to do ?"
 			echo
 			for index in ${!array_version[@]}
 				do
 					((count++))
 					func_text_green "\n	[$count] %s" "${array_version[index]}";
 				done
+			func_text_green "Select:"
 			read menu
 		else
 			menu=$1
