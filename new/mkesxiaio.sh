@@ -419,23 +419,25 @@ function func_menu_extra() {								#	Version ? $esxi
 }
 
 function func_version(){
+
+	local menu
 	
 	if [[ -z $esx_auto ]]
 		then
-			esxi_green  "  Which version of ESXi are you going to do "
+			func_text_green  "  Which version of ESXi are you going to do "
 			echo
-			esxi_green  "  [1] ${esx_version[2]}"
+			func_text_green  "  [1] ${esx_version[2]}"
 			echo
-			esxi_green  "  [2] ${esx_version[1]}"
+			func_text_green  "  [2] ${esx_version[1]}"
 			echo
-			esxi_green  "  [3] ${esx_version[0]}"
+			func_text_green  "  [3] ${esx_version[0]}"
 			echo
-			esxi_green  "  Choose what you like to do: "
-			read esx_ver
+			func_text_green  "  Choose what you like to do: "
+			read menu
 		else
-			if [[ -z $esx_ver ]]
+			if [[ -z $menu ]]
 				then
-					esx_ver=$1
+					menu=$1
 			fi
 	fi
 			
