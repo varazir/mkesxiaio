@@ -112,7 +112,7 @@ func_help_info				#7
 
 array_auto_help_text=(		#	The help text 
 "	Need to be there to run the script non interactiv"
-"	If you like to enable SSH, FTP or SFTP  eg. -s=SSH -s=FTP -s=SFTP defult is "
+"	If you like to enable SSH, FTP or SFTP  eg. -s=SSH, -s=FTP or -s=SFTP defult is non. \n	OBS with 4.you 1 dosen't need to enable SSH"
 "	Downloading wget and rsync from vm-help.com."
 "	If you have more files in the custom-esx folder."
 "	Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
@@ -171,7 +171,7 @@ function func_auto_flag() {							#	To grep the flags used when running the scri
 	shift
 	while [[ $1 == -* ]]; do
 		case "$1" in
-			-) return 1;; # by convention, -- is end of options
+			-) return 1;; # by convention, - is end of options
 			"$flag="*) echo "${1#"$flag="}"; return 0;;
 			"$flag") return 0 ;;
 		esac
@@ -192,8 +192,6 @@ function func_auto_loop(){								#	Noninteractiv loop
 				${array_auto_func[i]}
 			fi
 		fi
-				
-
 	done
 
 }
@@ -339,11 +337,7 @@ echo "auto"
 
 function func_auto_add_ssh_ftp(){ 
 
-#echo "$1"
-
-array+=("$1")
-
-echo ${array[@]}
+echo "$1"
 
 }
 
