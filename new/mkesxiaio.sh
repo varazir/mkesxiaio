@@ -421,24 +421,20 @@ function func_menu_extra() {								#	Version ? $esxi
 function func_version(){
 
 	local menu
+	local count=0
 	
 	if [[ -z $esx_auto ]]
 		then
 			func_text_green  "  Which version of ESXi are you going to do "
 			echo
-			func_text_green  "  [1] ${array_version[2]}"
-			echo
-			func_text_green  "  [2] ${array_version[1]}"
-			echo
-			func_text_green  "  [3] ${array_version[0]}"
-			echo
-			func_text_green  "  Choose what you like to do: "
+			for index in ${!array_version[@]}
+				do
+					count=$count+1
+					func_text_green "	[$count] %s\n" "${array_version[index]}";
+				done
 			read menu
 		else
-			if [[ -z $menu ]]
-				then
-					menu=$1
-			fi
+			menu=$1
 	fi
 			
 	if [[ -z $menu ]]
