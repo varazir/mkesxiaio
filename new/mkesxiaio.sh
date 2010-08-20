@@ -339,7 +339,7 @@ echo "auto"
 
 function func_auto_add_ssh_ftp(){ 
 
-echo "$1"
+#echo "$1"
 
 array+=("$1")
 
