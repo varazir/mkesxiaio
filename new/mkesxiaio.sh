@@ -378,7 +378,7 @@ echo $1
 }
 
 
-func_checkRoot ./$0										#	Starts with a check that you are superuser
+# func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
 # func_menu
-func_clean												#	Deletes work folders if there is any
+# func_clean												#	Deletes work folders if there is any
