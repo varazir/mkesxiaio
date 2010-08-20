@@ -57,7 +57,7 @@ md5sum											#9	Is need to create the md5 file on the 4.1 iso
 array_main_menu=(												#	Main menu (Array)
 "Adding customized files to a VMware ESXi installation"			#0	Topic
 ""																#1
-"   	Using $esx_iso_file"									#2	Iso file going to be used
+"   	Using $esxi_iso_file"									#2	Iso file going to be used
 ""																#3
 "	1) ISO installation"										#4	To create a ISO file to burn on a CD for installation
 "	2) USB installation"										#5	Creates custom made files that can be copied to a bootable USB drive for installation
@@ -317,7 +317,7 @@ function func_check() {								#	Checking for files $file_to_use
 	fi
 }
 
-function func_check_menu() {		#	Checking for files menu
+function func_check_menu() {							#	Checking for files menu
 	
 	local check_files
 	
@@ -357,7 +357,7 @@ function func_check_menu() {		#	Checking for files menu
 	clear
 }
 
-function func_check_iso() {			#	Check if there is more then one iso file $esx_iso_file 
+function func_check_iso() {							#	Check if there is more then one iso file $esx_iso_file 
 	
 	local array_check
 	
@@ -368,7 +368,7 @@ function func_check_iso() {			#	Check if there is more then one iso file $esx_is
 
 }
 
-function func_check_oem() {			#	Check if there is more then one oem $esx_oem_file 
+function func_check_oem() {							#	Check if there is more then one oem $esx_oem_file 
 	
 	local array_check
 	
@@ -377,7 +377,7 @@ function func_check_oem() {			#	Check if there is more then one oem $esx_oem_fil
 	esxi_oem_file="$file_to_use"
 }
 
-function func_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
+function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_file
 	
 	if [[ "$esxi_version" == "4.1" ]]
 		then
@@ -398,8 +398,6 @@ function func_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
 	func_check "${array_check[@]:0}"
 	esxi_inetd_file="$file_to_use"
 }
-
-
 
 function func_version() {								#	Version ? $esxi
 	
@@ -537,5 +535,9 @@ function func_clean(){									#	Cleans up after the script
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
+func_version											#	To check with version to use.
+func_check_iso											#	Check if you have any ISO file in the same folder as this script 
+func_apt-get											#	Checks if apt-get is installed 
+func_pkg_inst											#	Install the pkg's needed
 func_menu
 func_clean												#	Deletes work folders if there is any
