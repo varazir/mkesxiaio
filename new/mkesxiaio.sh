@@ -112,7 +112,7 @@ func_help_info				#7
 
 array_auto_help_text=(		#	The help text 
 "	Need to be there to run the script non interactiv"
-"	If you like to enable SSH, FTP or SFTP  eg. -s=SSH, -s=FTP or -s=SFTP defult is non. \n	OBS with 4.you 1 dosen't need to enable SSH"
+"	If you like to enable SSH, FTP or SFTP  eg. -s=SSH, -s=FTP or -s=SFTP defult is non. \n	OBS with 4.1 you dosen't need to enable SSH"
 "	Downloading wget and rsync from vm-help.com."
 "	If you have more files in the custom-esx folder."
 "	Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
@@ -124,7 +124,7 @@ array_auto_help_text=(		#	The help text
 #	Variables 
 
 install_path="$PWD"										#	Work path
-custom_name="VMware_esxi_custom_"						#	The name of the custom made file/directory
+custom_name="VMware_func_custom_"						#	The name of the custom made file/directory
 save_dir="save"											#	The directory where the custom file/directories  will be  saved
 custom_oem_dir="custom-esx"								#	Add files in custom-esx that is going to be in the oem.tgz file.
 install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to install 
@@ -159,7 +159,7 @@ function func_help_info() {							#	The help menu
 			echo
 		done
 	echo
-	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSH -s=FTP"
+	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSH"
 	echo
 	echo
 	exit
@@ -194,139 +194,6 @@ function func_auto_loop(){								#	Noninteractiv loop
 		fi
 	done
 
-}
-
-function func_checkRoot() {							#	To check if the script is run as a superuser
-    if [ ! $( id -u ) -eq 0 ]
-		then
-			sudo $0
-	fi
-}
-
-function func_clean(){									#	Cleans up after the script 
-
-	clean_cd=$(mount | awk -v mfold="${array_work_dir[0]}" '$0 ~ mfold {print $3}')
-
-	if [ -n "$clean_cd" ]																		#	Checking if there is anything mounted to esx-cd
-		then
-			echo
-			func_text_green "U mounting ${array_work_dir[0]}s"
-			umount $ipath/${array_work_dir[0]}
-			func_text_done
-			sleep 5
-	fi
-
-	clean_5=$(mount | awk -v mfold="${array_work_dir[4]}" '$0 ~ mfold {print $3}')
-
-	if [ -n "$clean_5" ]																		#	Checking if there is anything mounted to esx-5
-		then
-			echo
-			func_text_green "U mounting ${array_work_dir[4]}"
-			umount $ipath/${array_work_dir[4]}
-			func_text_done
-			sleep 5
-	fi
-
-
-	esx_usb=$(mount | awk -v mfold="${array_work_dir[6]}" '$0 ~ mfold {print $3}')
-
-	if [ -n "$clean_usb" ]																		#	Checking if there is anything mounted to esx-usb
-		then
-			echo
-			func_text_green "U mounting ${array_work_dir[6]}"
-			umount $ipath/${array_work_dir[6]}
-			func_text_done
-			sleep 5
-	fi
-
-	cd $ipath
-	
-	shopt -s nullglob
-	rm_dirs=(esx-*)
-	
-	if [[ "${#rm_dirs[@]}" -gt 0 ]]																#	If there is folder left to delete
-		then
-			func_text_green "Removing working folders (esx-*)"
-			rm -R $ipath/esx-*																		#	Cleaning up, removing the folders
-			func_text_done
-			sleep 5
-	fi
-	shopt -u nullglob
-
-	if [[ -u "$custom_name" ]]
-		then
-			chown --from=$USER $SUDO_UID:$SUDO_GID $ipath/*
-	fi
-}
-
-function func_version() {								#	Version ? $esxi
-	
-	clear 							#	Clear the screen.
-	
-	local menu
-	
-	if [[ -z $auto_flag ]]
-		then
-			for index in ${!array_extra_menu[@]}
-				do
-					func_text_green "	%s\n" "${array_extra_menu[index]}";
-				done
-			func_text_green " Choose what you like to do: "
-			read menu
-		else
-			menu=$1
-	fi 
-	
-	if [[ -z $menu ]]
-		then 
-			esxi_red "You need to define the version of ESXi you like to create "
-			sleep 4
-			clear
-			exit
-	fi
-
-	case "$menu" in
-		2 | 4.0 ) 
-			esxi_ver="4.0"
-			clear
-		;;
-		1 | 3.5 )
-			esxi_ver="3.5"
-			clear
-		;;
-		3 | 4.1 )
-			esxi_ver="4.1"
-			clear
-		;;
-		* )
-			esxi_red "That's not a valid option"
-			sleep 1
-			clear 					#	Clear the screen.
-			func_version			#	Loop the menu
-		;;
-	esac
-}
-
-function func_menu(){ 									#	Menu function 
-	
-	clear 												# 	Clear the screen.
-
-	local menu
-	
-	if [[ -z $auto_flag ]]
-		then
-			for index in ${!array_main_menu[@]}
-				do
-					func_text_green "	%s\n" "${array_main_menu[index]}";
-				done
-			func_text_green " Choose what you like to do: "
-			read menu
-		else
-			menu=$1
-	fi 
-	
-
-exit
 }
 
 function func_auto_set_flag(){ 
@@ -371,8 +238,304 @@ echo $1
 
 }
 
+function func_apt-get(){								#	Check if apt-get is there and if not asks for a new install bin
 
-# func_checkRoot ./$0										#	Starts with a check that you are superuser
+local ibin
+
+echo
+echo
+func_text_green "	Installing..."
+echo
+
+if hash apt-get 2>/dev/null
+	then
+		func_text_green "	apt-get is already installed"
+		echo
+		sleep 2
+	else
+		func_text_red "\n	Standard command is $install_cmd, \n	apt-get can't be found on your system \n	Please specify the install command for your system\n"
+		func_text_green "	Type whole command similar to the command above \n	"
+		read ibin
+		install_cmd="$ibin" 
+fi
+}
+
+function func_pkg_inst(){								#	Loop to find binaries and installed them if need be
+
+local pkgbin
+
+for pkgbin in ${array_pkg_install[*]}
+do	
+	if hash $pkgbin 2>>/dev/null
+		then 
+			func_text_green "	$pkgbin is already installed"
+			echo
+			sleep 2
+		else
+			$install_cmd $pkgbin 2>>/dev/null
+			if [ ! $? -eq 0 ]
+				then
+					echo
+					func_text_red "	Script encountered an error during package installation.  \n	Check errors and retry"
+					echo
+					exit 0
+			fi
+			func_text_green "	$pkgbin is now installed"
+			echo
+			sleep 2
+	fi
+done
+sleep 2
+clear
+}
+
+function func_check() {								#	Checking for files $file_to_use
+	
+	cd $install_path
+	shopt -s nullglob
+	local array_check_files=($2)							#	Creating a array if there is more then one file
+		
+		if [[ ${#array_check_files[@]} == 0 ]]
+			then
+				clear 										#	Clear the screen.
+				echo
+				func_text_red "	No $1 file..  Exiting"
+				echo
+				sleep 5
+				clear 										#	Clear the screen.
+				func_clean
+				exit 0
+		fi
+	shopt -u nullglob
+	
+	if [ "${#array_check_files[@]}" -gt 1 ]					#	If there is more then one file
+		then
+			array_check_files[100]="Exit"
+			func_check_menu ${array_check_files[@]:0}
+		else
+			file_to_use="${array_check_files[*]}"
+	fi
+}
+
+function func_check_menu() {		#	Checking for files menu
+	
+	local check_files
+	
+	clear 							#	Clear the screen.
+	
+	PS3='With file are you going to use ?  '
+
+	printf "There are more then one ${array_check[0]} file"
+	echo
+
+	select check_files 
+
+	do
+		if [ -z $check_files ]
+			then
+				clear 									#	Clear the screen.
+				func_check "${array_check[@]:0}"
+				clear 									#	Clear the screen.
+			else	
+				if [ "$check_files" = "Exit" ]
+					then
+						clear 							#	Clear the screen.
+						echo
+						func_text_red "Exiting ...."
+						echo
+						echo
+						sleep 2
+						func_clean
+						clear 							#	Clear the screen.
+						exit 0
+					else
+						file_to_use="$check_files"
+				fi
+		fi
+	break
+	done
+	clear
+}
+
+function func_check_iso() {			#	Check if there is more then one iso file $esx_iso_file 
+	
+	local array_check
+	
+	array_check=(ISO "*.iso")
+	func_check "${array_check[@]:0}"
+	esxi_iso_file="$file_to_use"
+	esx_custom=${esx_custom}${esxi}_
+
+}
+
+function func_check_oem() {			#	Check if there is more then one oem $esx_oem_file 
+	
+	local array_check
+	
+	array_check=("OEM" "*oem*.*")
+	func_check "${array_check[@]:0}"
+	esxi_oem_file="$file_to_use"
+}
+
+function func_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
+	
+	if [[ "$esxi_version" == "4.1" ]]
+		then
+			cd $install_path
+			wget -r -q http://mkesxiaio.googlecode.com/svn/new/inetd.conf 2>>/dev/null
+			cp $install_path/mkesxiaio.googlecode.com/svn/new/inetd.conf $install_path/
+			rm -r $install_path/mkesxiaio.googlecode.com
+		else
+			cd $install_path
+			wget -r -q http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf 2>>/dev/null
+			cp $install_path/mkesxiaio.googlecode.com/svn/trunk/inetd.conf $install_path/
+			rm -r $install_path/mkesxiaio.googlecode.com
+	fi
+	
+	local array_check
+	
+	array_check=(inetd.conf "*inetd*")
+	func_check "${array_check[@]:0}"
+	esxi_inetd_file="$file_to_use"
+}
+
+
+
+function func_version() {								#	Version ? $esxi
+	
+	clear 							#	Clear the screen.
+	
+	local menu
+	
+	if [[ -z $auto_flag ]]
+		then
+			for index in ${!array_extra_menu[@]}
+				do
+					func_text_green "	%s\n" "${array_extra_menu[index]}";
+				done
+			func_text_green " Choose what you like to do: "
+			read menu
+		else
+			menu=$1
+	fi 
+	
+	if [[ -z $menu ]]
+		then 
+			func_text_red "You need to define the version of ESXi you like to create "
+			sleep 4
+			clear
+			exit
+	fi
+
+	case "$menu" in
+		2 | 4.0 ) 
+			func_ver="4.0"
+			clear
+		;;
+		1 | 3.5 )
+			func_ver="3.5"
+			clear
+		;;
+		3 | 4.1 )
+			func_ver="4.1"
+			clear
+		;;
+		* )
+			func_text_red "That's not a valid option"
+			sleep 1
+			clear 					#	Clear the screen.
+			func_version			#	Loop the menu
+		;;
+	esac
+}
+
+function func_menu(){ 									#	Menu function 
+	
+	clear 												# 	Clear the screen.
+
+	local menu
+	
+	if [[ -z $auto_flag ]]
+		then
+			for index in ${!array_main_menu[@]}
+				do
+					func_text_green "	%s\n" "${array_main_menu[index]}";
+				done
+			func_text_green " Choose what you like to do: "
+			read menu
+		else
+			menu=$1
+	fi 
+	
+
+
+}
+
+function func_checkRoot() {							#	To check if the script is run as a superuser
+    if [ ! $( id -u ) -eq 0 ]
+		then
+			sudo $0
+	fi
+}
+
+function func_clean(){									#	Cleans up after the script 
+
+	clean_cd=$(mount | awk -v mfold="${array_work_dir[0]}" '$0 ~ mfold {print $3}')
+
+	if [ -n "$clean_cd" ]																		#	Checking if there is anything mounted to esx-cd
+		then
+			echo
+			func_text_green "U mounting ${array_work_dir[0]}s"
+			umount $install_path/${array_work_dir[0]}
+			func_text_done
+			sleep 5
+	fi
+
+	clean_5=$(mount | awk -v mfold="${array_work_dir[4]}" '$0 ~ mfold {print $3}')
+
+	if [ -n "$clean_5" ]																		#	Checking if there is anything mounted to esx-5
+		then
+			echo
+			func_text_green "U mounting ${array_work_dir[4]}"
+			umount $install_path/${array_work_dir[4]}
+			func_text_done
+			sleep 5
+	fi
+
+
+	esx_usb=$(mount | awk -v mfold="${array_work_dir[6]}" '$0 ~ mfold {print $3}')
+
+	if [ -n "$clean_usb" ]																		#	Checking if there is anything mounted to esx-usb
+		then
+			echo
+			func_text_green "U mounting ${array_work_dir[6]}"
+			umount $install_path/${array_work_dir[6]}
+			func_text_done
+			sleep 5
+	fi
+
+	cd $install_path
+	
+	shopt -s nullglob
+	rm_dirs=(esx-*)
+	
+	if [[ "${#rm_dirs[@]}" -gt 0 ]]																#	If there is folder left to delete
+		then
+			func_text_green "Removing working folders (esx-*)"
+			rm -R $install_path/esx-*																		#	Cleaning up, removing the folders
+			func_text_done
+			sleep 5
+	fi
+	shopt -u nullglob
+
+	if [[ -u "$custom_name" ]]
+		then
+			chown --from=$USER $SUDO_UID:$SUDO_GID $install_path/*
+	fi
+}
+
+
+func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
-# func_menu
-# func_clean												#	Deletes work folders if there is any
+func_menu
+func_clean												#	Deletes work folders if there is any
