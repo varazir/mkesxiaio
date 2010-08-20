@@ -333,39 +333,44 @@ exit
 
 function func_auto_set_flag(){ 
 
-echo $1
+echo "auto"
 
 }
+
 function func_auto_add_ssh_ftp(){ 
-
-
-local array0
-
-array0+=("$1")
-
-echo "$array0"
-
-}
-function func_auto_add_extra(){ 
 
 echo "$1"
 
+array+=("$1")
+
+echo ${array[@]}
+
 }
+
+function func_auto_add_extra(){ 
+
+echo "extra"
+
+}
+
 function func_auto_add_custom_files(){ 
 
-echo $1
+echo "custom"
 
 }
+
 function func_auto_version(){ 
 
 echo $1
 
 }
+
 function func_auto_usb_install(){ 
 
 echo $1
 
 }
+
 function func_auto_dest(){ 
 
 echo $1
