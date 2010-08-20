@@ -57,7 +57,7 @@ md5sum											#9	Is need to create the md5 file on the 4.1 iso
 array_main_menu=(												#	Main menu (Array)
 "Adding customized files to a VMware ESXi installation"			#0	Topic
 ""																#1
-"   	Using $esxi_iso_file"									#2	Iso file going to be used
+"   	Using"													#2	Iso file going to be used
 ""																#3
 "	1) ISO installation"										#4	To create a ISO file to burn on a CD for installation
 "	2) USB installation"										#5	Creates custom made files that can be copied to a bootable USB drive for installation
@@ -432,6 +432,7 @@ function func_version(){								#	Version ?
 					((count++))
 					func_text_green "\n	[$count] %s" "${array_version[index]}";
 				done
+				echo
 			func_text_green "Select:"
 			read menu
 		else
@@ -468,7 +469,7 @@ function func_version(){								#	Version ?
 	esac
 }
 
-function func_menu(){ 									#	Menu function 
+function func_main_menu(){ 							#	Main menu function 
 	
 	clear 												# 	Clear the screen.
 
@@ -480,14 +481,99 @@ function func_menu(){ 									#	Menu function
 		then
 			for index in ${!array_main_menu[@]}
 				do
-					func_text_green "	%s\n" "${array_main_menu[index]}";
+					func_text_green "	%s\n" "${array_main_menu[index]}";	#	Creates the main menu 
 				done
 			func_text_green " Choose what you like to do: "
 			read menu
 		else
-			menu=$1
+			if [[ -z $1 ]]													#	If you are using the auto function and haven't set -i it till stop the script
+				then
+					func_text_red "You have to set type of installtion -i=ISO ..."
+					echo
+					sleep 3
+					exit
+				else
+					menu=$1
+			fi
 	fi 
-	
+	case "$menu" in
+		1 | ISO | iso )
+			install_inst_type="iso"	#	Setting the installation type to ISO
+			func_check_oem			#	Check witch OEM file to use
+			func_copy_cd			#	Copy the files from the iso file
+			func_add_ssh_ftp		#	Adds SSH or FTP or both to the inetd.conf and copy it into the oem file
+			func_file_name			#	Set's the file/folder name
+			func_check_old			#	Check if there is any iso/dd/folder created with this custom files
+			func_dd_start			#	Extract the DD file
+			func_dd_end				#	Uncompress the dd and mount it. Uncompress environ.tgz copy inetd.conf. 
+									#	Copy the OEM file and unmount, Compress the dd file and rebuild the install.tgz copy the OEM file
+			func_iso_finish			#	Making the ISO file
+			func_clean				#	Cleaning up folders
+		;;
+
+		2 | USB | usb )
+			install_inst_type="usb"	#	Setting the installation type FOLDER
+			func_check_oem
+			func_copy_cd
+			func_add_ssh_ftp
+			func_file_name
+			func_check_old
+			func_dd_start
+			func_dd_end
+			func_usb_finish 		#	Moving/rename the esx-build folder to the save folder and copy the files to the USB drive
+			func_clean
+		;;
+
+		3 | DD | dd )
+			inatall_type="dd"		#	Setting the installation type to DD
+			func_check_oem
+			func_copy_cd
+			func_add_ssh_ftp
+			func_file_name
+			func_check_old
+			func_dd_start
+			func_dd_end
+			func_dd_finish			#	Rename dd file, move it to the save folder and write it to the USB drive
+			func_clean
+		;;
+
+		4)	#	USB installation without changes
+		
+			install_type="usb"	#	Setting the installation type to fold
+			custom_name="$esxi_iso_file"
+			func_copy_cd
+			func_file_name
+			func_check_old
+			func_usb_finish
+			func_clean
+		;;
+		
+		5)	#	Boot from USB without changes
+		
+			install_type="dd"		#	Setting the installation type to DD
+			esxi_custom="$esxi_iso_file"
+			func_copy_cd
+			func_file_name
+			func_check_old
+			func_dd_start
+			func_dd_finish
+			func_clean
+		;;
+		
+		6)
+			clear 					#	Clear the screen.
+			func_clean
+			exit 0
+		;;
+
+		*)
+			func_text_red "That's not a valid option"
+			sleep 1
+			clear 					#	Clear the screen.
+			func_main_menu			#	Loop the menu
+		;;
+
+	esac
 
 
 }
@@ -562,5 +648,5 @@ func_version											#	To check with version to use.
 func_check_iso											#	Check if you have any ISO file in the same folder as this script 
 func_apt-get											#	Checks if apt-get is installed 
 func_pkg_inst											#	Install the pkg's needed
-func_menu
+func_main_menu
 func_clean												#	Deletes work folders if there is any
