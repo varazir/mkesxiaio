@@ -426,11 +426,11 @@ function func_version(){
 		then
 			func_text_green  "  Which version of ESXi are you going to do "
 			echo
-			func_text_green  "  [1] ${esx_version[2]}"
+			func_text_green  "  [1] ${array_version[2]}"
 			echo
-			func_text_green  "  [2] ${esx_version[1]}"
+			func_text_green  "  [2] ${array_version[1]}"
 			echo
-			func_text_green  "  [3] ${esx_version[0]}"
+			func_text_green  "  [3] ${array_version[0]}"
 			echo
 			func_text_green  "  Choose what you like to do: "
 			read menu
