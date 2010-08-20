@@ -399,7 +399,7 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	esxi_inetd_file="$file_to_use"
 }
 
-function func_version() {								#	Version ? $esxi
+function func_menu_extra() {								#	Version ? $esxi
 	
 	clear 							#	Clear the screen.
 	
@@ -416,7 +416,29 @@ function func_version() {								#	Version ? $esxi
 		else
 			menu=$1
 	fi 
+}
+
+function func_version(){
 	
+	if [[ -z $esx_auto ]]
+		then
+			esxi_green  "  Which version of ESXi are you going to do "
+			echo
+			esxi_green  "  [1] ${esx_version[2]}"
+			echo
+			esxi_green  "  [2] ${esx_version[1]}"
+			echo
+			esxi_green  "  [3] ${esx_version[0]}"
+			echo
+			esxi_green  "  Choose what you like to do: "
+			read esx_ver
+		else
+			if [[ -z $esx_ver ]]
+				then
+					esx_ver=$1
+			fi
+	fi
+			
 	if [[ -z $menu ]]
 		then 
 			func_text_red "You need to define the version of ESXi you like to create "
@@ -450,6 +472,8 @@ function func_version() {								#	Version ? $esxi
 function func_menu(){ 									#	Menu function 
 	
 	clear 												# 	Clear the screen.
+
+	array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
 
 	local menu
 	
