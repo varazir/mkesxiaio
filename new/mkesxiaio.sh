@@ -115,16 +115,16 @@ func_help_info				#9
 )
 
 array_auto_help_text=(		#	The help text 
-"	Need to be there to run the script non interactiv"
-"	If you like to enable SSH, OBS with 4.1 you dosen't need to enable SSH"
-"	If you like to enable SFTP"
-"	If you like to enable FTP"
-"	Downloading wget and rsync from vm-help.com."
-"	If you have more files in the custom-esx folder."
-"	Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
-"	If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
-"	Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
-"	This help"
+"		Need to be there to run the script non interactiv"
+"		If you like to enable SSH, OBS with 4.1 you dosen't need to enable SSH"
+"		If you like to enable SFTP"
+"		If you like to enable FTP"
+"		Downloading wget and rsync from vm-help.com."
+"		If you have more files in the custom-esx folder."
+"		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
+"		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
+"		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
+"		This help"
 )
 
 #	Variables 
@@ -165,7 +165,7 @@ function func_help_info() {							#	The help menu
 			echo
 		done
 	echo
-	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO -s=SSH"
+	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO --ssh"
 	echo
 	echo
 	exit
@@ -220,7 +220,7 @@ echo "sFTP"
 
 }
 
-function func_auto_ftp(){ 
+function func_auto_add_ftp(){ 
 
 echo "FTP"
 
