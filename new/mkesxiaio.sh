@@ -138,6 +138,7 @@ save_dir="save"											#	The directory where the custom file/directories  wil
 custom_oem_dir="custom-esx"								#	Add files in custom-esx that is going to be in the oem.tgz file.
 install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to install 
 usb_check_cmd="udevadm"
+first_time=0
 
 #	Extra options 
 
@@ -493,9 +494,11 @@ function func_version(){								#	Version ?
 function func_main_menu(){ 							#	Main menu function 
 	
 	clear 												# 	Clear the screen.
-
-	array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
-
+	
+	if [[ $first_time == 0 ]: then
+		array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
+	fi
+	
 	local menu
 	
 	if [[ -z $auto_flag ]]
@@ -587,7 +590,8 @@ function func_main_menu(){ 							#	Main menu function
 		;;
 
 		*)
-			func_text_red "That's not a valid option"
+			func_text_red "	That's not a valid option"
+			first_time=1
 			sleep 1
 			clear 					#	Clear the screen.
 			func_main_menu			#	Loop the menu
@@ -678,8 +682,8 @@ function func_create_folders() {						#	Create folders
 	
 	if [[ ${#esx_rm[@]} == 0 ]]						#	If there is any working folder left
 		then
-			func_text_green "Creating folders ${array_folders[*]}"
-			mkdir ${array_folders[*]}
+			func_text_green "Creating folders ${array_work_dir[*]}"
+			mkdir ${array_work_dir[*]}
 			func_text_done
 			sleep 2
 			if [[ -n "$install_type" ]] 
@@ -689,7 +693,7 @@ function func_create_folders() {						#	Create folders
 		else											#	If there is folders it will delete them and start over
 			clear 										#	Clear the screen.
 			echo
-			func_text_red "There was some working folders left, \n deleting them and restarting the script"
+			func_text_red "There was some working dir left, \n deleting them and restarting the script"
 			echo
 			sleep 4
 			func_clean
