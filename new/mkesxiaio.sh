@@ -70,13 +70,13 @@ array_main_menu=(												#	Main menu (Array)
 )
 
 array_extra_menu=(									#	Extra menu
-"     Extra support "
-" "
-"	1)	FTP support"								#0	If there are going to be FTP support enabled
-"	2)	SFTP support"								#1	If there are going to be sFTP support enabled
-"	3)	SSH support"								#2	If there are going to be SSH support enabled
-"	4)	SSH + FTP support"							#3	If there are going to be FTP and SSH support enabled
-"	5)	Continue without any of them"				#4	Exit the ssh/ftp menu without doing anything
+"     Extra support "								#0
+" "													#1
+"	1)	FTP support"								#3	If there are going to be FTP support enabled
+"	2)	SFTP support"								#4	If there are going to be sFTP support enabled
+"	3)	SSH support"								#5	If there are going to be SSH support enabled
+"	4)	SSH + FTP support"							#6	If there are going to be FTP and SSH support enabled
+"	5)	Continue without any of them"				#7	Exit the ssh/ftp menu without doing anything
 )
 array_install_text=(
 "Installing ${array_pkg_install[*]}"				#0	Install app info
@@ -91,23 +91,27 @@ array_version=(				#	Versions
 array_auto_flag=(
 -a							#0	Need to be there to run the script non interactiv
 -s							#1	If you like to enable ONLY SSH
--e							#2	If you like downloading wget and rsync from vm-help.com
--c							#3	If you have more files in the custom-esx directory
--v							#4	Version you are going to make
--d							#5	USB device 
--i							#6	Installtion typ
--h							#7	Help
+-s							#2
+-s							#3
+-e							#4	If you like downloading wget and rsync from vm-help.com
+-c							#5	If you have more files in the custom-esx directory
+-v							#6	Version you are going to make
+-d							#7	USB device 
+-i							#8	Installtion typ
+-h							#9	Help
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
 func_auto_set_flag			#0
 func_auto_add_ssh_ftp		#1
-func_auto_add_extra			#2
-func_auto_add_custom_files	#3
-func_auto_version			#4
-func_auto_usb_install		#5
-func_auto_dest				#6
-func_help_info				#7
+func_auto_add_ssh_ftp		#2
+func_auto_add_ssh_ftp		#3
+func_auto_add_extra			#4
+func_auto_add_custom_files	#5
+func_auto_version			#6
+func_auto_usb_install		#7
+func_auto_dest				#8
+func_help_info				#9
 )
 
 array_auto_help_text=(		#	The help text 
@@ -166,12 +170,12 @@ function func_help_info() {							#	The help menu
 }
 
 function func_auto_flag() {							#	To grep the flags used when running the script noninteractiv 
-	
+														#	http://mywiki.wooledge.org/BashFAQ/035
 	local flag=$1
 	shift
 	while [[ $1 == -* ]]; do
 		case "$1" in
-			-) return 1;; # by convention, - is end of options
+			--) return 1;; # by convention, - is end of options
 			"$flag="*) echo "${1#"$flag="}"; return 0;;
 			"$flag") return 0 ;;
 		esac
@@ -204,7 +208,9 @@ echo "auto"
 
 function func_auto_add_ssh_ftp(){ 
 
-echo "$1"
+array_service+=($1)
+
+echo "${array_service[@]}"
 
 }
 
@@ -433,7 +439,7 @@ function func_version(){								#	Version ?
 					func_text_green "\n	[$count] %s" "${array_version[index]}";
 				done
 				echo
-			func_text_green "Select:"
+			func_text_green "	Select:"
 			read menu
 		else
 			menu=$1
@@ -500,7 +506,6 @@ function func_main_menu(){ 							#	Main menu function
 		1 | ISO | iso )
 			install_inst_type="iso"	#	Setting the installation type to ISO
 			func_check_oem			#	Check witch OEM file to use
-			func_copy_cd			#	Copy the files from the iso file
 			func_add_ssh_ftp		#	Adds SSH or FTP or both to the inetd.conf and copy it into the oem file
 			func_file_name			#	Set's the file/folder name
 			func_check_old			#	Check if there is any iso/dd/folder created with this custom files
@@ -639,6 +644,46 @@ function func_clean(){									#	Cleans up after the script
 		then
 			chown --from=$USER $SUDO_UID:$SUDO_GID $install_path/*
 	fi
+}
+
+function func_create_folders() {						#	Create folders
+
+	cd $install_path									#	Change so the start path is correct
+		
+	clear						 						#	Clear the screen.
+		
+	func_check_dir $install_path/$save_dir			#	Check if there is all ready a save folder
+	func_check_dir $install_path/$custom_oem_dir		#	Check if there is a custom oem folder and creates it if need 
+	
+	shopt -s nullglob
+	
+	local array_rm=(esx-*)
+	
+	echo
+	
+	if [[ ${#esx_rm[@]} == 0 ]]						#	If there is any working folder left
+		then
+			func_text_green "Creating folders ${array_folders[*]}"
+			mkdir ${array_folders[*]}
+			func_text_done
+			sleep 2
+			if [[ -n "$install_type" ]] 
+				then
+					set_file_rights
+			fi
+		else											#	If there is folders it will delete them and start over
+			clear 										#	Clear the screen.
+			echo
+			func_text_red "There was some working folders left, \n deleting them and restarting the script"
+			echo
+			sleep 4
+			func_clean
+			func_create_folders
+
+	fi
+	shopt -u nullglob
+	
+	array_folders[8]=custom-esx							#8	Where you can add files you like to be added to the oem file.
 }
 
 
