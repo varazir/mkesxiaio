@@ -117,8 +117,8 @@ func_help_info				#9
 array_auto_help_text=(		#	The help text 
 "		Need to be there to run the script non interactiv"
 "		If you like to enable SSH, OBS with 4.1 you dosen't need to enable SSH"
-"		If you like to enable SFTP"
-"		If you like to enable FTP"
+"	If you like to enable SFTP.You can read more here http://thebsdbox.co.uk/?p=224"
+"		If you like to enable FTP, Downloaded from http://www.vm-help.com"
 "		Downloading wget and rsync from vm-help.com."
 "		If you have more files in the custom-esx folder."
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
