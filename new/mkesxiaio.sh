@@ -76,7 +76,10 @@ array_extra_menu=(									#	Extra menu
 "	2)	SFTP support"								#4	If there are going to be sFTP support enabled
 "	3)	SSH support"								#5	If there are going to be SSH support enabled
 "	4)	SSH + FTP support"							#6	If there are going to be FTP and SSH support enabled
-"	5)	Continue without any of them"				#7	Exit the ssh/ftp menu without doing anything
+"	5)	SSH + sFTP support"							#7	If there are going to be sFTP and SSH support enabled
+"	6)	FTP + sFTP support"							#8	If there are going to be sFTP and FTP support enabled
+"	7)	SSH + FTP + sFTP support"					#9	If there are going to be FTP and SSH support enabled
+"	8)	Continue without any of them"				#10	Exit the ssh/ftp menu without doing anything
 )
 array_install_text=(
 "Installing ${array_pkg_install[*]}"				#0	Install app info
@@ -116,9 +119,9 @@ func_help_info				#9
 
 array_auto_help_text=(		#	The help text 
 "		Need to be there to run the script non interactiv"
-"		If you like to enable SSH, OBS with 4.1 you dosen't need to enable SSH"
-"	If you like to enable SFTP.You can read more here http://thebsdbox.co.uk/?p=224"
-"		If you like to enable FTP, Downloaded from http://www.vm-help.com"
+"		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
+"	If you like to enable SFTP, You can read more here http://thebsdbox.co.uk/?p=224"
+"		If you like to enable FTP, downloaded from http://www.vm-help.com"
 "		Downloading wget and rsync from vm-help.com."
 "		If you have more files in the custom-esx folder."
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
@@ -417,7 +420,7 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	esxi_inetd_file="$file_to_use"
 }
 
-function func_menu_extra() {							#	
+function func_menu_extra() {							#	Extra ssh/sftp/ftp menu
 	
 	clear 							#	Clear the screen.
 	
@@ -698,6 +701,16 @@ function func_create_folders() {						#	Create folders
 	array_folders[8]=custom-esx							#8	Where you can add files you like to be added to the oem file.
 }
 
+function func_check_dir() {							#	Checks the dir given 
+	
+	if [ ! -d $1	]; then							#	Check if there is all ready a folder
+		func_text_green "Creating $1"
+		mkdir -p $1									#	Creates the folder
+		func_text_done
+		sleep 2
+	fi
+}
+
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_auto_loop "$@"										#	To make the script nonintractiv
@@ -705,5 +718,6 @@ func_version											#	To check with version to use.
 func_check_iso											#	Check if you have any ISO file in the same folder as this script 
 func_apt-get											#	Checks if apt-get is installed 
 func_pkg_inst											#	Install the pkg's needed
+func_create_folders
 func_main_menu
 func_clean												#	Deletes work folders if there is any
