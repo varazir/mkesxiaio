@@ -92,7 +92,7 @@ array_version=(				#	Versions
 )
 
 array_auto_flag=(
--a							#0	Need to be there to run the script non interactiv
+-i							#0	Installtion typ
 --ssh						#1	If you like to enable ONLY SSH
 --sftp						#2	If you like to enable ONLY sftp
 --ftp						#3	If you like to enable ONLY ftp
@@ -100,12 +100,12 @@ array_auto_flag=(
 -c							#5	If you have more files in the custom-esx directory
 -v							#6	Version you are going to make
 -d							#7	USB device 
--i							#8	Installtion typ
+-a							#8	Need to be there to run the script non interactiv
 -h							#9	Help
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
-func_auto_set_flag			#0
+func_auto_install_type		#0
 func_auto_add_ssh			#1
 func_auto_add_sftp			#2
 func_auto_add_ftp			#3
@@ -113,12 +113,12 @@ func_auto_add_extra			#4
 func_auto_add_custom_files	#5
 func_auto_version			#6
 func_auto_usb_install		#7
-func_auto_dest				#8
+func_auto_set_flag			#8
 func_help_info				#9
 )
 
 array_auto_help_text=(		#	The help text 
-"		Need to be there to run the script non interactiv"
+"		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
 "		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
 "	If you like to enable SFTP, You can read more here http://thebsdbox.co.uk/?p=224"
 "		If you like to enable FTP, downloaded from http://www.vm-help.com"
@@ -126,7 +126,7 @@ array_auto_help_text=(		#	The help text
 "		If you have more files in the custom-esx folder."
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
-"		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
+"		Need to be there to run the script non interactiv"
 "		This help"
 )
 
@@ -254,7 +254,7 @@ echo $1
 
 }
 
-function func_auto_dest(){ 
+function func_auto_install_type(){ 
 
 echo $1
 
