@@ -90,9 +90,9 @@ array_version=(				#	Versions
 
 array_auto_flag=(
 -a							#0	Need to be there to run the script non interactiv
--s							#1	If you like to enable ONLY SSH
--s							#2
--s							#3
+--ssh						#1	If you like to enable ONLY SSH
+--sftp						#2	If you like to enable ONLY sftp
+--ftp						#3	If you like to enable ONLY ftp
 -e							#4	If you like downloading wget and rsync from vm-help.com
 -c							#5	If you have more files in the custom-esx directory
 -v							#6	Version you are going to make
@@ -103,9 +103,9 @@ array_auto_flag=(
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
 func_auto_set_flag			#0
-func_auto_add_ssh_ftp		#1
-func_auto_add_ssh_ftp		#2
-func_auto_add_ssh_ftp		#3
+func_auto_add_ssh			#1
+func_auto_add_sftp			#2
+func_auto_add_ftp			#3
 func_auto_add_extra			#4
 func_auto_add_custom_files	#5
 func_auto_version			#6
@@ -116,7 +116,9 @@ func_help_info				#9
 
 array_auto_help_text=(		#	The help text 
 "	Need to be there to run the script non interactiv"
-"	If you like to enable SSH, FTP or SFTP  eg. -s=SSH, -s=FTP or -s=SFTP defult is non. \n	OBS with 4.1 you dosen't need to enable SSH"
+"	If you like to enable SSH, OBS with 4.1 you dosen't need to enable SSH"
+"	If you like to enable SFTP"
+"	If you like to enable FTP"
 "	Downloading wget and rsync from vm-help.com."
 "	If you have more files in the custom-esx folder."
 "	Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
@@ -206,11 +208,21 @@ echo "auto"
 
 }
 
-function func_auto_add_ssh_ftp(){ 
+function func_auto_add_ssh(){ 
 
-array_service+=($1)
+echo "SSH"
 
-echo "${array_service[@]}"
+}
+
+function func_auto_add_sftp(){ 
+
+echo "sFTP"
+
+}
+
+function func_auto_ftp(){ 
+
+echo "FTP"
 
 }
 
