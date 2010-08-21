@@ -495,7 +495,7 @@ function func_main_menu(){ 							#	Main menu function
 	
 	clear 												# 	Clear the screen.
 	
-	if [[ $first_time == 0 ]: then
+	if [[ $first_time == 0 ]]: then
 		array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
 	fi
 	
