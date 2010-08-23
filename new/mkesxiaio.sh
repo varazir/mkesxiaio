@@ -517,7 +517,7 @@ cd $install_path/${array_work_dir[8]}
 
 	local download
 	
-	if [[ "$esx_auto" || "$4" == "y" ]]
+	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			mv $2 $3
@@ -553,7 +553,7 @@ function func_version(){								#	Version ?
 	local menu
 	local count=0
 	
-	if [[ -z $esx_auto ]]
+	if [[ -z $auto_flag ]]
 		then
 			func_text_green  "  For which version of ESXi are you going to create a custom image ?"
 			echo
