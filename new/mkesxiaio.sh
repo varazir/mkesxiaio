@@ -249,45 +249,45 @@ ${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/$
 
 function func_add_ftp(){ 								#	Adds FTP suuport
 
-	func_check_dir $ipath/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
-	func_check_dir $ipath/${array_work_dir[3]}/etc		#	Check if there is all ready a etc folder
+	func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
+	func_check_dir $install_path/${array_work_dir[3]}/etc		#	Check if there is all ready a etc folder
 
-	func_text_green "Downloading ProFtpd to $ipath/${array_work_dir[7]}"
-	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $ipath/${array_work_dir[7]} $1
+	func_text_green "Downloading ProFtpd to $install_path/${array_work_dir[7]}"
+	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $install_path/${array_work_dir[7]} $1
 	
-	cd $ipath/${array_work_dir[7]}
+	cd $install_path/${array_work_dir[7]}
 	
 	${array_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
 	func_text_done
 	
-	cd $ipath/${array_work_dir[7]}/proftpd
+	cd $install_path/${array_work_dir[7]}/proftpd
 	
-	if [[ ! -e $ipath/${array_work_dir[3]}/etc/proftpd.conf ]]
+	if [[ ! -e $install_path/${array_work_dir[3]}/etc/proftpd.conf ]]
 		then
-			func_text_green "Copy the proftpd.conf to $ipath/${array_work_dir[3]}/etc"
-			cp proftpd.conf $ipath/${array_work_dir[3]}/etc
+			func_text_green "Copy the proftpd.conf to $install_path/${array_work_dir[3]}/etc"
+			cp proftpd.conf $install_path/${array_work_dir[3]}/etc
 			func_text_done
 	fi
 	
-	func_text_green "Copy the proftpd to $ipath/${array_work_dir[3]}/sbin"
-	cp proftpd $ipath/${array_work_dir[3]}/sbin
+	func_text_green "Copy the proftpd to $install_path/${array_work_dir[3]}/sbin"
+	cp proftpd $install_path/${array_work_dir[3]}/sbin
 	func_text_done
-	func_text_green "Copy the tcpd to $ipath/${array_work_dir[3]}/sbin"
-	cp tcpd $ipath/${array_work_dir[3]}/sbin
+	func_text_green "Copy the tcpd to $install_path/${array_work_dir[3]}/sbin"
+	cp tcpd $install_path/${array_work_dir[3]}/sbin
 	func_text_done
 
 	if [[ "$esxi_version" == "3.5" ]]
 		then
-			func_edit_file "^#ftp" "ftp" $ipath/$1/etc/inetd.conf
-			func_edit_file "in.ftpd" "proftpd" $ipath/$1/etc/inetd.conf 
+			func_edit_file "^#ftp" "ftp" $install_path/$1/etc/inetd.conf
+			func_edit_file "in.ftpd" "proftpd" $install_path/$1/etc/inetd.conf 
 		else
-			echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $ipath/$1/etc/inetd.conf
-			echo "" >> $ipath/$1/etc/inetd.conf
+			echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $install_path/$1/etc/inetd.conf
+			echo "" >> $install_path/$1/etc/inetd.conf
 
 	fi
 	if [[ -z $auto_flag ]]
 		then
-			func_edit $ipath/$1/etc/proftpd.conf
+			func_edit $install_path/$1/etc/proftpd.conf
 	fi
 	
 	custom_name=${custom_name}ftp_
@@ -456,7 +456,6 @@ function func_check_iso() {							#	Check if there is more then one iso file and
 		else
 			if [[ $1 ]]								#	If you are using the auto function and haven't set -iso it till stop the script
 				then
-					func_text_green "$1"
 					esxi_iso_file="$1"
 					custom_name=${custom_name}${esxi_version}_
 				else
@@ -481,7 +480,7 @@ function func_check_oem() {							#	Check if there is more then one oem $esx_oem
 			else
 				if [[ -z $1 ]]							#	If you are using the auto function and haven't set -iso it till stop the script
 					then
-						func_text_red "You have to set type of installtion -iso=Vmware...iso"
+						func_text_red "You have to set the oem file you are going to use -oem=oem.tgz"
 						echo
 						sleep 3
 						exit
