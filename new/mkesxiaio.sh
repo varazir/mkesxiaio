@@ -402,7 +402,7 @@ function func_check_menu() {							#	Checking for files menu
 	
 	PS3='With file are you going to use ?  '
 
-	printf "There are more then one ${array_check[0]} file"
+	func_text_green "There are more then one ${array_check[0]} file"
 	echo
 
 	select check_files 
