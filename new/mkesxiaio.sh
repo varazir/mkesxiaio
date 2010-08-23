@@ -230,7 +230,7 @@ func_check_inetd								#	Check and download the correct inetd.conf file
 
 function func_add_ssh(){ 								#	Adds ssh support for 3.5 and 4.0 
 
-if [[ "$esxi_version" =! "4.1" ]]
+if [[ "$esxi_version" != "4.1" ]]
 	then
 		func_edit_file "^#ssh" "ssh" $install_path/inetd.conf
 		custom_name=${custom_name}ssh_
