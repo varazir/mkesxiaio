@@ -94,14 +94,14 @@ array_version=(				#	Versions
 
 array_auto_flag=(
 -a							#0	Need to be there to run the script non interactiv
---ssh						#1	If you like to enable SSH
---sftp						#2	If you like to download and enable sftp
---ftp						#3	If you like to download and enable ftp
---wget						#4	If you like downloading wget from vm-help.com
---rsync						#5	If you like downloading rsync from vm-help.com
---iso						#6	Need to be set when runing the script non interactiv
--c							#7	If you have more files in the custom-esx directory
--v							#8	Version you are going to make
+-v							#1	Version you are going to make
+--ssh						#2	If you like to enable SSH
+--sftp						#3	If you like to download and enable sftp
+--ftp						#4	If you like to download and enable ftp
+--wget						#5	If you like downloading wget from vm-help.com
+--rsync						#6	If you like downloading rsync from vm-help.com
+--iso						#7	Need to be set when runing the script non interactiv
+-c							#8	If you have more files in the custom-esx directory
 -d							#9	USB device 
 -i							#10	Installtion typ
 -h							#11	Help
@@ -109,14 +109,14 @@ array_auto_flag=(
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
 func_auto_set_flag			#0
-func_add_ssh				#1
-func_add_sftp				#2
-func_add_ftp				#3
-func_add_wget				#4
-func_add_rsync				#5
-func_check_iso				#6
-func_auto_add_custom_files	#7
-esxi_versionsion				#8
+func_version				#1
+func_add_ssh				#2
+func_add_sftp				#3
+func_add_ftp				#4
+func_add_wget				#5
+func_add_rsync				#6
+func_check_iso				#7
+func_auto_add_custom_files	#8
 func_auto_usb_device		#9
 func_main_menu				#10
 func_help_info				#11
@@ -124,6 +124,7 @@ func_help_info				#11
 
 array_auto_help_text=(		#	The help text 
 "		Need to be there to run the script non interactiv"
+"		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
 "	If you like to enable SFTP, You can read more here http://thebsdbox.co.uk/?p=224"
 "		If you like to enable FTP, downloaded from http://www.vm-help.com"
@@ -131,7 +132,6 @@ array_auto_help_text=(		#	The help text
 "	Downloading rsync from vm-help.com."
 "		The name of the iso file you are going to use -iso=vmware.iso"
 "		If you have more files in the custom-esx folder."
-"		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
 "		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
@@ -242,7 +242,7 @@ echo "sFTP"
 
 function func_add_ftp(){ 
 
-	func_check_dir $ipath/${array_work_dir[3]}/sbin											#	Check if there is all ready a sbin folder
+	func_check_dir $ipath/${array_work_dir[3]}/sbin										#	Check if there is all ready a sbin folder
 	func_check_dir $ipath/${array_work_dir[3]}/etc											#	Check if there is all ready a etc folder
 
 	func_text_green "Downloading ProFtpd to $ipath/${array_work_dir[7]}"
@@ -269,7 +269,7 @@ function func_add_ftp(){
 	cp tcpd $ipath/${array_work_dir[3]}/sbin
 	func_text_done
 
-	if [[ $esxi_version == "3.5" ]]
+	if [[ "$esxi_version" == "3.5" ]]
 		then
 			func_edit_file "^#ftp" "ftp" $ipath/$1/etc/inetd.conf
 			func_edit_file "in.ftpd" "proftpd" $ipath/$1/etc/inetd.conf 
@@ -536,7 +536,7 @@ cd $install_path/${array_work_dir[8]}
 	
 }
 
-function esxi_versionsion(){								#	Version ?
+function func_version(){								#	Version ?
 
 	clear
 	
@@ -584,7 +584,7 @@ function esxi_versionsion(){								#	Version ?
 			func_text_red "That's not a valid option"
 			sleep 1
 			clear 					#	Clear the screen.
-			esxi_versionsion			#	Loop the menu
+			esxi_versionsion		#	Loop the menu
 		;;
 	esac
 }
