@@ -116,7 +116,7 @@ func_add_wget				#4
 func_add_rsync				#5
 func_check_iso				#6
 func_auto_add_custom_files	#7
-func_version				#8
+esxi_versionsion				#8
 func_auto_usb_device		#9
 func_main_menu				#10
 func_help_info				#11
@@ -242,7 +242,46 @@ echo "sFTP"
 
 function func_add_ftp(){ 
 
-echo "FTP"
+	func_check_dir $ipath/${array_work_dir[3]}/sbin											#	Check if there is all ready a sbin folder
+	func_check_dir $ipath/${array_work_dir[3]}/etc											#	Check if there is all ready a etc folder
+
+	func_text_green "Downloading ProFtpd to $ipath/${array_work_dir[7]}"
+	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $ipath/${array_work_dir[7]} y
+	
+	cd $ipath/${array_work_dir[7]}
+	
+	${esx_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
+	func_text_done
+	
+	cd $ipath/${array_work_dir[7]}/proftpd
+	
+	if [[ ! -e $ipath/${array_work_dir[3]}/etc/proftpd.conf ]]
+		then
+			func_text_green "Copy the proftpd.conf to $ipath/${array_work_dir[3]}/etc"
+			cp proftpd.conf $ipath/${array_work_dir[3]}/etc
+			func_text_done
+	fi
+	
+	func_text_green "Copy the proftpd to $ipath/${array_work_dir[3]}/sbin"
+	cp proftpd $ipath/${array_work_dir[3]}/sbin
+	func_text_done
+	func_text_green "Copy the tcpd to $ipath/${array_work_dir[3]}/sbin"
+	cp tcpd $ipath/${array_work_dir[3]}/sbin
+	func_text_done
+
+	if [[ $esxi_version == "3.5" ]]
+		then
+			func_edit_file "^#ftp" "ftp" $ipath/$1/etc/inetd.conf
+			func_edit_file "in.ftpd" "proftpd" $ipath/$1/etc/inetd.conf 
+		else
+			echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $ipath/$1/etc/inetd.conf
+			echo "" >> $ipath/$1/etc/inetd.conf
+
+	fi
+	if [[ -z $auto_flag ]]
+		then
+			func_edit $ipath/$1/etc/proftpd.conf
+	fi
 
 }
 
@@ -485,7 +524,7 @@ cd $install_path/${array_work_dir[8]}
 		;;
 		
 		"N" | "n" )
-		#			esxi_green "Continue without downloading the file $1"
+		#			func_text_green "Continue without downloading the file $1"
 		;;
 		
 		*)
@@ -497,8 +536,10 @@ cd $install_path/${array_work_dir[8]}
 	
 }
 
-function func_version(){								#	Version ?
+function esxi_versionsion(){								#	Version ?
 
+	clear
+	
 	local menu
 	local count=0
 	
@@ -528,22 +569,22 @@ function func_version(){								#	Version ?
 
 	case "$menu" in
 		2 | 4.0 ) 
-			func_ver="4.0"
+			esxi_version="4.0"
 			clear
 		;;
 		1 | 3.5 )
-			func_ver="3.5"
+			esxi_version="3.5"
 			clear
 		;;
 		3 | 4.1 )
-			func_ver="4.1"
+			esxi_version="4.1"
 			clear
 		;;
 		* )
 			func_text_red "That's not a valid option"
 			sleep 1
 			clear 					#	Clear the screen.
-			func_version			#	Loop the menu
+			esxi_versionsion			#	Loop the menu
 		;;
 	esac
 }
@@ -581,8 +622,8 @@ function func_main_menu(){ 							#	Main menu function
 	case "$menu" in
 		1 | ISO | iso )
 			install_inst_type="iso"				#	Setting the installation type to ISO
-			func_check_oem $esxi_oem_file		#	Check witch OEM file to use
-			func_add_service					#	Adds SSH or FTP or both to the inetd.conf and copy it into the oem file
+			func_check_oem $esxi_oem_file		#	Check witch OEM file to use, if the script run in non interactiv $esxi_oem_file allready set
+			func_add_service y					#	Adds SSH, FTP, wget, rsync, sftp
 			func_file_name						#	Set's the file/folder name
 			func_check_old						#	Check if there is any iso/dd/folder created with this custom files
 			func_dd_start						#	Extract the DD file
@@ -596,7 +637,7 @@ function func_main_menu(){ 							#	Main menu function
 			install_inst_type="usb"	#	Setting the installation type FOLDER
 			func_check_oem $esxi_oem_file
 			func_copy_cd
-			func_add_ssh_ftp
+			func_add_service y
 			func_file_name
 			func_check_old
 			func_dd_start
@@ -609,7 +650,7 @@ function func_main_menu(){ 							#	Main menu function
 			inatall_type="dd"		#	Setting the installation type to DD
 			func_check_oem  $esxi_oem_file
 			func_copy_cd
-			func_add_ssh_ftp
+			func_add_service y
 			func_file_name
 			func_check_old
 			func_dd_start
@@ -773,8 +814,41 @@ function func_check_dir() {							#	Checks the dir given
 	fi
 }
 
+function func_add_service(){
+
+	local menu
+
+	func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or seperate[n] ? \e[00m [Y/n]"
+	read menu
+	
+	case $menu in
+		
+		"Y" | "y" )
+		func_add_ssh $1
+		func_add_wget $1
+		func_add_rsync $1
+		func_add_sftp $1
+		;;
+		
+		"N" | "n" )
+		func_add_ssh 
+		func_add_wget 
+		func_add_rsync 
+		func_add_sftp 
+		;;
+		
+		*)
+		func_text_red "	That's not a valid option"
+		sleep 1
+		clear 					#	Clear the screen.
+		func_add_service		#	Loop the menu
+		;;
+	esac
+
+}
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
+func_clean
 func_auto_loop "$@"										#	To make the script nonintractiv
 
 if [[ -z $auto_flag ]]
@@ -784,7 +858,7 @@ if [[ -z $auto_flag ]]
 		func_create_folders								#	Create folders 
 fi
 
-func_version											#	To check with version to use.
+esxi_versionsion											#	To check with version to use.
 func_check_iso											#	Check if you have any ISO file in the same folder as this script 
 func_main_menu
 func_clean												#	Deletes work folders if there is any
