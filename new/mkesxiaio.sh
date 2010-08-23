@@ -594,7 +594,7 @@ function func_version(){								#	Version ?
 			func_text_red "That's not a valid option"
 			sleep 1
 			clear 					#	Clear the screen.
-			func_version		#	Loop the menu
+			func_version			#	Loop the menu
 		;;
 	esac
 	
