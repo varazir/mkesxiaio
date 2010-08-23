@@ -101,10 +101,11 @@ array_auto_flag=(
 --wget						#5	If you like downloading wget from vm-help.com
 --rsync						#6	If you like downloading rsync from vm-help.com
 --iso						#7	Need to be set when runing the script non interactiv
--c							#8	If you have more files in the custom-esx directory
--d							#9	USB device 
--i							#10	Installtion typ
--h							#11	Help
+--oem						#8	You need to set the oem file you ar egoing to use
+-c							#9	If you have more files in the custom-esx directory
+-d							#10	USB device 
+-i							#11	Installtion typ
+-h							#12	Help
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -116,10 +117,11 @@ func_add_ftp				#4
 func_add_wget				#5
 func_add_rsync				#6
 func_check_iso				#7
-func_auto_add_custom_files	#8
-func_auto_usb_device		#9
-func_main_menu				#10
-func_help_info				#11
+func_check_oem				#8
+func_auto_add_custom_files	#9
+func_auto_usb_device		#10
+func_main_menu				#11
+func_help_info				#12
 )
 
 array_auto_help_text=(		#	The help text 
@@ -131,6 +133,7 @@ array_auto_help_text=(		#	The help text
 "	Downloading wget and rsync from vm-help.com."
 "	Downloading rsync from vm-help.com."
 "		The name of the iso file you are going to use -iso=vmware.iso"
+"		Set the name of the oem file you like to use --oem=oem.tgz"
 "		If you have more files in the custom-esx folder."
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
 "		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
@@ -217,7 +220,7 @@ function func_auto_loop(){								#	Noninteractiv loop
 
 }
 
-function func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates folders and check for inetd
+function func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates folders
 
 auto_flag=1
 
