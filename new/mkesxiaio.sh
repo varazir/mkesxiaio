@@ -453,17 +453,18 @@ function func_check_iso() {							#	Check if there is more then one iso file and
 			array_check=(ISO "*.iso")
 			func_check "${array_check[@]:0}"
 			esxi_iso_file="$file_to_use"
-			esx_custom=${esx_custom}${esxi}_
+			custom_name=${custom_name}${esxi_version}_
 		else
-			if [[ -z $1 ]]								#	If you are using the auto function and haven't set -iso it till stop the script
+			if [[ $1 ]]								#	If you are using the auto function and haven't set -iso it till stop the script
 				then
-					func_text_red "You have to set type of installtion -iso=Vmware...iso"
+					func_text_green "$1"
+					esxi_iso_file="$1"
+					custom_name=${custom_name}${esxi_version}_
+				else
+					func_text_red "You have to set the iso file to use -iso=Vmware...iso"
 					echo
 					sleep 3
 					exit
-				else
-					esxi_iso_file="$1"
-					esx_custom=${esx_custom}${esxi}_
 			fi
 	fi
 
