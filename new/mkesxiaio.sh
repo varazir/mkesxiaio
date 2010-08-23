@@ -39,6 +39,7 @@ esx-5 											#4	Mount point for the dd file
 esx-build										#5	The work directory
 esx-usb											#6	Mount point for the USB drive
 esx-ftp											#7	Where the proftpd.zip will be extracted
+esx-download									#8	Where I download all files needed during the script
 )
 
 array_pkg_install=( 							#	Pkg's that is needed for this script (Array)
@@ -92,29 +93,31 @@ array_version=(				#	Versions
 )
 
 array_auto_flag=(
--i							#0	Installtion typ
---ssh						#1	If you like to enable ONLY SSH
---sftp						#2	If you like to enable ONLY sftp
---ftp						#3	If you like to enable ONLY ftp
--e							#4	If you like downloading wget and rsync from vm-help.com
+-a							#0	Need to be there to run the script non interactiv
+--ssh						#1	If you like to enable SSH
+--sftp						#2	If you like to download and enable sftp
+--ftp						#3	If you like to download and enable ftp
+--wget						#4	If you like downloading wget from vm-help.com
+--rsync						#4	If you like downloading rsync from vm-help.com
 -c							#5	If you have more files in the custom-esx directory
 -v							#6	Version you are going to make
 -d							#7	USB device 
--a							#8	Need to be there to run the script non interactiv
+-i							#8	Installtion typ
 -h							#9	Help
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
-func_auto_install_type		#0
-func_auto_add_ssh			#1
-func_auto_add_sftp			#2
-func_auto_add_ftp			#3
-func_auto_add_extra			#4
-func_auto_add_custom_files	#5
-func_auto_version			#6
-func_auto_usb_install		#7
-func_auto_set_flag			#8
-func_help_info				#9
+func_auto_set_flag			#0
+func_add_ssh				#1
+func_add_sftp				#2
+func_add_ftp				#3
+func_add_wget				#4
+func_add_rsync				#5
+func_auto_add_custom_files	#6
+func_version				#7
+func_auto_usb_install		#8
+func_auto_install_type		#9
+func_help_info				#10
 )
 
 array_auto_help_text=(		#	The help text 
@@ -212,39 +215,39 @@ echo "auto"
 
 }
 
-function func_auto_add_ssh(){ 
+function func_add_ssh(){ 
 
 echo "SSH"
 
 }
 
-function func_auto_add_sftp(){ 
+function func_add_sftp(){ 
 
 echo "sFTP"
 
 }
 
-function func_auto_add_ftp(){ 
+function func_add_ftp(){ 
 
 echo "FTP"
 
 }
 
-function func_auto_add_extra(){ 
+function func_add_wget(){ 
 
-echo "extra"
+echo "wget"
+
+}
+
+function func_add_rsync(){ 
+
+echo "rsync"
 
 }
 
 function func_auto_add_custom_files(){ 
 
 echo "custom"
-
-}
-
-function func_auto_version(){ 
-
-echo $1
 
 }
 
@@ -403,15 +406,9 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	
 	if [[ "$esxi_version" == "4.1" ]]
 		then
-			cd $install_path
-			wget -r -q http://mkesxiaio.googlecode.com/svn/new/inetd.conf 2>>/dev/null
-			cp $install_path/mkesxiaio.googlecode.com/svn/new/inetd.conf $install_path/
-			rm -r $install_path/mkesxiaio.googlecode.com
+			func_download http://mkesxiaio.googlecode.com/svn/new/inetd.conf inetd.conf $install_path
 		else
-			cd $install_path
-			wget -r -q http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf 2>>/dev/null
-			cp $install_path/mkesxiaio.googlecode.com/svn/trunk/inetd.conf $install_path/
-			rm -r $install_path/mkesxiaio.googlecode.com
+			func_download http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf inetd.conf $install_path
 	fi
 	
 	local array_check
@@ -421,23 +418,14 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	esxi_inetd_file="$file_to_use"
 }
 
-function func_menu_extra() {							#	Extra ssh/sftp/ftp menu
+function func_download() {								#	Used to down load files
+
+cd $install_path/${array_work_dir[8]}
+
+${array_pkg_install[2]} -q $1 2>>/dev/null
+
+mv $2 $3
 	
-	clear 							#	Clear the screen.
-	
-	local menu
-	
-	if [[ -z $auto_flag ]]
-		then
-			for index in ${!array_extra_menu[@]}
-				do
-					func_text_green "	%s\n" "${array_extra_menu[index]}";
-				done
-			func_text_green " Choose what you like to do: "
-			read menu
-		else
-			menu=$1
-	fi 
 }
 
 function func_version(){								#	Version ?
@@ -717,11 +705,11 @@ function func_check_dir() {							#	Checks the dir given
 
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
+func_apt-get											#	Checks if apt-get is installed 
+func_pkg_inst											#	Install the pkg's needed
+func_create_folders										#	Cre
 func_auto_loop "$@"										#	To make the script nonintractiv
 func_version											#	To check with version to use.
 func_check_iso											#	Check if you have any ISO file in the same folder as this script 
-func_apt-get											#	Checks if apt-get is installed 
-func_pkg_inst											#	Install the pkg's needed
-func_create_folders
 func_main_menu
 func_clean												#	Deletes work folders if there is any
