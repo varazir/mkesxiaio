@@ -428,7 +428,7 @@ cd $install_path/${array_work_dir[8]}
 	
 	func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
 	
-	if [[ $esx_auto || "$4" == "y"]]
+	if [[ "$esx_auto" || "$4" == "y"]]
 		then
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			mv $2 $3
