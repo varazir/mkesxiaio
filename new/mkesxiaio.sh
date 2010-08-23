@@ -240,21 +240,25 @@ fi
 
 function func_add_sftp(){ 								#	Adds sftp support
 
-echo "sFTP"
+func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
+
+func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" $install_path/ $1
+
+${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
 
 }
 
 function func_add_ftp(){ 								#	Adds FTP suuport
 
-	func_check_dir $ipath/${array_work_dir[3]}/sbin										#	Check if there is all ready a sbin folder
-	func_check_dir $ipath/${array_work_dir[3]}/etc											#	Check if there is all ready a etc folder
+	func_check_dir $ipath/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
+	func_check_dir $ipath/${array_work_dir[3]}/etc		#	Check if there is all ready a etc folder
 
 	func_text_green "Downloading ProFtpd to $ipath/${array_work_dir[7]}"
-	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $ipath/${array_work_dir[7]} y
+	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $ipath/${array_work_dir[7]} $1
 	
 	cd $ipath/${array_work_dir[7]}
 	
-	${esx_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
+	${array_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
 	func_text_done
 	
 	cd $ipath/${array_work_dir[7]}/proftpd
@@ -286,6 +290,8 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 		then
 			func_edit $ipath/$1/etc/proftpd.conf
 	fi
+	
+	custom_name=${custom_name}ftp_
 
 }
 
@@ -828,7 +834,7 @@ function func_add_service(){
 	case $menu in
 		
 		"Y" | "y" | * )
-		func_add_ssh $1
+		func_add_ssh
 		func_add_wget $1
 		func_add_rsync $1
 		func_add_sftp $1
@@ -843,6 +849,14 @@ function func_add_service(){
 		;;
 	esac
 
+}
+
+function func_edit_file() {			#	Change a files 
+	
+	func_text_green "Replacing $1 with $2 in $3"
+	${array_pkg_install[4]} -s $3 <<< ",s/$1/$2/g"$'\nw'
+	func_text_done
+	sleep 1
 }
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
