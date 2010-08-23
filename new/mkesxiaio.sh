@@ -823,7 +823,7 @@ function func_add_service(){
 	
 	case $menu in
 		
-		"Y" | "y" )
+		"Y" | "y" | * )
 		func_add_ssh $1
 		func_add_wget $1
 		func_add_rsync $1
@@ -835,13 +835,6 @@ function func_add_service(){
 		func_add_wget 
 		func_add_rsync 
 		func_add_sftp 
-		;;
-		
-		*)
-		func_text_red "	That's not a valid option"
-		sleep 1
-		clear 					#	Clear the screen.
-		func_add_service		#	Loop the menu
 		;;
 	esac
 
