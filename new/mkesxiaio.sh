@@ -584,7 +584,7 @@ function func_version(){								#	Version ?
 			func_text_red "That's not a valid option"
 			sleep 1
 			clear 					#	Clear the screen.
-			esxi_versionsion		#	Loop the menu
+			func_version		#	Loop the menu
 		;;
 	esac
 }
@@ -858,7 +858,7 @@ if [[ -z $auto_flag ]]
 		func_create_folders								#	Create folders 
 fi
 
-esxi_versionsion											#	To check with version to use.
+func_version											#	To check with version to use.
 func_check_iso											#	Check if you have any ISO file in the same folder as this script 
 func_main_menu
 func_clean												#	Deletes work folders if there is any
