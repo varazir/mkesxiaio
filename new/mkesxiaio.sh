@@ -179,9 +179,10 @@ function func_help_info() {							#	The help menu
 	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO --ssh"
 	echo
 	echo
+	func_clean											#	Deletes work folders if there is any
 	exit
 	
-	func_clean											#	Deletes work folders if there is any
+	
 
 }
 
