@@ -180,6 +180,9 @@ function func_help_info() {							#	The help menu
 	echo
 	echo
 	exit
+	
+	func_clean											#	Deletes work folders if there is any
+
 }
 
 function func_auto_flag() {							#	To grep the flags used when running the script noninteractiv 
@@ -464,13 +467,12 @@ cd $install_path/${array_work_dir[8]}
 
 	local download
 	
-	func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
-	
 	if [[ "$esx_auto" || "$4" == "y" ]]
 		then
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			mv $2 $3
 		else
+			func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
 			read download
 	fi
 	
@@ -501,7 +503,7 @@ function func_version(){								#	Version ?
 	
 	if [[ -z $esx_auto ]]
 		then
-			func_text_green  "  Which version of ESXi are you going to do ?"
+			func_text_green  "  For which version of ESXi are you going to create a custom image ?"
 			echo
 			for index in ${!array_version[@]}
 				do
