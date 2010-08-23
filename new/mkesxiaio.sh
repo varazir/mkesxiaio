@@ -831,29 +831,31 @@ function func_check_dir() {							#	Checks the dir given
 
 function func_add_service(){
 
-	local menu
+	if [[ -z $auto_flag ]]
+		then
+			local menu
 
-	func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or seperate[n] ? \e[00m [Y/n]"
-	read menu
-	
-	case $menu in
-		
-		"Y" | "y" | * )
-		func_add_ssh
-		func_add_wget $1
-		func_add_rsync $1
-		func_add_sftp $1
-		func_add_ftp $1
-		;;
-		
-		"N" | "n" )
-		func_add_ssh 
-		func_add_wget 
-		func_add_rsync 
-		func_add_sftp 
-		;;
-	esac
-
+			func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or seperate[n] ? \e[00m [Y/n]"
+			read menu
+			
+			case $menu in
+				
+				"Y" | "y" | * )
+				func_add_ssh
+				func_add_wget $1
+				func_add_rsync $1
+				func_add_sftp $1
+				func_add_ftp $1
+				;;
+				
+				"N" | "n" )
+				func_add_ssh 
+				func_add_wget 
+				func_add_rsync 
+				func_add_sftp 
+				;;
+			esac
+	fi
 }
 
 function func_edit_file() {			#	Change a files 
