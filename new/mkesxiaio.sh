@@ -217,7 +217,7 @@ function func_auto_loop(){								#	Noninteractiv loop
 
 }
 
-function func_auto_set_flag(){ 
+function func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates folders and check for inetd
 
 auto_flag=1
 
@@ -228,19 +228,23 @@ func_check_inetd								#	Check and download the correct inetd.conf file
 
 }
 
-function func_add_ssh(){ 
+function func_add_ssh(){ 								#	Adds ssh support for 3.5 and 4.0 
 
-echo "SSH"
+if [[ $esxi_version =! "4.1" ]]
+	then
+		func_edit_file "^#ssh" "ssh" $install_path/inetd.conf
+		custom_name=${custom_name}ssh_
+fi
 
 }
 
-function func_add_sftp(){ 
+function func_add_sftp(){ 								#	Adds sftp support
 
 echo "sFTP"
 
 }
 
-function func_add_ftp(){ 
+function func_add_ftp(){ 								#	Adds FTP suuport
 
 	func_check_dir $ipath/${array_work_dir[3]}/sbin										#	Check if there is all ready a sbin folder
 	func_check_dir $ipath/${array_work_dir[3]}/etc											#	Check if there is all ready a etc folder
@@ -285,13 +289,13 @@ function func_add_ftp(){
 
 }
 
-function func_add_wget(){ 
+function func_add_wget(){ 								#	Downloads wget from vm-help.com
 
 echo "wget"
 
 }
 
-function func_add_rsync(){ 
+function func_add_rsync(){ 							#	Downloads rsync from vm-help.com 
 
 echo "rsync"
 
@@ -489,9 +493,9 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	
 	if [[ "$esxi_version" == "4.1" ]]
 		then
-			func_download http://mkesxiaio.googlecode.com/svn/new/inetd.conf inetd.conf $install_path y
+			func_download "http://mkesxiaio.googlecode.com/svn/new/inetd.conf" "inetd.conf" "$install_path/" "y"
 		else
-			func_download http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf inetd.conf $install_path y
+			func_download "http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf" "inetd.conf" "$install_path/" "y"
 	fi
 	
 	local array_check
@@ -828,6 +832,7 @@ function func_add_service(){
 		func_add_wget $1
 		func_add_rsync $1
 		func_add_sftp $1
+		func_add_ftp $1
 		;;
 		
 		"N" | "n" )
