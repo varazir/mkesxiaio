@@ -211,7 +211,9 @@ function func_auto_loop(){								#	Noninteractiv loop
 
 function func_auto_set_flag(){ 
 
-echo "auto"
+auto_flag=1
+
+func_check_inetd
 
 }
 
@@ -406,9 +408,9 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	
 	if [[ "$esxi_version" == "4.1" ]]
 		then
-			func_download http://mkesxiaio.googlecode.com/svn/new/inetd.conf inetd.conf $install_path
+			func_download http://mkesxiaio.googlecode.com/svn/new/inetd.conf inetd.conf $install_path y
 		else
-			func_download http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf inetd.conf $install_path
+			func_download http://mkesxiaio.googlecode.com/svn/trunk/inetd.conf inetd.conf $install_path y
 	fi
 	
 	local array_check
@@ -418,13 +420,39 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	esxi_inetd_file="$file_to_use"
 }
 
-function func_download() {								#	Used to down load files
+function func_download() {								#	Used to download files, URL, file , dest , Auto 
 
 cd $install_path/${array_work_dir[8]}
 
-${array_pkg_install[2]} -q $1 2>>/dev/null
+	local download
+	
+	func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
+	
+	if [[ $esx_auto || "$4" == "y"]]
+		then
+			${array_pkg_install[2]} -q $1 2>>/dev/null
+			mv $2 $3
+		else
+			read download
+	fi
+	
+	case $download in
+		
+		"Y" | "y" )
+		${array_pkg_install[2]} -q $1 2>>/dev/null
+		mv $2 $3
+		;;
+		
+		"N" | "n" )
+		#			esxi_green "Continue without downloading the file $1"
+		;;
+		
+		*)
+		${array_pkg_install[2]} -q $1 2>>/dev/null
+		mv $2 $3
+		;;
+	esac
 
-mv $2 $3
 	
 }
 
