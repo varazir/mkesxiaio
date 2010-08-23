@@ -98,12 +98,13 @@ array_auto_flag=(
 --sftp						#2	If you like to download and enable sftp
 --ftp						#3	If you like to download and enable ftp
 --wget						#4	If you like downloading wget from vm-help.com
---rsync						#4	If you like downloading rsync from vm-help.com
--c							#5	If you have more files in the custom-esx directory
--v							#6	Version you are going to make
--d							#7	USB device 
--i							#8	Installtion typ
--h							#9	Help
+--rsync						#5	If you like downloading rsync from vm-help.com
+--iso						#6	Need to be set when runing the script non interactiv
+-c							#7	If you have more files in the custom-esx directory
+-v							#8	Version you are going to make
+-d							#9	USB device 
+-i							#10	Installtion typ
+-h							#11	Help
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -113,23 +114,26 @@ func_add_sftp				#2
 func_add_ftp				#3
 func_add_wget				#4
 func_add_rsync				#5
-func_auto_add_custom_files	#6
-func_version				#7
-func_auto_usb_install		#8
-func_auto_install_type		#9
-func_help_info				#10
+func_check_iso				#6
+func_auto_add_custom_files	#7
+func_version				#8
+func_auto_usb_device		#9
+func_main_menu				#10
+func_help_info				#11
 )
 
 array_auto_help_text=(		#	The help text 
-"		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=UDB"
+"		Need to be there to run the script non interactiv"
 "		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
 "	If you like to enable SFTP, You can read more here http://thebsdbox.co.uk/?p=224"
 "		If you like to enable FTP, downloaded from http://www.vm-help.com"
-"		Downloading wget and rsync from vm-help.com."
+"	Downloading wget and rsync from vm-help.com."
+"	Downloading rsync from vm-help.com."
+"	The name of the iso file you are going to use -iso=vmware.iso"
 "		If you have more files in the custom-esx folder."
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
-"		Need to be there to run the script non interactiv"
+"		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
 )
 
@@ -213,7 +217,10 @@ function func_auto_set_flag(){
 
 auto_flag=1
 
-func_check_inetd
+func_apt-get									#	Checks if apt-get is installed 
+func_pkg_inst									#	Install the pkg's needed
+func_create_folders								#	Create folders 
+func_check_inetd								#	Check and download the correct inetd.conf file
 
 }
 
@@ -253,7 +260,7 @@ echo "custom"
 
 }
 
-function func_auto_usb_install(){ 
+function func_auto_usb_device(){ 
 
 echo $1
 
@@ -384,14 +391,28 @@ function func_check_menu() {							#	Checking for files menu
 	clear
 }
 
-function func_check_iso() {							#	Check if there is more then one iso file $esx_iso_file 
+function func_check_iso() {							#	Check if there is more then one iso file and sets the file to be used as $esx_iso_file 
 	
 	local array_check
 	
-	array_check=(ISO "*.iso")
-	func_check "${array_check[@]:0}"
-	esxi_iso_file="$file_to_use"
-	esx_custom=${esx_custom}${esxi}_
+	if [[ -z $auto_flag ]]
+		then	
+			array_check=(ISO "*.iso")
+			func_check "${array_check[@]:0}"
+			esxi_iso_file="$file_to_use"
+			esx_custom=${esx_custom}${esxi}_
+		else
+			if [[ -z $1 ]]								#	If you are using the auto function and haven't set -iso it till stop the script
+				then
+					func_text_red "You have to set type of installtion -iso=Vmware...iso"
+					echo
+					sleep 3
+					exit
+				else
+					esxi_iso_file="$1"
+					esx_custom=${esx_custom}${esxi}_
+			fi
+	fi
 
 }
 
@@ -399,9 +420,26 @@ function func_check_oem() {							#	Check if there is more then one oem $esx_oem
 	
 	local array_check
 	
-	array_check=("OEM" "*oem*.*")
-	func_check "${array_check[@]:0}"
-	esxi_oem_file="$file_to_use"
+	if [[ -z $auto_flag ]]
+			then	
+				array_check=("OEM" "*oem*.*")
+				func_check "${array_check[@]:0}"
+				esxi_oem_file="$file_to_use"
+			else
+				if [[ -z $1 ]]							#	If you are using the auto function and haven't set -iso it till stop the script
+					then
+						func_text_red "You have to set type of installtion -iso=Vmware...iso"
+						echo
+						sleep 3
+						exit
+					else
+						esxi_oem_file="$1"
+				fi
+	fi
+	
+	
+	
+	
 }
 
 function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_file
@@ -733,10 +771,15 @@ function func_check_dir() {							#	Checks the dir given
 
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
-func_apt-get											#	Checks if apt-get is installed 
-func_pkg_inst											#	Install the pkg's needed
-func_create_folders										#	Cre
 func_auto_loop "$@"										#	To make the script nonintractiv
+
+if [[ -z $auto_flag ]]
+	then
+		func_apt-get									#	Checks if apt-get is installed 
+		func_pkg_inst									#	Install the pkg's needed
+		func_create_folders								#	Create folders 
+fi
+
 func_version											#	To check with version to use.
 func_check_iso											#	Check if you have any ISO file in the same folder as this script 
 func_main_menu
