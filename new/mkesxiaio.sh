@@ -129,7 +129,7 @@ array_auto_help_text=(		#	The help text
 "		If you like to enable FTP, downloaded from http://www.vm-help.com"
 "	Downloading wget and rsync from vm-help.com."
 "	Downloading rsync from vm-help.com."
-"	The name of the iso file you are going to use -iso=vmware.iso"
+"		The name of the iso file you are going to use -iso=vmware.iso"
 "		If you have more files in the custom-esx folder."
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
@@ -466,7 +466,7 @@ cd $install_path/${array_work_dir[8]}
 	
 	func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
 	
-	if (( "$esx_auto" || "$4" == "y"))
+	if [[ "$esx_auto" || "$4" == "y" ]]
 		then
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			mv $2 $3
@@ -549,8 +549,9 @@ function func_main_menu(){ 							#	Main menu function
 	
 	clear 												# 	Clear the screen.
 	
-	if [[ $first_time == 0 ]]; then
-		array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
+	if [[ $first_time == 0 ]]
+		then
+			array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
 	fi
 	
 	local menu
@@ -576,21 +577,21 @@ function func_main_menu(){ 							#	Main menu function
 	fi 
 	case "$menu" in
 		1 | ISO | iso )
-			install_inst_type="iso"	#	Setting the installation type to ISO
-			func_check_oem			#	Check witch OEM file to use
-			func_add_ssh_ftp		#	Adds SSH or FTP or both to the inetd.conf and copy it into the oem file
-			func_file_name			#	Set's the file/folder name
-			func_check_old			#	Check if there is any iso/dd/folder created with this custom files
-			func_dd_start			#	Extract the DD file
-			func_dd_end				#	Uncompress the dd and mount it. Uncompress environ.tgz copy inetd.conf. 
-									#	Copy the OEM file and unmount, Compress the dd file and rebuild the install.tgz copy the OEM file
-			func_iso_finish			#	Making the ISO file
-			func_clean				#	Cleaning up folders
+			install_inst_type="iso"				#	Setting the installation type to ISO
+			func_check_oem $esxi_oem_file		#	Check witch OEM file to use
+			func_add_service					#	Adds SSH or FTP or both to the inetd.conf and copy it into the oem file
+			func_file_name						#	Set's the file/folder name
+			func_check_old						#	Check if there is any iso/dd/folder created with this custom files
+			func_dd_start						#	Extract the DD file
+			func_dd_end							#	Uncompress the dd and mount it. Uncompress environ.tgz copy inetd.conf. 
+												#	Copy the OEM file and unmount, Compress the dd file and rebuild the install.tgz copy the OEM file
+			func_iso_finish						#	Making the ISO file
+			func_clean							#	Cleaning up folders
 		;;
 
 		2 | USB | usb )
 			install_inst_type="usb"	#	Setting the installation type FOLDER
-			func_check_oem
+			func_check_oem $esxi_oem_file
 			func_copy_cd
 			func_add_ssh_ftp
 			func_file_name
@@ -603,7 +604,7 @@ function func_main_menu(){ 							#	Main menu function
 
 		3 | DD | dd )
 			inatall_type="dd"		#	Setting the installation type to DD
-			func_check_oem
+			func_check_oem  $esxi_oem_file
 			func_copy_cd
 			func_add_ssh_ftp
 			func_file_name
