@@ -224,7 +224,6 @@ auto_flag=1
 func_apt-get									#	Checks if apt-get is installed 
 func_pkg_inst									#	Install the pkg's needed
 func_create_folders								#	Create folders 
-func_check_inetd								#	Check and download the correct inetd.conf file
 
 }
 
@@ -598,6 +597,9 @@ function func_version(){								#	Version ?
 			func_version		#	Loop the menu
 		;;
 	esac
+	
+	func_check_inetd									#	Check and download the correct inetd.conf file
+	
 }
 
 function func_main_menu(){ 							#	Main menu function 
