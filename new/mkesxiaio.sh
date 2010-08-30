@@ -725,6 +725,11 @@ function func_checkRoot() {							#	To check if the script is run as a superuser
 
 function func_clean(){									#	Cleans up after the script 
 
+	local clean_cd
+	local clean_5
+	local esx_usb
+	local rm_dirs
+
 	clean_cd=$(mount | awk -v mfold="${array_work_dir[0]}" '$0 ~ mfold {print $3}')
 
 	if [ -n "$clean_cd" ]																		#	Checking if there is anything mounted to esx-cd
