@@ -224,7 +224,7 @@ function func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates
 
 auto_flag=1
 
-func_apt-get									#	Checks if apt-get is installed 
+func_install_cmd									#	Checks if apt-get is installed 
 func_pkg_inst									#	Install the pkg's needed
 func_create_folders								#	Create folders 
 
@@ -352,9 +352,7 @@ echo $1
 
 }
 
-function func_apt-get(){								#	Check if apt-get is there and if not asks for a new install bin
-
-local ibin
+function func_install_cmd(){							#	Check if apt-get/yum is there and if not asks for a new install bin
 
 echo
 echo
@@ -367,10 +365,19 @@ if hash apt-get 2>/dev/null
 		echo
 		sleep 2
 	else
-		func_text_red "\n	Standard command is $install_cmd, \n	apt-get can't be found on your system \n	Please specify the install command for your system\n"
-		func_text_green "	Type whole command similar to the command above \n	"
-		read ibin
-		install_cmd="$ibin" 
+		if hash yum 2>/dev/null
+			then
+				func_text_green "	apt-get is already installed"
+				install_cmd="yum -y -q install"
+				echo
+				sleep 2
+			else
+				local ibin
+				func_text_red "\n	Standard command is $install_cmd, \n	apt-get can't be found on your system \n	Please specify the install command for your system\n"
+				func_text_green "	Type whole command similar to the command above \n	"
+				read ibin
+				install_cmd="$ibin" 
+		fi
 fi
 }
 
@@ -859,7 +866,7 @@ function func_check_dir() {							#	Checks the dir given
 	fi
 }
 
-function func_add_service(){
+function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,sftp and ssh
 
 	local loop=$1
 
@@ -914,7 +921,7 @@ func_auto_loop "$@"										#	To make the script nonintractiv
 
 if [[ -z $auto_flag ]]
 	then
-		func_apt-get									#	Checks if apt-get is installed 
+		func_install_cmd									#	Checks if apt-get is installed 
 		func_pkg_inst									#	Install the pkg's needed
 		func_create_folders								#	Create folders 
 fi
