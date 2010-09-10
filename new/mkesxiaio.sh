@@ -232,10 +232,35 @@ func_create_folders								#	Create folders
 
 function func_add_ssh(){ 								#	Adds ssh support for 3.5 and 4.0 
 
-if [[ "$esxi_version" != "4.1" ]]
+if [[ "$1" != "y" ]]
 	then
-		func_edit_file "^#ssh" "ssh" $install_path/inetd.conf
-		custom_name=${custom_name}ssh_
+		local menu
+		
+		func_text_green "Do you like to add ssh? \e[00m [Y/n]"
+		read meny
+		
+		case $menu in 
+		
+		"Y" | "y" | "" )
+			
+		if [[ "$esxi_version" != "4.1" ]]
+			then
+				func_edit_file "^#ssh" "ssh" $install_path/inetd.conf
+				custom_name=${custom_name}ssh_
+		fi
+		;;
+		"N" | "n" | * )
+		;;
+		esac
+		
+	else
+		
+		if [[ "$esxi_version" != "4.1" ]]
+			then
+				func_edit_file "^#ssh" "ssh" $install_path/inetd.conf
+				custom_name=${custom_name}ssh_
+		fi
+		
 fi
 
 }
@@ -836,8 +861,11 @@ function func_check_dir() {							#	Checks the dir given
 
 function func_add_service(){
 
+	local loop=$1
+
 	if [[ -z $auto_flag ]]
 		then
+			
 			local menu
 
 			func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or seperate[n] ? \e[00m [Y/n]"
@@ -845,7 +873,7 @@ function func_add_service(){
 			
 			case $menu in
 				
-				"Y" | "y" | * )
+				"Y" | "y" | "" )
 				func_add_ssh
 				func_add_wget $1
 				func_add_rsync $1
@@ -859,11 +887,20 @@ function func_add_service(){
 				func_add_rsync 
 				func_add_sftp 
 				;;
+				
+				* )
+				func_text_red "	That's not a valid option"
+				first_time=1
+				sleep 1
+				clear 					#	Clear the screen.
+				func_add_service $loop	#	Loop the menu
+				;;
+				
 			esac
 	fi
 }
 
-function func_edit_file() {			#	Change a files 
+function func_edit_file() {							#	Change a files 
 	
 	func_text_green "Replacing $1 with $2 in $3"
 	${array_pkg_install[4]} -s $3 <<< ",s/$1/$2/g"$'\nw'
