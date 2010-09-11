@@ -570,7 +570,7 @@ cd $install_path/${array_work_dir[8]}
 	
 	case $download in
 		
-		"Y" | "y" )
+		"Y" | "y" | "" )
 		${array_pkg_install[2]} -q $1 2>>/dev/null
 		mv $2 $3
 		;;
