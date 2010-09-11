@@ -277,49 +277,57 @@ ${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/$
 
 function func_add_ftp(){ 								#	Adds FTP suuport
 
-	func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
-	func_check_dir $install_path/${array_work_dir[3]}/etc		#	Check if there is all ready a etc folder
-
-	func_text_green "Downloading ProFtpd to $install_path/${array_work_dir[7]}"
+	if [[ $1 == "y" ]]
+		then 
+			func_text_green "Downloading ProFtpd to $install_path/${array_work_dir[7]}"
+	fi
+	
 	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $install_path/${array_work_dir[7]} $1
 	
-	cd $install_path/${array_work_dir[7]}
-	
-	${array_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
-	func_text_done
-	
-	cd $install_path/${array_work_dir[7]}/proftpd
-	
-	if [[ ! -e $install_path/${array_work_dir[3]}/etc/proftpd.conf ]]
+	if [[ $install_path/${array_work_dir[7]}/proftpd.zip ]]
 		then
-			func_text_green "Copy the proftpd.conf to $install_path/${array_work_dir[3]}/etc"
-			cp proftpd.conf $install_path/${array_work_dir[3]}/etc
+			
+			func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
+			func_check_dir $install_path/${array_work_dir[3]}/etc		#	Check if there is all ready a etc folder
+
+			cd $install_path/${array_work_dir[7]}
+			
+			${array_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
 			func_text_done
+			
+			cd $install_path/${array_work_dir[7]}/proftpd
+			
+			if [[ ! -e $install_path/${array_work_dir[3]}/etc/proftpd.conf ]]
+				then
+					func_text_green "Copy the proftpd.conf to $install_path/${array_work_dir[3]}/etc"
+					cp proftpd.conf $install_path/${array_work_dir[3]}/etc
+					func_text_done
+			fi
+			
+			func_text_green "Copy the proftpd to $install_path/${array_work_dir[3]}/sbin"
+			cp proftpd $install_path/${array_work_dir[3]}/sbin
+			func_text_done
+			func_text_green "Copy the tcpd to $install_path/${array_work_dir[3]}/sbin"
+			cp tcpd $install_path/${array_work_dir[3]}/sbin
+			func_text_done
+
+			if [[ "$esxi_version" == "3.5" ]]
+				then
+					func_edit_file "^#ftp" "ftp" $install_path/$1/etc/inetd.conf
+					func_edit_file "in.ftpd" "proftpd" $install_path/$1/etc/inetd.conf 
+				else
+					echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $install_path/$1/etc/inetd.conf
+					echo "" >> $install_path/$1/etc/inetd.conf
+
+			fi
+			if [[ -z $auto_flag ]]
+				then
+					func_edit $install_path/$1/etc/proftpd.conf
+			fi
+			
+			custom_name=${custom_name}ftp_
 	fi
 	
-	func_text_green "Copy the proftpd to $install_path/${array_work_dir[3]}/sbin"
-	cp proftpd $install_path/${array_work_dir[3]}/sbin
-	func_text_done
-	func_text_green "Copy the tcpd to $install_path/${array_work_dir[3]}/sbin"
-	cp tcpd $install_path/${array_work_dir[3]}/sbin
-	func_text_done
-
-	if [[ "$esxi_version" == "3.5" ]]
-		then
-			func_edit_file "^#ftp" "ftp" $install_path/$1/etc/inetd.conf
-			func_edit_file "in.ftpd" "proftpd" $install_path/$1/etc/inetd.conf 
-		else
-			echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $install_path/$1/etc/inetd.conf
-			echo "" >> $install_path/$1/etc/inetd.conf
-
-	fi
-	if [[ -z $auto_flag ]]
-		then
-			func_edit $install_path/$1/etc/proftpd.conf
-	fi
-	
-	custom_name=${custom_name}ftp_
-
 }
 
 function func_add_wget(){ 								#	Downloads wget from vm-help.com
