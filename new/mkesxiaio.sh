@@ -269,7 +269,7 @@ function func_add_sftp(){ 								#	Adds sftp support
 
 func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
 
-func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" "$install_path/" $1
+func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" "$install_path/" "$1" "sftp_"
 
 	if [[ $install_path/sftp-server.tar.gz ]]
 		then
@@ -332,7 +332,7 @@ function func_add_wget(){ 								#	Downloads wget from vm-help.com
 
 func_check_dir $ipath/${esx_folders[3]}/sbin
 
-func_download http://www.vm-help.com/esx/esx3i/Enable_FTP/wget wget $ipath/${esx_folders[3]}/sbin $1
+func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/wget" "wget" "$ipath/${esx_folders[3]}/sbin" "$1" "wget_"
 
 }
 
@@ -340,8 +340,7 @@ function func_add_rsync(){ 							#	Downloads rsync from vm-help.com
 
 func_check_dir $ipath/${esx_folders[3]}/sbin
 
-func_download http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync rsync $ipath/${esx_folders[3]}/sbin $1
-
+func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync" "rsync" "$ipath/${esx_folders[3]}/sbin" "$1" "rsync_"
 
 }
 
@@ -556,7 +555,7 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	esxi_inetd_file="$file_to_use"
 }
 
-function func_download() {								#	Used to download files, URL, file , dest , Auto 
+function func_download() {								#	Used to download files, URL, file , dest , Auto , what to add to the final name
 
 cd $install_path/${array_work_dir[8]}
 
@@ -566,6 +565,7 @@ cd $install_path/${array_work_dir[8]}
 		then
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			mv $2 $3
+			custom_name=${custom_name}$5
 		else
 			func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
 			read download
@@ -577,6 +577,7 @@ cd $install_path/${array_work_dir[8]}
 		func_text_green "Downloading $2 to $3"
 		${array_pkg_install[2]} -q $1 2>>/dev/null
 		mv $2 $3
+		custom_name=${custom_name}$5
 		;;
 		
 		"N" | "n" )
@@ -587,6 +588,7 @@ cd $install_path/${array_work_dir[8]}
 		func_text_green "Downloading $2 to $3"
 		${array_pkg_install[2]} -q $1 2>>/dev/null
 		mv $2 $3
+		custom_name=${custom_name}$5
 		;;
 	esac
 
