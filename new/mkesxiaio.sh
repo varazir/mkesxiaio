@@ -269,20 +269,18 @@ function func_add_sftp(){ 								#	Adds sftp support
 
 func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
 
-func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" $install_path/ $1
+func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" "$install_path/" $1
 
-${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
+	if [[ $install_path/sftp-server.tar.gz ]]
+		then
+			${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
+	fi
 
 }
 
 function func_add_ftp(){ 								#	Adds FTP suuport
 
-	if [[ $1 == "y" ]]
-		then 
-			func_text_green "Downloading ProFtpd to $install_path/${array_work_dir[7]}"
-	fi
-	
-	func_download http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip proftpd.zip $install_path/${array_work_dir[7]} $1
+	func_download "http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip" "proftpd.zip" "$install_path/${array_work_dir[7]}" $1
 	
 	if [[ $install_path/${array_work_dir[7]}/proftpd.zip ]]
 		then
@@ -332,13 +330,18 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 
 function func_add_wget(){ 								#	Downloads wget from vm-help.com
 
-echo "wget"
+func_check_dir $ipath/${esx_folders[3]}/sbin
+
+func_download http://www.vm-help.com/esx/esx3i/Enable_FTP/wget wget $ipath/${esx_folders[3]}/sbin $1
 
 }
 
 function func_add_rsync(){ 							#	Downloads rsync from vm-help.com 
 
-echo "rsync"
+func_check_dir $ipath/${esx_folders[3]}/sbin
+
+func_download http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync rsync $ipath/${esx_folders[3]}/sbin $1
+
 
 }
 
@@ -350,7 +353,7 @@ echo "custom"
 
 function func_auto_usb_device(){ 
 
-echo $1
+
 
 }
 
@@ -571,6 +574,7 @@ cd $install_path/${array_work_dir[8]}
 	case $download in
 		
 		"Y" | "y" | "" )
+		func_text_green "Downloading $2 to $3"
 		${array_pkg_install[2]} -q $1 2>>/dev/null
 		mv $2 $3
 		;;
@@ -580,6 +584,7 @@ cd $install_path/${array_work_dir[8]}
 		;;
 		
 		*)
+		func_text_green "Downloading $2 to $3"
 		${array_pkg_install[2]} -q $1 2>>/dev/null
 		mv $2 $3
 		;;
@@ -929,7 +934,7 @@ func_auto_loop "$@"										#	To make the script nonintractiv
 
 if [[ -z $auto_flag ]]
 	then
-		func_install_cmd									#	Checks if apt-get is installed 
+		func_install_cmd								#	Checks if apt-get is installed 
 		func_pkg_inst									#	Install the pkg's needed
 		func_create_folders								#	Create folders 
 fi
