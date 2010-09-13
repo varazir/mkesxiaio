@@ -894,7 +894,7 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 			case $menu in
 				
 				"Y" | "y" | "" )
-				func_add_ssh
+				func_add_ssh $1
 				func_add_wget $1
 				func_add_rsync $1
 				func_add_sftp $1
@@ -917,6 +917,7 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 				;;
 				
 			esac
+		else
 	fi
 }
 
@@ -926,6 +927,10 @@ function func_edit_file() {							#	Change a files
 	${array_pkg_install[4]} -s $3 <<< ",s/$1/$2/g"$'\nw'
 	func_text_done
 	sleep 1
+}
+
+function func_file_name(){								#	Sets the name on the file / folder $esx_finish
+	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_type"
 }
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
