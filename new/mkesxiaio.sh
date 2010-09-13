@@ -330,17 +330,17 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 
 function func_add_wget(){ 								#	Downloads wget from vm-help.com
 
-func_check_dir $ipath/${esx_folders[3]}/sbin
+func_check_dir $install_path/${array_work_dir[3]}/sbin
 
-func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/wget" "wget" "$ipath/${esx_folders[3]}/sbin" "$1" "wget_"
+func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/wget" "wget" "$install_path/${array_work_dir[3]}/sbin" "$1" "wget_"
 
 }
 
 function func_add_rsync(){ 							#	Downloads rsync from vm-help.com 
 
-func_check_dir $ipath/${esx_folders[3]}/sbin
+func_check_dir $install_path/${array_work_dir[3]}/sbin
 
-func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync" "rsync" "$ipath/${esx_folders[3]}/sbin" "$1" "rsync_"
+func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync" "rsync" "$install_path/${array_work_dir[3]}/sbin" "$1" "rsync_"
 
 }
 
@@ -934,6 +934,74 @@ function func_edit_file() {							#	Change a files
 function func_file_name(){								#	Sets the name on the file / folder $esx_finish
 	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_type"
 }
+
+
+function func_check_old() {			#	Checking for old custom files/folders
+
+	cd $install_path
+
+	if [[ -d $install_path/$save_dir ]]														#	Check if there is all ready a save folder
+		then
+			cd $install_path/$save_dir
+			local check_old_file="$esxi_finish"
+				if [[ -e $check_old_file ]]
+					then
+						clear 						#	Clear the screen.
+						if [[ -z $esx_auto ]]
+							then
+								echo
+								func_text_red " You have all ready made a custom file/folder \n \n $check_old_file"
+								echo
+								echo
+								func_text_red " Do you like to delete that file/folder\n and continue the script or (u)se it again  ?\e[00m [u/y/N] "
+								read key
+							else
+								key="Y"
+						fi
+						
+						case "$key" in
+						"Y" | "y" )
+							rm -R $check_old_file		#	Deleting the old file
+							cd $install_path
+							clear 						#	Clear the screen.
+							;;
+						"N" | "n" | '' )
+							echo
+							func_text_red " OK good luck with the one you have"
+							echo
+							func_text_red " You can find the files at \n $install_path/$save_dir"
+							echo
+							echo
+							sleep 3
+							clear 					#	Clear the screen.
+							func_clean
+							exit 0
+							;;
+						"U" | "u" )
+							if [[ $esx_inst_type == usb ]]
+								then
+									func_usb_finish
+									func_clean
+									exit
+								else
+									if [[ $esx_inst_type == dd ]]
+										then
+											func_dd_finish
+											func_clean
+											exit
+										else
+											func_check_old
+									fi
+							fi
+						;;
+						* )
+							esxi_check_old
+							;;
+						esac
+			fi
+	fi
+}
+
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_clean
