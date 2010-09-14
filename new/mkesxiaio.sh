@@ -428,7 +428,7 @@ func_edit_file $0 "all_installed=0" "all_installed=1"
 
 function func_check() {								#	Checking for files $file_to_use
 	
-	cd $install_path
+
 	shopt -s nullglob
 	local array_check_files=($2)							#	Creating a array if there is more then one file
 		
@@ -499,7 +499,8 @@ function func_check_iso() {							#	Check if there is more then one iso file and
 	local array_check
 	
 	if [[ -z $auto_flag ]]
-		then	
+		then
+			cd $install_path
 			array_check=(ISO "*.iso")
 			func_check "${array_check[@]:0}"
 			esxi_iso_file="$file_to_use"
@@ -520,11 +521,14 @@ function func_check_iso() {							#	Check if there is more then one iso file and
 }
 
 function func_check_oem() {							#	Check if there is more then one oem $esx_oem_file 
+
+
 	
 	local array_check
 	
 	if [[ -z $auto_flag ]]
-			then	
+			then
+				cd $install_path
 				array_check=("OEM" "*oem*.*")
 				func_check "${array_check[@]:0}"
 				esxi_oem_file="$file_to_use"
@@ -546,6 +550,8 @@ function func_check_oem() {							#	Check if there is more then one oem $esx_oem
 }
 
 function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_file
+
+
 	
 	if [[ "$esxi_version" == "4.1" ]]
 		then
@@ -555,7 +561,7 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 	fi
 	
 	local array_check
-	
+	cd $install_path
 	array_check=(inetd.conf "*inetd*")
 	func_check "${array_check[@]:0}"
 	esxi_inetd_file="$file_to_use"
@@ -563,13 +569,13 @@ function func_check_inetd() {							#	Check if there is a inetd file $esx_inetd_
 
 function func_download() {								#	Used to download files, URL, file , dest , Auto , what to add to the final name
 
-cd $install_path/${array_work_dir[8]}
+	cd $install_path/${array_work_dir[8]}
 
 	local download
 	
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
-
+			func_text_green "Downloading $2 to $3"
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 
 			func_check $2 $2 "please check your internet connection and try again"
@@ -580,30 +586,30 @@ cd $install_path/${array_work_dir[8]}
 		else
 			func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
 			read download
-	fi
-	
-	case $download in
-		
-		"Y" | "y" | "" )
-		func_text_green "Downloading $2 to $3"
-		${array_pkg_install[2]} -q $1 2>>/dev/null
-		mv $2 $3
-		custom_name=${custom_name}$5
-		;;
-		
-		"N" | "n" )
-		#			func_text_green "Continue without downloading the file $1"
-		;;
-		
-		*)
-		func_text_green "Downloading $2 to $3"
-		${array_pkg_install[2]} -q $1 2>>/dev/null
-		mv $2 $3
-		custom_name=${custom_name}$5
-		;;
-	esac
 
 	
+			case $download in
+				
+				"Y" | "y" | "" )
+				func_text_green "Downloading $2 to $3"
+				${array_pkg_install[2]} -q $1 2>>/dev/null
+				mv $2 $3
+				custom_name=${custom_name}$5
+				;;
+				
+				"N" | "n" )
+				#			func_text_green "Continue without downloading the file $1"
+				;;
+				
+				*)
+				func_text_green "Downloading $2 to $3"
+				${array_pkg_install[2]} -q $1 2>>/dev/null
+				mv $2 $3
+				custom_name=${custom_name}$5
+				;;
+			esac
+
+	fi
 }
 
 function func_version(){								#	Version ?
