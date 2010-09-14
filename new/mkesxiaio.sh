@@ -1168,7 +1168,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 					${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
 					func_text_done
 				else
-					if [[ $esxi_version "4.0" ]]
+					if [[ $esxi_version == "4.0" ]]
 						then
 							func_text_green "Rebuilding image.tgz"
 							cd $install_path/${array_work_dir[1]}/
