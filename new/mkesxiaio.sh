@@ -424,7 +424,7 @@ if [[ "$all_installed" == 0 ]]
 		clear
 fi
 
-func_edit_file $0 "all_installed=0" "all_installed=1"
+func_edit_file "all_installed=0" "all_installed=1" $0
 
 }
 
@@ -496,7 +496,7 @@ function func_check_menu() {							#	Checking for files menu
 	clear
 }
 
-function func_check_iso() {							#	Check if there is more then one iso file and sets the file to be used as $esx_iso_file 
+function func_check_iso() {							#	Check if there is more then one iso file and sets the file to be used as $esxi_iso_file 
 	
 	local array_check
 	
@@ -578,7 +578,6 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
 			func_text_green "Downloading $2 to $3"
-			echo
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			func_text_done
 			func_check $2 $2 "please check your internet connection and try again"
@@ -707,6 +706,7 @@ function func_main_menu(){ 							#	Main menu function
 		1 | ISO | iso )
 			install_inst_type="iso"				#	Setting the installation type to ISO
 			func_check_oem $esxi_oem_file		#	Check witch OEM file to use, if the script run in non interactiv $esxi_oem_file allready set
+			func_copy_iso						#	Copy the iso to the hdd
 			func_add_service y					#	Adds SSH, FTP, wget, rsync, sftp
 			func_file_name						#	Set's the file/folder name
 			func_check_old						#	Check if there is any iso/dd/folder created with this custom files
@@ -720,7 +720,7 @@ function func_main_menu(){ 							#	Main menu function
 		2 | USB | usb )
 			install_inst_type="usb"	#	Setting the installation type FOLDER
 			func_check_oem $esxi_oem_file
-			func_copy_cd
+			func_copy_iso
 			func_add_service y
 			func_file_name
 			func_check_old
@@ -733,7 +733,7 @@ function func_main_menu(){ 							#	Main menu function
 		3 | DD | dd )
 			install_inst_type="dd"		#	Setting the installation type to DD
 			func_check_oem  $esxi_oem_file
-			func_copy_cd
+			func_copy_iso
 			func_add_service y
 			func_file_name
 			func_check_old
@@ -747,7 +747,7 @@ function func_main_menu(){ 							#	Main menu function
 		
 			install_inst_type="usb"	#	Setting the installation type to fold
 			custom_name="$esxi_iso_file"
-			func_copy_cd
+			func_copy_iso
 			func_file_name
 			func_check_old
 			func_usb_finish
@@ -758,7 +758,7 @@ function func_main_menu(){ 							#	Main menu function
 		
 			install_inst_type="dd"		#	Setting the installation type to DD
 			esxi_custom="$esxi_iso_file"
-			func_copy_cd
+			func_copy_iso
 			func_file_name
 			func_check_old
 			func_dd_start
@@ -1211,7 +1211,46 @@ function func_iso_finish(){							#	Making the ISO file
 
 }
 
+function func_copy_iso() {				#	Copy the files on the ISO to the build folder
+	func_text_green "Mounting $install_path/$esxi_iso_file file to $install_path/${array_work_dir[0]}"
+	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]}								#	Mounting the ISO file to the esx-cd folder
+	func_text_done
 
+	esxi_check_files "esx-cd"
+	
+	func_text_green "Copy CD to $install_path/${array_work_dir[5]}"
+	cp -r -p $install_path/${array_work_dir[0]}/* $install_path/${array_work_dir[5]}							#	Copying files from ISO to the build folder keeping attributes
+	func_text_done
+
+	func_text_green "U mounting $install_path/${array_work_dir[0]}"
+	umount $install_path/${array_work_dir[0]}															#	U mounting the ISO
+	func_text_done
+	
+	func_check_files "esx-build"
+	
+	if [[ "$custom_name" != "$esxi_iso_file" ]]
+		then
+			if [[ $esxi_version == "3.5" ]]
+				then 
+					if [[ -e  "$install_path/${array_work_dir[5]}/oem.tgz" ]]
+						then 
+							func_text_green	"Removes the oem file from ${array_work_dir[5]}"
+							rm $install_path/${array_work_dir[5]}/oem.tgz
+							func_text_done
+						else
+							func_text_red "There is no oem.tgz file please check if you have a ESXi 3.5 iso file"
+							sleep 5
+							
+							clear
+							exit
+					fi
+				else
+					esxi_check_inetd
+			fi
+	fi
+	sleep 2
+	clear
+}
 
 
 
