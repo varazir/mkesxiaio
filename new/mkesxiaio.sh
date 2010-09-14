@@ -377,7 +377,7 @@ if hash apt-get 2>/dev/null
 	else
 		if hash yum 2>/dev/null
 			then
-				func_text_green "	apt-get is already installed"
+				func_text_green "	yum is already installed"
 				install_cmd="yum -y -q install"
 				echo
 				sleep 2
@@ -564,8 +564,15 @@ cd $install_path/${array_work_dir[8]}
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
 			${array_pkg_install[2]} -q $1 2>>/dev/null
-			mv $2 $3
-			custom_name=${custom_name}$5
+			func_check $2 $2
+				then 
+					mv $2 $3
+					custom_name=${custom_name}$5
+				else
+					func_text_red "Failed to download $2, please check your internet connection and try again"
+					exit 1
+			fi
+			
 		else
 			func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
 			read download
@@ -934,8 +941,7 @@ function func_file_name(){								#	Sets the name on the file / folder $esx_fini
 	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_type"
 }
 
-
-function func_check_old() {			#	Checking for old custom files/folders
+function func_check_old() {							#	Checking for old custom files/folders
 
 if [[ -z $auto_flag ]]
 	then
