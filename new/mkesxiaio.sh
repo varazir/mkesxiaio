@@ -271,7 +271,7 @@ func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all r
 
 func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" "$install_path/" "$1" "sftp_"
 
-	if [[ $install_path/sftp-server.tar.gz ]]
+	if [[ -e $install_path/sftp-server.tar.gz ]]
 		then
 			${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
 	fi
@@ -282,7 +282,7 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 
 	func_download "http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip" "proftpd.zip" "$install_path/${array_work_dir[7]}" $1
 	
-	if [[ $install_path/${array_work_dir[7]}/proftpd.zip ]]
+	if [[ -e $install_path/${array_work_dir[7]}/proftpd.zip ]]
 		then
 			
 			func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
@@ -311,16 +311,16 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 
 			if [[ "$esxi_version" == "3.5" ]]
 				then
-					func_edit_file "^#ftp" "ftp" $install_path/$1/etc/inetd.conf
-					func_edit_file "in.ftpd" "proftpd" $install_path/$1/etc/inetd.conf 
+					func_edit_file "^#ftp" "ftp" $install_path/inetd.conf
+					func_edit_file "in.ftpd" "proftpd" $install_path/$1/inetd.conf 
 				else
-					echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $install_path/$1/etc/inetd.conf
-					echo "" >> $install_path/$1/etc/inetd.conf
+					echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $install_path/inetd.conf
+					echo "" >> $install_path/inetd.conf
 
 			fi
 			if [[ -z $auto_flag ]]
 				then
-					func_edit $install_path/$1/etc/proftpd.conf
+					func_edit $install_path/proftpd.conf
 			fi
 			
 			custom_name=${custom_name}ftp_
@@ -578,7 +578,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 			func_text_green "Downloading $2 to $3"
 			echo
 			${array_pkg_install[2]} -q $1 2>>/dev/null
-
+			func_text_done
 			func_check $2 $2 "please check your internet connection and try again"
 
 			mv $2 $3
@@ -594,17 +594,19 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				"Y" | "y" | "" )
 				func_text_green "Downloading $2 to $3"
 				${array_pkg_install[2]} -q $1 2>>/dev/null
+				func_text_done
+				func_check $2 $2 "please check your internet connection and try again"
 				mv $2 $3
 				custom_name=${custom_name}$5
 				;;
 				
 				"N" | "n" )
-				#			func_text_green "Continue without downloading the file $1"
 				;;
 				
 				*)
 				func_text_green "Downloading $2 to $3"
 				${array_pkg_install[2]} -q $1 2>>/dev/null
+				func_check $2 $2 "please check your internet connection and try again"
 				mv $2 $3
 				custom_name=${custom_name}$5
 				;;
