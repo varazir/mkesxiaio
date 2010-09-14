@@ -150,6 +150,8 @@ install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to i
 usb_check_cmd="udevadm"
 first_time=0
 all_installed=0
+esx_bytes="bytes"
+
 #	Extra options 
 
 shopt -s dotglob										#	To make * include hidden directorys/files 
@@ -729,7 +731,7 @@ function func_main_menu(){ 							#	Main menu function
 		;;
 
 		3 | DD | dd )
-			inatall_type="dd"		#	Setting the installation type to DD
+			install_inst_type="dd"		#	Setting the installation type to DD
 			func_check_oem  $esxi_oem_file
 			func_copy_cd
 			func_add_service y
@@ -743,7 +745,7 @@ function func_main_menu(){ 							#	Main menu function
 
 		4)	#	USB installation without changes
 		
-			install_type="usb"	#	Setting the installation type to fold
+			install_inst_type="usb"	#	Setting the installation type to fold
 			custom_name="$esxi_iso_file"
 			func_copy_cd
 			func_file_name
@@ -754,7 +756,7 @@ function func_main_menu(){ 							#	Main menu function
 		
 		5)	#	Boot from USB without changes
 		
-			install_type="dd"		#	Setting the installation type to DD
+			install_inst_type="dd"		#	Setting the installation type to DD
 			esxi_custom="$esxi_iso_file"
 			func_copy_cd
 			func_file_name
@@ -1023,6 +1025,194 @@ if [[ -z $auto_flag ]]
 		fi
 fi
 }
+
+function func_edit(){									#	Edit files
+	
+	local loop=$1
+	local edfile
+	
+
+	if [[ -z $auto_flag ]]
+		then
+			func_text_green "Do you like to edit $1 \e[00m [y/N] "
+			read edfile
+		else
+			edfile="N"
+	fi
+	
+	case $edfile in
+		
+		"Y" | "y" )
+			if hash ${array_pkg_install[5]} 2>>/dev/null
+				then 
+					${array_pkg_install[5]} $1
+					clear
+				else
+					func_text_red \n \n ${array_pkg_install[5]} is not installed \n Please install it manually  and rerun the script
+			fi
+		;;
+		
+		"N" | "n" | '' )
+		;;
+		
+		*)
+			clear
+			func_edit $loop
+		;;
+	esac
+}
+
+function func_dd_start(){								#	Extracting DD file
+
+	if [[ $esxi_version == "3.5" ]]
+		then
+			func_text_green "Untar install.tgz to $install_path/${array_work_dir[1]}"
+			${array_pkg_install[6]} -xzf $install_path/${array_work_dir[5]}/install.tgz -C $install_path/${array_work_dir[1]}						#	Untaring the installation.tgz file to get the dd file
+			func_text_done
+			cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer/
+
+		else
+			if [[ $esxi_version == "4.0" ]]
+				then
+					func_text_green "Untar image.tgz to $install_path/${array_work_dir[1]}"
+					${array_pkg_install[6]} -xzf $install_path/${array_work_dir[5]}/image.tgz -C $install_path/${array_work_dir[1]}						#	Untaring the installation.tgz file to get the dd file
+					func_text_done
+					cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer/
+
+			fi
+	fi
+	
+	if [[ $esxi_version == "4.1" ]]
+		then 
+			cd $install_path/${array_work_dir[5]}/
+	fi
+	
+	dd_file=(*.bz2)
+
+	func_text_green "${array_pkg_install[8]} ${dd_file[0]} "
+	${array_pkg_install[8]} ${dd_file[0]}				#	Uncompressing the bz2 file
+	func_text_done
+
+	dd_file=(*dd)
+}
+
+function func_dd_end(){								#	Add the customized to the DD file and the build folder
+
+	if [[ $esxi_version == "4.1" ]]
+		then 
+			cd $install_path/${array_work_dir[5]}/
+		else
+			cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer
+	fi
+	
+	dd_file=(*dd)
+	
+	local sector
+	local number
+	
+	if hash fdisk 2>>/dev/null
+		then 
+			sector=$( fdisk -ul ${dd_file[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
+			if [[ -z $sector ]]
+				then
+					sector="512"
+			fi
+			number=$( fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
+
+		else 
+			find_fdisk=(find / -name fdisk)
+			sector=$( $find_fdisk -ul ${dd_file[0]} 2>>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
+			
+			if [[ -z $sector ]]
+				then
+					esx_sector="512"
+			fi
+	
+			number=$( $esx_fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
+	fi
+
+	func_text_green "Mounting $dd_file to $install_path/${array_work_dir[4]}"
+	mount -o loop,offset=$(($sector*$number)) $dd_file $install_path/${array_work_dir[4]}/								#	Mounting the 5th partition of the DD file to esx-5
+	func_text_done
+
+	func_text_green "Copy ${array_work_dir[5]}/oem.tgz to ${array_work_dir[4]}/oem.tgz"
+	cp $install_path/${array_work_dir[5]}/oem.tgz $install_path/${array_work_dir[4]}/oem.tgz								#	Copy the custom oem file to the mounted dd file
+	func_text_done
+
+	func_text_green "U mounting $install_path/${array_work_dir[4]}"
+	umount $install_path/${array_work_dir[4]}																					#	U mounting the dd file
+	func_text_done
+
+	if [[ $install_inst_type != dd ]]
+		then 
+			if [[ $esxi_version == "4.1" ]]
+				then
+					cd $install_path/${array_work_dir[5]}/
+					func_text_green "Bzip2 the $dd_file"
+					${array_pkg_install[7]} $dd_file															#	Compressing the dd file
+					func_text_done
+					dd_file=(*.bz2)
+					${array_pkg_install[9]} $dd_file > ${dd_file%.bz2}.md5
+					func_edit_file "$dd_file" "VMware-VMvisor-big-260247-x86_64.dd.bz2" ${dd_file%.bz2}.md5
+			else
+					cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer
+					func_text_green "Bzip2 the $dd_file"
+					${array_pkg_install[7]} $dd_file															#	Compressing the dd file
+					func_text_done
+			fi
+			
+			if [[ $esxi_version == "3.5" ]]
+				then
+					func_text_green "Rebuilding install.tgz"
+					cd $install_path/${array_work_dir[1]}/
+					${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
+					func_text_done
+				else
+					if [[ $esxi_version "4.0" ]]
+						then
+							func_text_green "Rebuilding image.tgz"
+							cd $install_path/${array_work_dir[1]}/
+							${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/image.tgz usr/		#	Rebuilding install.tgz
+							func_text_done
+					fi
+			fi
+
+			func_file_rights
+	fi 
+}
+
+function func_iso_finish(){							#	Making the ISO file
+
+	func_file_rights
+	
+	func_text_green "Creating $install_path/$save_dir/$esx_finish"								#	Creating the ISO file $install_path/save/esxi_custom_oem.iso
+	echo
+	cd $install_path/${array_work_dir[5]}
+	
+	if [[ $esxi_version == "4.0" ]]
+		then
+			sed -i 's/install.tgz/install.tgz --- oem.tgz/g' $install_path/${array_work_dir[5]}/isolinux.cfg
+		else
+			if [[ $esxi_version == "4.1" ]]
+				then
+					sed -i 's/install.vgz/install.vgz --- oem.tgz/g' $install_path/${array_work_dir[5]}/isolinux.cfg
+				
+			fi
+	fi	
+	
+	${array_pkg_install[0]} -o $install_path/$save_dir/$esx_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>>/dev/null
+	echo
+	echo
+	clear 												#	Clear the screen.
+	func_text_green " You can find the iso file at \n $install_path/$save_dir/$esx_finish"
+	echo
+	echo
+	sleep 3
+
+}
+
+
+
 
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
