@@ -876,7 +876,7 @@ function func_create_folders() {						#	Create folders
 			sleep 2
 			if [[ -n "$install_type" ]] 
 				then
-					set_file_rights
+					func_set_file_rights
 			fi
 		else											#	If there is folders it will delete them and start over
 			clear 										#	Clear the screen.
@@ -1177,13 +1177,13 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 					fi
 			fi
 
-			func_file_rights
+			func_set_file_rights
 	fi 
 }
 
 function func_iso_finish(){							#	Making the ISO file
 
-	func_file_rights
+	func_set_file_rights
 	
 	func_text_green "Creating $install_path/$save_dir/$esx_finish"								#	Creating the ISO file $install_path/save/esxi_custom_oem.iso
 	echo
@@ -1211,12 +1211,13 @@ function func_iso_finish(){							#	Making the ISO file
 
 }
 
-function func_copy_iso() {				#	Copy the files on the ISO to the build folder
+function func_copy_iso() {								#	Copy the files on the ISO to the build folder
+	
 	func_text_green "Mounting $install_path/$esxi_iso_file file to $install_path/${array_work_dir[0]}"
 	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]}								#	Mounting the ISO file to the esx-cd folder
 	func_text_done
 
-	esxi_check_files "esx-cd"
+	func_check_files "esx-cd"
 	
 	func_text_green "Copy CD to $install_path/${array_work_dir[5]}"
 	cp -r -p $install_path/${array_work_dir[0]}/* $install_path/${array_work_dir[5]}							#	Copying files from ISO to the build folder keeping attributes
@@ -1250,6 +1251,37 @@ function func_copy_iso() {				#	Copy the files on the ISO to the build folder
 	fi
 	sleep 2
 	clear
+}
+
+function func_set_file_rights(){						#	Change the ownership and permissions for files
+	
+	if [[ $esxi_version == "3.5" ]]
+		then 
+			func_text_green "Changing ownership and mod on install.tgz"
+			chown -R 201:201 $install_path/${array_work_dir[5]}/install.tgz 										#	Channing the ownership and mod for install.tgz
+			chmod 755 $install_path/${array_work_dir[5]}/install.tgz
+			func_text_done
+
+			func_text_green "Changing ownership on the files in the ${array_work_dir[5]} folder"				#	Channing the ownership and mod on the files in the build folder
+			
+			chown -R 201:201 $install_path/${array_work_dir[5]}/*
+			chmod 755 $install_path/${array_work_dir[5]}/oem.tgz
+			func_text_done
+	fi
+}
+
+function func_check_files(){							#	Check if the files is in the folder
+	
+	shopt -s nullglob
+	local i=($1/*)
+		if [ -z "$i" ]
+			then
+				func_text_red " There is no files in $install_path/$1 please check the dir/files"
+				echo
+				sleep 2
+				exit 1
+		fi
+	shopt -u nullglob;
 }
 
 
