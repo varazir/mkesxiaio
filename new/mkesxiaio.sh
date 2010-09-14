@@ -430,12 +430,12 @@ function func_check() {								#	Checking for files $file_to_use
 			then
 				clear 										#	Clear the screen.
 				echo
-				func_text_red "	No $1 file..  Exiting"
+				func_text_red "	No $1 file.. $3 Exiting"
 				echo
 				sleep 5
 				clear 										#	Clear the screen.
 				func_clean
-				exit 0
+				exit 1
 		fi
 	shopt -u nullglob
 	
@@ -563,15 +563,13 @@ cd $install_path/${array_work_dir[8]}
 	
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
+
 			${array_pkg_install[2]} -q $1 2>>/dev/null
-			func_check $2 $2
-				then 
-					mv $2 $3
-					custom_name=${custom_name}$5
-				else
-					func_text_red "Failed to download $2, please check your internet connection and try again"
-					exit 1
-			fi
+
+			func_check $2 $2 "please check your internet connection and try again"
+
+			mv $2 $3
+			custom_name=${custom_name}$5
 			
 		else
 			func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
