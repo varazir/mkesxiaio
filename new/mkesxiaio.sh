@@ -919,7 +919,6 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 				;;
 				
 			esac
-		else
 	fi
 }
 
