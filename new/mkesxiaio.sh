@@ -352,7 +352,7 @@ echo "custom"
 
 function func_auto_usb_device(){ 
 
-
+echo ""
 
 }
 
@@ -938,68 +938,72 @@ function func_file_name(){								#	Sets the name on the file / folder $esx_fini
 
 function func_check_old() {			#	Checking for old custom files/folders
 
-	cd $install_path
+if [[ -z $auto_flag ]]
+	then
 
-	if [[ -d $install_path/$save_dir ]]														#	Check if there is all ready a save folder
-		then
-			cd $install_path/$save_dir
-			local check_old_file="$esxi_finish"
-				if [[ -e $check_old_file ]]
-					then
-						clear 						#	Clear the screen.
-						if [[ -z $esx_auto ]]
-							then
-								echo
-								func_text_red " You have all ready made a custom file/folder \n \n $check_old_file"
-								echo
-								echo
-								func_text_red " Do you like to delete that file/folder\n and continue the script or (u)se it again  ?\e[00m [u/y/N] "
-								read key
-							else
-								key="Y"
-						fi
-						
-						case "$key" in
-						"Y" | "y" )
-							rm -R $check_old_file		#	Deleting the old file
-							cd $install_path
+		cd $install_path
+
+		if [[ -d $install_path/$save_dir ]]														#	Check if there is all ready a save folder
+			then
+				cd $install_path/$save_dir
+				local check_old_file="$esxi_finish"
+					if [[ -e $check_old_file ]]
+						then
 							clear 						#	Clear the screen.
-							;;
-						"N" | "n" | '' )
-							echo
-							func_text_red " OK good luck with the one you have"
-							echo
-							func_text_red " You can find the files at \n $install_path/$save_dir"
-							echo
-							echo
-							sleep 3
-							clear 					#	Clear the screen.
-							func_clean
-							exit 0
-							;;
-						"U" | "u" )
-							if [[ $esx_inst_type == usb ]]
+							if [[ -z $esx_auto ]]
 								then
-									func_usb_finish
-									func_clean
-									exit
+									echo
+									func_text_red " You have all ready made a custom file/folder \n \n $check_old_file"
+									echo
+									echo
+									func_text_red " Do you like to delete that file/folder\n and continue the script or (u)se it again  ?\e[00m [u/y/N] "
+									read key
 								else
-									if [[ $esx_inst_type == dd ]]
-										then
-											func_dd_finish
-											func_clean
-											exit
-										else
-											func_check_old
-									fi
+									key="Y"
 							fi
-						;;
-						* )
-							esxi_check_old
+							
+							case "$key" in
+							"Y" | "y" )
+								rm -R $check_old_file		#	Deleting the old file
+								cd $install_path
+								clear 						#	Clear the screen.
+								;;
+							"N" | "n" | '' )
+								echo
+								func_text_red " OK good luck with the one you have"
+								echo
+								func_text_red " You can find the files at \n $install_path/$save_dir"
+								echo
+								echo
+								sleep 3
+								clear 					#	Clear the screen.
+								func_clean
+								exit 0
+								;;
+							"U" | "u" )
+								if [[ "$esx_inst_type" == "usb" ]]
+									then
+										func_usb_finish
+										func_clean
+										exit
+									else
+										if [[ "$esx_inst_type" == "dd" ]]
+											then
+												func_dd_finish
+												func_clean
+												exit
+											else
+												func_check_old
+										fi
+								fi
 							;;
-						esac
-			fi
-	fi
+							* )
+								esxi_check_old
+								;;
+							esac
+				fi
+		fi
+fi
 }
 
 
