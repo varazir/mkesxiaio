@@ -149,7 +149,7 @@ custom_oem_dir="custom-esx"								#	Add files in custom-esx that is going to be
 install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to install 
 usb_check_cmd="udevadm"
 first_time=0
-
+all_installed=0
 #	Extra options 
 
 shopt -s dotglob										#	To make * include hidden directorys/files 
@@ -395,29 +395,35 @@ function func_pkg_inst(){								#	Loop to find binaries and installed them if n
 
 local pkgbin
 
-for pkgbin in ${array_pkg_install[*]}
-do	
-	if hash $pkgbin 2>>/dev/null
-		then 
-			func_text_green "	$pkgbin is already installed"
-			echo
-			sleep 2
-		else
-			$install_cmd $pkgbin 2>>/dev/null
-			if [ ! $? -eq 0 ]
-				then
+if [[ "$all_installed" == 0 ]]
+	then
+		for pkgbin in ${array_pkg_install[*]}
+		do	
+			if hash $pkgbin 2>>/dev/null
+				then 
+					func_text_green "	$pkgbin is already installed"
 					echo
-					func_text_red "	Script encountered an error during package installation.  \n	Check errors and retry"
+					sleep 2
+				else
+					$install_cmd $pkgbin 2>>/dev/null
+					if [ ! $? -eq 0 ]
+						then
+							echo
+							func_text_red "	Script encountered an error during package installation.  \n	Check errors and retry"
+							echo
+							exit 0
+					fi
+					func_text_green "	$pkgbin is now installed"
 					echo
-					exit 0
+					sleep 2
 			fi
-			func_text_green "	$pkgbin is now installed"
-			echo
-			sleep 2
-	fi
-done
-sleep 2
-clear
+		done
+		sleep 2
+		clear
+fi
+
+func_edit_file $0 "all_installed=0" "all_installed=1"
+
 }
 
 function func_check() {								#	Checking for files $file_to_use
