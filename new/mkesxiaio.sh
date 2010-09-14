@@ -576,6 +576,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
 			func_text_green "Downloading $2 to $3"
+			echo
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 
 			func_check $2 $2 "please check your internet connection and try again"
