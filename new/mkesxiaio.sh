@@ -107,7 +107,7 @@ array_auto_flag=(
 -i							#11	Installtion typ
 -h							#12	Help
 -q							#13	skipp install
--c							#14	Clean up folders
+-clean							#14	Clean up folders
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -544,7 +544,7 @@ function func_check_iso() {							#	Check if there is more then one iso file and
 
 }
 
-function func_check_oem() {							#	Check if there is more then one oem $esx_oem_file 
+function func_check_oem() {							#	Check if there is more then one oem $esxi_oem_file 
 
 
 	
@@ -568,8 +568,8 @@ function func_check_oem() {							#	Check if there is more then one oem $esx_oem
 				fi
 	fi
 	
-	func_text_green "Untar $esx_oem_file to $install_path/${array_work_dir[3]}"
-	${array_pkg_install[6]} -xzf $install_path/$esx_oem_file -C $install_path/${array_work_dir[3]}						#	Untaring the oem.tgz
+	func_text_green "Untar $esxi_oem_file to $install_path/${array_work_dir[3]}"
+	${array_pkg_install[6]} -xzf $install_path/$esxi_oem_file -C $install_path/${array_work_dir[3]}						#	Untaring the oem.tgz
 	func_text_done
 	
 	
