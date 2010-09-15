@@ -558,7 +558,9 @@ function func_check_oem() {							#	Check if there is more then one oem $esx_oem
 				fi
 	fi
 	
-	
+	func_text_green "Untar $esx_oem_file to $install_path/${array_work_dir[3]}"
+	${array_pkg_install[6]} -xzf $install_path/$esx_oem_file -C $install_path/${array_work_dir[3]}						#	Untaring the oem.tgz
+	func_text_done
 	
 	
 }
@@ -1148,9 +1150,9 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	
 	if [[ ! -e $install_path/${array_work_dir[3]}/etc/inetd.conf ]] ; 
 		then
-			esxi_green "Copy inetd.conf to $install_path/${array_work_dir[3]}/etc"
+			func_text_green "Copy inetd.conf to $install_path/${array_work_dir[3]}/etc"
 			cp -r -p $install_path/inetd.conf $install_path/${array_work_dir[3]}/etc/										#	Copying the custom SSH/FTP enabled inetd.conf file
-			esxi_done	
+			func_text_done	
 	fi
 	
 	if [[ -z $esx_auto ]]
@@ -1170,7 +1172,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	cd $install_path/${array_work_dir[3]}
 	${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/oem.tgz *													#	Rebuilding the oem.tgz file
 	cd $install_path/
-	esxi_done
+	func_text_done
 	sleep 3
 
 	func_text_green "Copy ${array_work_dir[5]}/oem.tgz to ${array_work_dir[4]}/oem.tgz"
