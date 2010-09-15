@@ -106,6 +106,7 @@ array_auto_flag=(
 -d							#10	USB device 
 -i							#11	Installtion typ
 -h							#12	Help
+-q							#13	skipp install
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -122,6 +123,7 @@ func_auto_add_custom_files	#9
 func_auto_usb_device		#10
 func_main_menu				#11
 func_help_info				#12
+func_skipp_install			#13
 )
 
 array_auto_help_text=(		#	The help text 
@@ -138,6 +140,7 @@ array_auto_help_text=(		#	The help text
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
 "		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
+"		Used to skipp the installstion"
 )
 
 #	Variables 
@@ -157,6 +160,12 @@ esx_bytes="bytes"
 shopt -s dotglob										#	To make * include hidden directorys/files 
 
 #	Functions
+
+function func_skipp_install() {
+
+all_installed=1
+
+}
 
 function func_text_done() {							#	The [Done] echo after every step
 	echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
@@ -271,11 +280,11 @@ function func_add_sftp(){ 								#	Adds sftp support
 
 func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
 
-func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" "$install_path/" "$1" "sftp_"
+func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar.gz" "sftp-server.tar.gz" "$install_path/${array_work_dir[7]}/" "$1" "sftp_"
 
-	if [[ -e $install_path/sftp-server.tar.gz ]]
+	if [[ -e $install_path/${array_work_dir[7]}/sftp-server.tar.gz ]]
 		then
-			${array_pkg_install[6]} -xzf $install_path/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
+			${array_pkg_install[6]} -xzf $install_path/${array_work_dir[7]}/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
 	fi
 
 }
@@ -314,7 +323,7 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 			if [[ "$esxi_version" == "3.5" ]]
 				then
 					func_edit_file "^#ftp" "ftp" $install_path/inetd.conf
-					func_edit_file "in.ftpd" "proftpd" $install_path/$1/inetd.conf 
+					func_edit_file "in.ftpd" "proftpd" $install_path/inetd.conf 
 				else
 					echo "ftp    stream  tcp     nowait  root    /usr/sbin/tcpd  proftpd" >> $install_path/inetd.conf
 					echo "" >> $install_path/inetd.conf
@@ -322,7 +331,7 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 			fi
 			if [[ -z $auto_flag ]]
 				then
-					func_edit $install_path/proftpd.conf
+					func_edit $install_path/${array_work_dir[3]}/etc/proftpd.conf
 			fi
 			
 			custom_name=${custom_name}ftp_
@@ -365,32 +374,35 @@ echo $1
 }
 
 function func_install_cmd(){							#	Check if apt-get/yum is there and if not asks for a new install bin
+	
+	if [[ "$all_installed" == 0 ]]
+		then
+			echo
+			echo
+			func_text_green "	Installing..."
+			echo
 
-echo
-echo
-func_text_green "	Installing..."
-echo
-
-if hash apt-get 2>/dev/null
-	then
-		func_text_green "	apt-get is already installed"
-		echo
-		sleep 2
-	else
-		if hash yum 2>/dev/null
-			then
-				func_text_green "	yum is already installed"
-				install_cmd="yum -y -q install"
-				echo
-				sleep 2
-			else
-				local ibin
-				func_text_red "\n	Standard command is $install_cmd, \n	apt-get can't be found on your system \n	Please specify the install command for your system\n"
-				func_text_green "	Type whole command similar to the command above \n	"
-				read ibin
-				install_cmd="$ibin" 
-		fi
-fi
+			if hash apt-get 2>/dev/null
+				then
+					func_text_green "	apt-get is already installed"
+					echo
+					sleep 2
+				else
+					if hash yum 2>/dev/null
+						then
+							func_text_green "	yum is already installed"
+							install_cmd="yum -y -q install"
+							echo
+							sleep 2
+						else
+							local ibin
+							func_text_red "\n	Standard command is $install_cmd, \n	apt-get can't be found on your system \n	Please specify the install command for your system\n"
+							func_text_green "	Type whole command similar to the command above \n	"
+							read ibin
+							install_cmd="$ibin" 
+					fi
+			fi
+	fi
 }
 
 function func_pkg_inst(){								#	Loop to find binaries and installed them if need be
@@ -424,7 +436,7 @@ if [[ "$all_installed" == 0 ]]
 		clear
 fi
 
-func_edit_file "all_installed=0" "all_installed=1" $0
+
 
 }
 
@@ -577,11 +589,10 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 	
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
-			func_text_green "Downloading $2 to $3"
+			func_text_green "Downloading $1 to $3"
 			${array_pkg_install[2]} -q $1 2>>/dev/null
 			func_text_done
 			func_check $2 $2 "please check your internet connection and try again"
-
 			mv $2 $3
 			custom_name=${custom_name}$5
 			
@@ -1134,6 +1145,33 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	func_text_green "Mounting $dd_file to $install_path/${array_work_dir[4]}"
 	mount -o loop,offset=$(($sector*$number)) $dd_file $install_path/${array_work_dir[4]}/								#	Mounting the 5th partition of the DD file to esx-5
 	func_text_done
+	
+	if [[ ! -e $install_path/${array_work_dir[3]}/etc/inetd.conf ]] ; 
+		then
+			esxi_green "Copy inetd.conf to $install_path/${array_work_dir[3]}/etc"
+			cp -r -p $install_path/inetd.conf $install_path/${array_work_dir[3]}/etc/										#	Copying the custom SSH/FTP enabled inetd.conf file
+			esxi_done	
+	fi
+	
+	if [[ -z $esx_auto ]]
+		then
+			func_edit $install_path/${array_work_dir[3]}/etc/inetd.conf
+	
+			if [[ $esxi_version == "4.0" ]]
+				then
+					func_edit $install_path/${array_work_dir[3]}/etc/vmware/pci.ids
+				else
+					func_edit $install_path/${array_work_dir[3]}/usr/share/hwdata/pci.ids
+			fi
+			func_edit $install_path/${array_work_dir[3]}/etc/vmware/simple.map
+	fi
+	
+	func_text_green "Rebuilding $install_path/${array_work_dir[5]}/oem.tgz using $install_path/${array_work_dir[3]}"
+	cd $install_path/${array_work_dir[3]}
+	${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/oem.tgz *													#	Rebuilding the oem.tgz file
+	cd $install_path/
+	esxi_done
+	sleep 3
 
 	func_text_green "Copy ${array_work_dir[5]}/oem.tgz to ${array_work_dir[4]}/oem.tgz"
 	cp $install_path/${array_work_dir[5]}/oem.tgz $install_path/${array_work_dir[4]}/oem.tgz								#	Copy the custom oem file to the mounted dd file
@@ -1149,7 +1187,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 				then
 					cd $install_path/${array_work_dir[5]}/
 					func_text_green "Bzip2 the $dd_file"
-					${array_pkg_install[7]} $dd_file															#	Compressing the dd file
+					${array_pkg_install[7]} $dd_file																			#	Compressing the dd file
 					func_text_done
 					dd_file=(*.bz2)
 					${array_pkg_install[9]} $dd_file > ${dd_file%.bz2}.md5
@@ -1157,7 +1195,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 			else
 					cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer
 					func_text_green "Bzip2 the $dd_file"
-					${array_pkg_install[7]} $dd_file															#	Compressing the dd file
+					${array_pkg_install[7]} $dd_file																			#	Compressing the dd file
 					func_text_done
 			fi
 			
@@ -1245,8 +1283,6 @@ function func_copy_iso() {								#	Copy the files on the ISO to the build folde
 							clear
 							exit
 					fi
-				else
-					esxi_check_inetd
 			fi
 	fi
 	sleep 2
