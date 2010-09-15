@@ -245,7 +245,7 @@ function func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates
 
 auto_flag=1
 
-func_install_cmd									#	Checks if apt-get is installed 
+func_install_cmd								#	Checks if apt-get is installed 
 func_pkg_inst									#	Install the pkg's needed
 func_create_folders								#	Create folders 
 
@@ -365,21 +365,15 @@ func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync" "rsync" "$inst
 
 }
 
-function func_auto_add_custom_files(){ 
+function func_add_custom_files(){ 						#	Add custom files from the custom-esx dir, 
 
-echo "custom"
-
-}
-
-function func_auto_usb_device(){ 
-
-echo ""
+cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 
 }
 
-function func_auto_install_type(){ 
+function func_auto_usb_device(){						#	$esxi_usb_install Sets the USB device that are going to be used in the script
 
-echo $1
+esxi_usb_install=$1
 
 }
 
