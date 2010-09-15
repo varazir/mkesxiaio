@@ -107,6 +107,7 @@ array_auto_flag=(
 -i							#11	Installtion typ
 -h							#12	Help
 -q							#13	skipp install
+-c							#14	Clean up folders
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -124,6 +125,7 @@ func_auto_usb_device		#10
 func_main_menu				#11
 func_help_info				#12
 func_skipp_install			#13
+func_auto_clean				#14
 )
 
 array_auto_help_text=(		#	The help text 
@@ -141,6 +143,7 @@ array_auto_help_text=(		#	The help text
 "		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
 "		Used to skipp the installstion"
+"		If you aborted the script and lik eto clean up the folders"
 )
 
 #	Variables 
@@ -164,6 +167,13 @@ shopt -s dotglob										#	To make * include hidden directorys/files
 function func_skipp_install() {
 
 all_installed=1
+
+}
+
+function func_auto_clean() {
+
+func_clean
+exit 0
 
 }
 
@@ -1321,8 +1331,6 @@ function func_check_files(){							#	Check if the files is in the folder
 		fi
 	shopt -u nullglob;
 }
-
-
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_clean
