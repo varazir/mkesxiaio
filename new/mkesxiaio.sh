@@ -891,7 +891,7 @@ function func_create_folders() {						#	Create folders
 			mkdir ${array_work_dir[*]}
 			func_text_done
 			sleep 2
-			if [[ -n "$install_type" ]] 
+			if [[ -n "$install_inst_type" ]] 
 				then
 					func_set_file_rights
 			fi
@@ -970,7 +970,9 @@ function func_edit_file() {							#	Change a files
 }
 
 function func_file_name(){								#	Sets the name on the file / folder $esx_finish
-	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_type"
+	
+	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_inst_type"
+	
 }
 
 function func_check_old() {							#	Checking for old custom files/folders
