@@ -149,7 +149,7 @@ array_auto_help_text=(		#	The help text
 #	Variables 
 
 install_path="$PWD"										#	Work path
-custom_name="VMware_func_custom_"						#	The name of the custom made file/directory
+custom_name="VMware_esxi_custom_"						#	The name of the custom made file/directory
 save_dir="save"											#	The directory where the custom file/directories  will be  saved
 custom_oem_dir="custom-esx"								#	Add files in custom-esx that is going to be in the oem.tgz file.
 install_cmd="apt-get -qq -y --force-yes install"		#	The command string used to install 
@@ -969,7 +969,7 @@ function func_edit_file() {							#	Change a files
 	sleep 1
 }
 
-function func_file_name(){								#	Sets the name on the file / folder $esx_finish
+function func_file_name(){								#	Sets the name on the file / folder $esxi_finish
 	
 	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_inst_type"
 	
@@ -1231,7 +1231,7 @@ function func_iso_finish(){							#	Making the ISO file
 
 	func_set_file_rights
 	
-	func_text_green "Creating $install_path/$save_dir/$esx_finish"								#	Creating the ISO file $install_path/save/esxi_custom_oem.iso
+	func_text_green "Creating $install_path/$save_dir/$esxi_finish"								#	Creating the ISO file $install_path/save/esxi_custom_oem.iso
 	echo
 	cd $install_path/${array_work_dir[5]}
 	
@@ -1246,11 +1246,11 @@ function func_iso_finish(){							#	Making the ISO file
 			fi
 	fi	
 	
-	${array_pkg_install[0]} -o $install_path/$save_dir/$esx_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>>/dev/null
+	${array_pkg_install[0]} -o $install_path/$save_dir/$esxi_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>>/dev/null
 	echo
 	echo
 	clear 												#	Clear the screen.
-	func_text_green " You can find the iso file at \n $install_path/$save_dir/$esx_finish"
+	func_text_green " You can find the iso file at \n $install_path/$save_dir/$esxi_finish"
 	echo
 	echo
 	sleep 3
