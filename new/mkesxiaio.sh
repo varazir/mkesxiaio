@@ -1247,8 +1247,7 @@ function func_iso_finish(){							#	Making the ISO file
 	fi	
 	
 	${array_pkg_install[0]} -o $install_path/$save_dir/$esxi_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>>/dev/null
-	echo
-	echo
+
 	clear 												#	Clear the screen.
 	func_text_green " You can find the iso file at \n $install_path/$save_dir/$esxi_finish"
 	echo
