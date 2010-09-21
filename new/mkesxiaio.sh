@@ -876,7 +876,7 @@ if [[ -z $auto_flag ]]
 					if [[ -e $check_old_file ]]
 						then
 							clear 						#	Clear the screen.
-							if [[ -z $esx_auto ]]
+							if [[ -z $auto_flag ]]
 								then
 									echo
 									func_text_red " You have all ready made a custom file/folder \n \n $check_old_file"
@@ -1232,7 +1232,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 			func_text_done	
 	fi
 	
-	if [[ -z $esx_auto ]]
+	if [[ -z $auto_flag ]]
 		then
 			func_edit $install_path/${array_work_dir[3]}/etc/inetd.conf
 	
@@ -1436,6 +1436,100 @@ function func_usb_use(){								#	Witch USB drive to use menu
 
 }
 
+function func_usb_finish(){							#	To confirm that the user really like to continue with the USB installation 	$usb_install
+										#	Moving the and renaming the USB installation folder
+	if [[ "$esx_custom" != "$esx_iso_file" ]]
+		then		
+			func_set_file_rights
+	fi
+
+	if [[ $esxi_version == "4.0" ]]
+		then
+			sed -i 's/install.tgz/install.tgz --- oem.tgz/g' $install_path/${array_work_dir[5]}/isolinux.cfg
+		else
+			if [[ $esxi_version == "4.1" ]]
+				then
+					sed -i 's/install.vgz/install.vgz --- oem.tgz/g' $install_path/${array_work_dir[5]}/isolinux.cfg
+				
+			fi
+	fi	
+	
+	func_move_files $install_path/${array_work_dir[5]}														#	Rename the build folder
+	
+	clear 		#	Clear the screen.
+	if [[ -z $auto_flag ]]
+		then
+			func_usb_use			#	Getting the usb device to use
+	fi
+	
+	clear 																										#	Clear the screen.
+	echo
+	func_text_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it.\n		OBS !!! You need 700 MB free on the USB"
+	echo
+	func_text_red "Using $usb_install"
+	echo
+	func_text_red "Do you really like to continue with this ?\e[00m [y/N] "
+	
+	local install
+	
+	if [[ -z $auto_flag ]]
+		then
+			read install
+		else
+			install="Y"
+	fi
+	
+	case $install in
+
+			"Y" | "y" )
+			
+			func_text_green "Making the USB bootable"
+			${array_pkg_install[1]} $usb_install																#	Using syslinux to make the USB bootable
+			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on								#	Add the boot flag to the USB 
+			func_text_done
+
+			func_text_green "Mounting the $usb_install to $install_path/${array_work_dir[6]}/ "
+			mount -o loop $usb_install $install_path/${array_work_dir[6]}												#	mounting the USB device
+			func_text_done
+
+			func_text_green "Copy the installation media to the mounted USB"
+			cp $install_path/$esx_save/$esx_finish/* $install_path/${array_work_dir[6]}/										#	Copying the files from the installation folder to the USB
+			func_text_done
+
+			func_text_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
+			mv $install_path/${array_work_dir[6]}/isolinux.cfg $install_path/${array_work_dir[6]}/SYSlinux.cfg						#	renaming the isolinux.cfg to SYSlinux.cfg
+			func_text_done
+
+			func_text_green "U mounting the USB drive"
+			umount $install_path/${array_work_dir[6]}/																		#	U mounting the usb drive
+			func_text_done
+			echo
+			func_text_green "Now your usb ready to install from \n just plug it into the system you like to install ESXi on"
+			echo
+			func_text_red usb_finish
+			echo
+			echo
+			sleep 2
+		;;
+
+			"N" | "n" | '' )																							#	If you like to move the files your self
+			
+			clear 																								#	Clear the screen.
+			echo
+			func_text_red "The files are in \n $install_path/$save_dir/$esxi_finish folder"
+			echo
+			sleep 3
+			clear 																								#	Clear the screen.
+		;;
+
+			* )
+		
+			func_usb_finish
+		;;
+
+	esac
+
+}
 
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
