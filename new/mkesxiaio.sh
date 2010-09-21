@@ -60,7 +60,7 @@ array_main_menu=(												#	Main menu (Array)
 ""																#1
 "   	Using"													#2	Iso file going to be used
 ""																#3
-"	1) ISO installation"										#4	To create a ISO file to burn on a CD for installation
+"	1) ISO installation"										#4http://www.facebook.com/profile.php?id=742391901	To create a ISO file to burn on a CD for installation
 "	2) USB installation"										#5	Creates custom made files that can be copied to a bootable USB drive for installation
 "	3) USB boot"												#6	Creates a custom DD file that can be written to a USB to boot and run ESXi
 "	4) USB installation without custom files"					#7	Copies the files from the ISO and make the USB bootable
@@ -157,7 +157,7 @@ usb_check_cmd="udevadm"
 first_time=0
 all_installed=0
 esx_bytes="bytes"
-
+usb_check_cmd="udevadm"
 #	Extra options 
 
 shopt -s dotglob										#	To make * include hidden directorys/files 
@@ -371,9 +371,9 @@ cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 
 }
 
-function func_auto_usb_device(){						#	$esxi_usb_install Sets the USB device that are going to be used in the script
+function func_auto_usb_device(){						#	$usb_install Sets the USB device that are going to be used in the script
 
-esxi_usb_install=$1
+usb_install=$1
 
 }
 
@@ -689,119 +689,6 @@ function func_version(){								#	Version ?
 	
 }
 
-function func_main_menu(){ 							#	Main menu function 
-	
-	clear 												# 	Clear the screen.
-	
-	if [[ $first_time == 0 ]]
-		then
-			array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
-	fi
-	
-	local menu
-	
-	if [[ -z $auto_flag ]]
-		then
-			for index in ${!array_main_menu[@]}
-				do
-					func_text_green "	%s\n" "${array_main_menu[index]}";	#	Creates the main menu 
-				done
-			func_text_green " Choose what you like to do: "
-			read menu
-		else
-			if [[ -z $1 ]]													#	If you are using the auto function and haven't set -i it till stop the script
-				then
-					func_text_red "You have to set type of installtion -i=ISO ..."
-					echo
-					sleep 3
-					exit
-				else
-					menu=$1
-			fi
-	fi 
-	case "$menu" in
-		1 | ISO | iso )
-			install_inst_type="iso"				#	Setting the installation type to ISO
-			func_check_oem $esxi_oem_file		#	Check witch OEM file to use, if the script run in non interactiv $esxi_oem_file allready set
-			func_copy_iso						#	Copy the iso to the hdd
-			func_add_service y					#	Adds SSH, FTP, wget, rsync, sftp
-			func_file_name						#	Set's the file/folder name
-			func_check_old						#	Check if there is any iso/dd/folder created with this custom files
-			func_dd_start						#	Extract the DD file
-			func_dd_end							#	Uncompress the dd and mount it. Uncompress environ.tgz copy inetd.conf. 
-												#	Copy the OEM file and unmount, Compress the dd file and rebuild the install.tgz copy the OEM file
-			func_iso_finish						#	Making the ISO file
-			func_clean							#	Cleaning up folders
-		;;
-
-		2 | USB | usb )
-			install_inst_type="usb"	#	Setting the installation type FOLDER
-			func_check_oem $esxi_oem_file
-			func_copy_iso
-			func_add_service y
-			func_file_name
-			func_check_old
-			func_dd_start
-			func_dd_end
-			func_usb_finish 		#	Moving/rename the esx-build folder to the save folder and copy the files to the USB drive
-			func_clean
-		;;
-
-		3 | DD | dd )
-			install_inst_type="dd"		#	Setting the installation type to DD
-			func_check_oem  $esxi_oem_file
-			func_copy_iso
-			func_add_service y
-			func_file_name
-			func_check_old
-			func_dd_start
-			func_dd_end
-			func_dd_finish			#	Rename dd file, move it to the save folder and write it to the USB drive
-			func_clean
-		;;
-
-		4)	#	USB installation without changes
-		
-			install_inst_type="usb"	#	Setting the installation type to fold
-			custom_name="$esxi_iso_file"
-			func_copy_iso
-			func_file_name
-			func_check_old
-			func_usb_finish
-			func_clean
-		;;
-		
-		5)	#	Boot from USB without changes
-		
-			install_inst_type="dd"		#	Setting the installation type to DD
-			esxi_custom="$esxi_iso_file"
-			func_copy_iso
-			func_file_name
-			func_check_old
-			func_dd_start
-			func_dd_finish
-			func_clean
-		;;
-		
-		6)
-			clear 					#	Clear the screen.
-			func_clean
-			exit 0
-		;;
-
-		*)
-			func_text_red "	That's not a valid option"
-			first_time=1
-			sleep 1
-			clear 					#	Clear the screen.
-			func_main_menu			#	Loop the menu
-		;;
-
-	esac
-
-
-}
-
 function func_checkRoot() {							#	To check if the script is run as a superuser
     if [ ! $( id -u ) -eq 0 ]
 		then
@@ -1081,6 +968,190 @@ function func_edit(){									#	Edit files
 	esac
 }
 
+function func_set_file_rights(){						#	Change the ownership and permissions for files
+	
+	if [[ $esxi_version == "3.5" ]]
+		then 
+			func_text_green "Changing ownership and mod on install.tgz"
+			chown -R 201:201 $install_path/${array_work_dir[5]}/install.tgz 										#	Channing the ownership and mod for install.tgz
+			chmod 755 $install_path/${array_work_dir[5]}/install.tgz
+			func_text_done
+
+			func_text_green "Changing ownership on the files in the ${array_work_dir[5]} folder"				#	Channing the ownership and mod on the files in the build folder
+			
+			chown -R 201:201 $install_path/${array_work_dir[5]}/*
+			chmod 755 $install_path/${array_work_dir[5]}/oem.tgz
+			func_text_done
+	fi
+}
+
+function func_check_files(){							#	Check if the files is in the folder
+	
+	shopt -s nullglob
+	local i=($1/*)
+		if [ -z "$i" ]
+			then
+				func_text_red " There is no files in $install_path/$1 please check the dir/files"
+				echo
+				sleep 2
+				exit 1
+		fi
+	shopt -u nullglob;
+}
+
+function func_main_menu(){ 							#	Main menu function 
+	
+	clear 												# 	Clear the screen.
+	
+	if [[ $first_time == 0 ]]
+		then
+			array_main_menu=("${array_main_menu[@]/   	Using/   	Using $esxi_iso_file}")
+	fi
+	
+	local menu
+	
+	if [[ -z $auto_flag ]]
+		then
+			for index in ${!array_main_menu[@]}
+				do
+					func_text_green "	%s\n" "${array_main_menu[index]}";	#	Creates the main menu 
+				done
+			func_text_green " Choose what you like to do: "
+			read menu
+		else
+			if [[ -z $1 ]]													#	If you are using the auto function and haven't set -i it till stop the script
+				then
+					func_text_red "You have to set type of installtion -i=ISO ..."
+					echo
+					sleep 3
+					exit
+				else
+					menu=$1
+			fi
+	fi 
+	case "$menu" in
+		1 | ISO | iso )
+			install_inst_type="iso"				#	Setting the installation type to ISO
+			func_check_oem $esxi_oem_file		#	Check witch OEM file to use, if the script run in non interactiv $esxi_oem_file allready set
+			func_copy_iso						#	Copy the iso to the hdd
+			func_add_service y					#	Adds SSH, FTP, wget, rsync, sftp
+			func_file_name						#	Set's the file/folder name
+			func_check_old						#	Check if there is any iso/dd/folder created with this custom files
+			func_dd_start						#	Extract the DD file
+			func_dd_end							#	Uncompress the dd and mount it. Uncompress environ.tgz copy inetd.conf. 
+												#	Copy the OEM file and unmount, Compress the dd file and rebuild the install.tgz copy the OEM file
+			func_iso_finish						#	Making the ISO file
+			func_clean							#	Cleaning up folders
+		;;
+
+		2 | USB | usb )
+			install_inst_type="usb"	#	Setting the installation type FOLDER
+			func_check_oem $esxi_oem_file
+			func_copy_iso
+			func_add_service y
+			func_file_name
+			func_check_old
+			func_dd_start
+			func_dd_end
+			func_usb_finish 		#	Moving/rename the esx-build folder to the save folder and copy the files to the USB drive
+			func_clean
+		;;
+
+		3 | DD | dd )
+			install_inst_type="dd"		#	Setting the installation type to DD
+			func_check_oem  $esxi_oem_file
+			func_copy_iso
+			func_add_service y
+			func_file_name
+			func_check_old
+			func_dd_start
+			func_dd_end
+			func_dd_finish			#	Rename dd file, move it to the save folder and write it to the USB drive
+			func_clean
+		;;
+
+		4)	#	USB installation without changes
+		
+			install_inst_type="usb"	#	Setting the installation type to fold
+			custom_name="$esxi_iso_file"
+			func_copy_iso
+			func_file_name
+			func_check_old
+			func_usb_finish
+			func_clean
+		;;
+		
+		5)	#	Boot from USB without changes
+		
+			install_inst_type="dd"		#	Setting the installation type to DD
+			esxi_custom="$esxi_iso_file"
+			func_copy_iso
+			func_file_name
+			func_check_old
+			func_dd_start
+			func_dd_finish
+			func_clean
+		;;
+		
+		6)
+			clear 					#	Clear the screen.
+			func_clean
+			exit 0
+		;;
+
+		*)
+			func_text_red "	That's not a valid option"
+			first_time=1
+			sleep 1
+			clear 					#	Clear the screen.
+			func_main_menu			#	Loop the menu
+		;;
+
+	esac
+
+
+}
+
+function func_copy_iso() {								#	Copy the files on the ISO to the build folder
+	
+	func_text_green "Mounting $install_path/$esxi_iso_file file to $install_path/${array_work_dir[0]}"
+	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]}								#	Mounting the ISO file to the esx-cd folder
+	func_text_done
+
+	func_check_files "esx-cd"
+	
+	func_text_green "Copy CD to $install_path/${array_work_dir[5]}"
+	cp -r -p $install_path/${array_work_dir[0]}/* $install_path/${array_work_dir[5]}							#	Copying files from ISO to the build folder keeping attributes
+	func_text_done
+
+	func_text_green "U mounting $install_path/${array_work_dir[0]}"
+	umount $install_path/${array_work_dir[0]}															#	U mounting the ISO
+	func_text_done
+	
+	func_check_files "esx-build"
+	
+	if [[ "$custom_name" != "$esxi_iso_file" ]]
+		then
+			if [[ $esxi_version == "3.5" ]]
+				then 
+					if [[ -e  "$install_path/${array_work_dir[5]}/oem.tgz" ]]
+						then 
+							func_text_green	"Removes the oem file from ${array_work_dir[5]}"
+							rm $install_path/${array_work_dir[5]}/oem.tgz
+							func_text_done
+						else
+							func_text_red "There is no oem.tgz file please check if you have a ESXi 3.5 iso file"
+							sleep 5
+							
+							clear
+							exit
+					fi
+			fi
+	fi
+	sleep 2
+	clear
+}
+
 function func_dd_start(){								#	Extracting DD file
 
 	if [[ $esxi_version == "3.5" ]]
@@ -1256,76 +1327,116 @@ function func_iso_finish(){							#	Making the ISO file
 
 }
 
-function func_copy_iso() {								#	Copy the files on the ISO to the build folder
-	
-	func_text_green "Mounting $install_path/$esxi_iso_file file to $install_path/${array_work_dir[0]}"
-	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]}								#	Mounting the ISO file to the esx-cd folder
-	func_text_done
+function func_check_usb() {							#	Gather data for the USB menu
 
-	func_check_files "esx-cd"
-	
-	func_text_green "Copy CD to $install_path/${array_work_dir[5]}"
-	cp -r -p $install_path/${array_work_dir[0]}/* $install_path/${array_work_dir[5]}							#	Copying files from ISO to the build folder keeping attributes
-	func_text_done
+	local usb_dev
+	local usb_dev_info
+	local usb_name_info
+	local usb_name_mfg
+	local usb_size
+	local usb_name_col
+	local usb_name_mfg_col
 
-	func_text_green "U mounting $install_path/${array_work_dir[0]}"
-	umount $install_path/${array_work_dir[0]}															#	U mounting the ISO
-	func_text_done
-	
-	func_check_files "esx-build"
-	
-	if [[ "$custom_name" != "$esxi_iso_file" ]]
-		then
-			if [[ $esxi_version == "3.5" ]]
-				then 
-					if [[ -e  "$install_path/${array_work_dir[5]}/oem.tgz" ]]
-						then 
-							func_text_green	"Removes the oem file from ${array_work_dir[5]}"
-							rm $install_path/${array_work_dir[5]}/oem.tgz
-							func_text_done
-						else
-							func_text_red "There is no oem.tgz file please check if you have a ESXi 3.5 iso file"
-							sleep 5
-							
-							clear
-							exit
-					fi
+	for i in /sys/block/[sh]d?
+		do
+			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"									#	Checking witch device is a USB
+				then
+					usb_dev_info=("${i##*/}")																						#	Sets the device
+					usb_dev=$(fdisk -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')											#	Checks witch partition to use / mount
+					usb_name_info=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/ATTRS{product}==/ { print $0;exit }')		#	Get's the product name of the USB
+					usb_name_mfg=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/ATTRS{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
+					usb_size=$(fdisk -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')									#	The size of the USB in MB
+					usb_size_name=$(fdisk -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
+					usb_name_col=${usb_name_info%\"*}																			#	Removing the " and the text after it
+					usb_name_mfg_col=${usb_name_mfg%\"*}																		#	Removing the " and the text after it
+					array_usb_dev_list+=("$usb_dev")																			#	Creating a array of the USB devices
+					array_usb_name_list+=("${usb_name_col#*\"}")																#	Creating a array of USB product
+					array_usb_mfg_list+=("${usb_name_mfg_col#*\"}")																#	Creating a array of USB vendor
+					array_usb_size_list+=("$usb_size")																			#	Creating a array of USB Size
+					array_usb_size_name_list+=("$usb_size_name")																#	Creating a array of USB Size type MB/GB
 			fi
-	fi
-	sleep 2
-	clear
-}
-
-function func_set_file_rights(){						#	Change the ownership and permissions for files
-	
-	if [[ $esxi_version == "3.5" ]]
-		then 
-			func_text_green "Changing ownership and mod on install.tgz"
-			chown -R 201:201 $install_path/${array_work_dir[5]}/install.tgz 										#	Channing the ownership and mod for install.tgz
-			chmod 755 $install_path/${array_work_dir[5]}/install.tgz
-			func_text_done
-
-			func_text_green "Changing ownership on the files in the ${array_work_dir[5]} folder"				#	Channing the ownership and mod on the files in the build folder
-			
-			chown -R 201:201 $install_path/${array_work_dir[5]}/*
-			chmod 755 $install_path/${array_work_dir[5]}/oem.tgz
-			func_text_done
-	fi
-}
-
-function func_check_files(){							#	Check if the files is in the folder
-	
+		done
 	shopt -s nullglob
-	local i=($1/*)
-		if [ -z "$i" ]
+		if [  ${#array_usb_name_list[*]} != 0 ]
 			then
-				func_text_red " There is no files in $install_path/$1 please check the dir/files"
-				echo
-				sleep 2
-				exit 1
+				usb_menu_text=("There are one or more USB drive installed")
+				usb_menu_question=('Witch USB drive are you going to use ?  ')
+			else
+				usb_menu_text=("There is no USB drive installed")
+				usb_menu_question=('Try to connect a USB drive and use update ! ')
 		fi
-	shopt -u nullglob;
+	shopt -u nullglob
 }
+
+function func_usb_menu() {								#	Menu for the USB $usb_install
+
+	PS3=$usb_menu_question
+
+	select usb_dev_menu
+		do
+			if [[ -z $usb_dev_menu ]]
+				then 
+					unset usb_dev_list[*]
+					func_usb_use									#	Calls the menu again if the answer is incorrect
+				else 
+					if [[ "$usb_dev_array" = "Exit" ]]				#	If the Select is exit
+						then
+							clear 									#	Clear the screen.
+							echo
+							func_text_green " You can find the files at \n $install_path/$save_dir/"
+							echo
+							echo
+							echo
+							func_text_red " Exiting ...."
+							sleep 2
+							echo
+							echo
+							echo
+							func_clean
+							echo
+							echo
+							exit 0
+						else
+							if [[ "$usb_dev_menu" == "Update" ]]
+								then
+									unset array_usb_dev_list[*]
+									unset array_usb_name_list[*]
+									unset array_usb_mfg_list[*]
+									unset array_usb_size_list[*]
+									unset array_usb_size_name_list[*]
+									func_usb_use
+								else
+								usb_install="$usb_dev_menu"
+							fi
+					fi
+		
+			fi
+		clear 							#	Clear the screen.
+		break
+		done
+}
+
+function func_usb_use(){								#	Witch USB drive to use menu
+
+	clear 							#	Clear the screen.
+
+	func_check_usb
+
+	echo $esx_usb_menu_text
+	echo
+	for index in ${!array_usb_dev_list[@]};
+		do
+			func_text_green " %s is %s - %s  %s %s" "${array_usb_dev_list[index]}" "${array_usb_name_list[index]}" "${array_usb_mfg_list[index]}" "${array_usb_size_list[index]}" "${array_usb_size_name_list[index]}" ;
+			echo
+			echo
+		done
+			array_usb_dev_list[9]="Update"
+			array_usb_dev_list[10]="Exit"
+			func_usb_menu ${array_usb_dev_list[*]}
+
+}
+
+
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_clean
