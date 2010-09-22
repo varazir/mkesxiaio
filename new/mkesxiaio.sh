@@ -822,11 +822,11 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 			case $menu in
 				
 				"Y" | "y" | "" )
-				func_add_ssh $1
-				func_add_wget $1
-				func_add_rsync $1
-				func_add_sftp $1
-				func_add_ftp $1
+				func_add_ssh $loop
+				func_add_wget $loop
+				func_add_rsync $loop
+				func_add_sftp $loop
+				func_add_ftp $loop
 				;;
 				
 				"N" | "n" )
@@ -936,11 +936,30 @@ function func_edit(){									#	Edit files
 	
 	local loop=$1
 	local edfile
+	local findfile
 	
-
 	if [[ -z $auto_flag ]]
 		then
-			func_text_green "Do you like to edit $1 \e[00m [y/N] "
+
+			if [[ ! -e $loop ]]
+				then
+					func_text_red "The file you like to edit can't be found \n	$loop \n Do you like to find the file and then edit it ? \e[00m [y/N] "
+					read findfile
+					
+					case $findfile in
+					
+						"Y" | "y" | "" )
+						
+						loop=$(find $install_path -name ${loop##*/} -type f -print0)
+						
+						;;
+					
+						"N" | "n" )
+						;;
+						
+					esac	
+			clear
+			func_text_green "Do you like to edit $loop ? \e[00m [y/N] "
 			read edfile
 		else
 			edfile="N"
@@ -951,7 +970,7 @@ function func_edit(){									#	Edit files
 		"Y" | "y" )
 			if hash ${array_pkg_install[5]} 2>>/dev/null
 				then 
-					${array_pkg_install[5]} $1
+					${array_pkg_install[5]} $loop
 					clear
 				else
 					func_text_red \n \n ${array_pkg_install[5]} is not installed \n Please install it manually  and rerun the script
@@ -997,6 +1016,21 @@ function func_check_files(){							#	Check if the files is in the folder
 				exit 1
 		fi
 	shopt -u nullglob;
+}
+
+function func_move_files(){							#	To move the work file / dir to the save folder
+
+	if [[ ! -e $install_path/$save_dir/$esxi_finish ]]
+		then
+			esxi_green "Moving $1 to $install_path/$save_dir/$esxi_finish "
+			mv -f $1 $install_path/$save_dir/$esxi_finish						#	Moving the DD/dir file to work folder and rename it
+			chown $SUDO_UID:$SUDO_GID $install_path/$save_dir/$esxi_finish
+			chmod -x $install_path/$save_dir/$esxi_finish
+			sleep 2
+			esxi_done
+			clear 																	#	Clear the screen.
+	fi
+
 }
 
 function func_main_menu(){ 							#	Main menu function 
@@ -1379,7 +1413,7 @@ function func_usb_menu() {								#	Menu for the USB $usb_install
 					unset usb_dev_list[*]
 					func_usb_use									#	Calls the menu again if the answer is incorrect
 				else 
-					if [[ "$usb_dev_array" = "Exit" ]]				#	If the Select is exit
+					if [[ "$usb_dev_menu" == "Exit" ]]				#	If the Select is exit
 						then
 							clear 									#	Clear the screen.
 							echo
@@ -1437,12 +1471,8 @@ function func_usb_use(){								#	Witch USB drive to use menu
 }
 
 function func_usb_finish(){							#	To confirm that the user really like to continue with the USB installation 	$usb_install
-										#	Moving the and renaming the USB installation folder
-	if [[ "$esx_custom" != "$esx_iso_file" ]]
-		then		
-			func_set_file_rights
-	fi
-
+														#	Moving the and renaming the USB installation folder
+	
 	if [[ $esxi_version == "4.0" ]]
 		then
 			sed -i 's/install.tgz/install.tgz --- oem.tgz/g' $install_path/${array_work_dir[5]}/isolinux.cfg
@@ -1493,7 +1523,7 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			func_text_done
 
 			func_text_green "Copy the installation media to the mounted USB"
-			cp $install_path/$esx_save/$esx_finish/* $install_path/${array_work_dir[6]}/										#	Copying the files from the installation folder to the USB
+			cp $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/										#	Copying the files from the installation folder to the USB
 			func_text_done
 
 			func_text_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
