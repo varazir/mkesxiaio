@@ -951,7 +951,6 @@ function func_edit(){									#	Edit files
 						"Y" | "y" | "" )
 						
 						loop=$(find $install_path -name ${loop##*/} -type f -print0)
-						
 						;;
 					
 						"N" | "n" )
