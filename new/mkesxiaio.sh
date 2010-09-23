@@ -312,7 +312,6 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 			cd $install_path/${array_work_dir[7]}
 			
 			${array_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
-			func_text_done
 			
 			cd $install_path/${array_work_dir[7]}/proftpd
 			
@@ -326,6 +325,7 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 			func_text_green "Copy the proftpd to $install_path/${array_work_dir[3]}/sbin"
 			cp proftpd $install_path/${array_work_dir[3]}/sbin
 			func_text_done
+			
 			func_text_green "Copy the tcpd to $install_path/${array_work_dir[3]}/sbin"
 			cp tcpd $install_path/${array_work_dir[3]}/sbin
 			func_text_done
@@ -1280,7 +1280,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 		then
 			func_edit $install_path/${array_work_dir[3]}/etc/inetd.conf
 	
-			if [[ $esxi_version == "4.0" ]]
+			if [[ $esxi_version == "4.0" || $esxi_version == "4.1" ]]
 				then
 					func_edit $install_path/${array_work_dir[3]}/etc/vmware/pci.ids
 				else
@@ -1470,7 +1470,7 @@ function func_usb_use(){								#	Witch USB drive to use menu
 	echo
 	for index in ${!array_usb_dev_list[@]};
 		do
-			func_text_green " %s is %s - %s  %s %s" "${array_usb_dev_list[index]}" "${array_usb_name_list[index]}" "${array_usb_mfg_list[index]}" "${array_usb_size_list[index]}" "${array_usb_size_name_list[index]}" ;
+			printf " %s is %s - %s  %s %s" "${array_usb_dev_list[index]}" "${array_usb_name_list[index]}" "${array_usb_mfg_list[index]}" "${array_usb_size_list[index]}" "${array_usb_size_name_list[index]}" ;
 			echo
 			echo
 		done
