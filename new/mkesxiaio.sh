@@ -949,8 +949,7 @@ function func_edit(){									#	Edit files
 					case $findfile in
 					
 						"Y" | "y" | "" )
-						
-						loop=$(find $install_path -name ${loop##*/} -type f -print0)
+						#loop=$(find $install_path -name ${loop##*/} -type f -print0)
 						;;
 					
 						"N" | "n" )
