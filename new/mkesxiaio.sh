@@ -935,6 +935,7 @@ fi
 function func_edit(){									#	Edit files
 	
 	local loop=$1
+	local orgfile=$1
 	local edfile
 	local findfile
 	
@@ -956,9 +957,9 @@ function func_edit(){									#	Edit files
 						;;
 						
 					esac
+				clear
 			fi
 			
-			clear
 			func_text_green "Do you like to edit $loop ? \e[00m [y/N] "
 			read edfile
 		
@@ -986,6 +987,14 @@ function func_edit(){									#	Edit files
 			func_edit $loop
 		;;
 	esac
+	
+	
+	if [[ "$loop" != "$orgfile" ]]
+		then
+			func_text_green "Moving $loop to $orgfile"
+			cp $loop $orgfile
+	fi
+	
 }
 
 function func_set_file_rights(){						#	Change the ownership and permissions for files
@@ -1457,7 +1466,7 @@ function func_usb_use(){								#	Witch USB drive to use menu
 
 	func_check_usb
 
-	echo $esx_usb_menu_text
+	func_text_green "$usb_menu_text"
 	echo
 	for index in ${!array_usb_dev_list[@]};
 		do
