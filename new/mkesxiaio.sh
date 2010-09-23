@@ -943,19 +943,19 @@ function func_edit(){									#	Edit files
 
 			if [[ ! -e $loop ]]
 				then
-					func_text_red "The file you like to edit can't be found \n	$loop \n Do you like to find the file and then edit it ? \e[00m [y/N] "
-					read findfile
-					
-					case $findfile in
-					
-						"Y" | "y" | '' )
-						loop=$(find $install_path -name ${loop##*/} -type f -print0)
-						;;
-					
-						"N" | "n" )
-						;;
-						
-					esac	
+				#	func_text_red "The file you like to edit can't be found \n	$loop \n Do you like to find the file and then edit it ? \e[00m [y/N] "
+				#	read findfile
+				#	
+				#	case $findfile in
+				#	
+				#		"Y" | "y" | '' )
+				#		loop=$(find $install_path -name ${loop##*/} -type f -print0)
+				#		;;
+				#	
+				#		"N" | "n" )
+				#		;;
+				#		
+				#	esac	
 			clear
 			func_text_green "Do you like to edit $loop ? \e[00m [y/N] "
 			read edfile
