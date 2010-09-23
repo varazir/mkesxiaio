@@ -953,7 +953,6 @@ function func_edit(){									#	Edit files
 						;;
 					
 						"N" | "n" )
-						echo
 						;;
 						
 					esac	
@@ -972,12 +971,11 @@ function func_edit(){									#	Edit files
 					${array_pkg_install[5]} $loop
 					clear
 				else
-					func_text_red \n \n ${array_pkg_install[5]} is not installed \n Please install it manually  and rerun the script
+					func_text_red "\n \n ${array_pkg_install[5]} is not installed \n Please install it manually  and rerun the script"
 			fi
 		;;
 		
 		"N" | "n" | '' )
-		echo
 		;;
 		
 		*)
