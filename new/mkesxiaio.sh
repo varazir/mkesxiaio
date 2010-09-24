@@ -1032,12 +1032,12 @@ function func_move_files(){							#	To move the work file / dir to the save fold
 
 	if [[ ! -e $install_path/$save_dir/$esxi_finish ]]
 		then
-			esxi_green "Moving $1 to $install_path/$save_dir/$esxi_finish "
+			func_text_green "Moving $1 to $install_path/$save_dir/$esxi_finish "
 			mv -f $1 $install_path/$save_dir/$esxi_finish						#	Moving the DD/dir file to work folder and rename it
 			chown $SUDO_UID:$SUDO_GID $install_path/$save_dir/$esxi_finish
 			chmod -x $install_path/$save_dir/$esxi_finish
 			sleep 2
-			esxi_done
+			func_text_done
 			clear 																	#	Clear the screen.
 	fi
 
@@ -1262,7 +1262,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 					esx_sector="512"
 			fi
 	
-			number=$( $esx_fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
+			number=$( $find_fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
 	fi
 
 	func_text_green "Mounting $dd_file to $install_path/${array_work_dir[4]}"
@@ -1571,6 +1571,79 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 
 }
 
+function func_dd_finish(){								#	To confirm that the user really like to continue with the USB installation 	Moving and renaming the DD ( USB boot file)
+
+	if [[ $esxi_version == "4.1" ]]
+		then
+			func_move_files $install_path/${array_work_dir[5]}/$dd_file
+		else
+			func_move_files $install_path/${array_work_dir[1]}/usr/lib/vmware/installer/$dd_file
+	fi
+	
+	if [[ -z $auto_flag ]]
+		then
+			func_usb_use			#	Getting the usb device to use
+	fi
+
+	clear 							#	Clear the screen.
+	echo
+	func_text_red " Next step will be to make the USB drive bootable. \n It will write the boot image to the USB drive \n ALL files will be lost !!! \n Do not use a USB stick that is under 1GB "
+	echo
+	func_text_red " Using "$usb_install
+	echo
+	func_text_red " Do you really like to continue with this ?\e[00m [y/N] "
+	
+	
+	local gogo
+	
+	if [[ -z $auto_flag ]]
+		then
+			read gogo
+		else
+			gogo="Y"
+	fi
+
+	case $gogo in
+
+			"Y" | "y" )
+
+			func_text_green "Writing DD image to the usb device $usb_install "
+			dd bs=1M if=$install_path/$save_dir/$esxi_finish of=${usb_install%[0-9]} 2>>/dev/null
+			func_text_done
+			sleep 2
+			func_redo func_dd_finish
+			echo
+			func_text_green "The USB stick is now ready to plug in in your server and boot up"
+			echo
+			;;
+
+			"N" | "n" | '' )																							#	If you like to move the files your self
+
+			func_text_green " Moving the $esx_ddf file to $install_path/$save_dir "
+			if [[ $esxi_version == "4.1" ]]
+				then
+					mv -f $install_path/${array_work_dir[5]}/$dd_file $install_path/$save_dir/$esxi_finish
+				else
+					mv -f $install_path/${array_work_dir[1]}/usr/lib/vmware/installer/$esx_ddf $install_path/$save_dir/$esxi_finish		#	Moving the DD file to work folder and rename it
+			fi
+			sleep 2
+			func_text_done
+			clear 							#	Clear the screen.
+
+			echo
+			func_text_red "the $esxi_finish can be found here \n $install_path/$save_dir/$esxi_finish"
+			echo
+			sleep 3
+			clear 																							#	Clear the screen.
+			;;
+
+			* )
+			
+			clear
+			func_dd_finish
+			;;
+	esac
+}
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_clean
