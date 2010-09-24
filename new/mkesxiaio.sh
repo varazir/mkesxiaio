@@ -1247,6 +1247,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	if hash fdisk 2>>/dev/null
 		then 
 			sector=$( fdisk -ul ${dd_file[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
+			
 			if [[ -z $sector ]]
 				then
 					sector="512"
@@ -1254,7 +1255,8 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 			number=$( fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
 
 		else 
-			find_fdisk=(find / -name fdisk)
+			find_fdisk=$( find / -name fdisk -type f -print0)
+			
 			sector=$( $find_fdisk -ul ${dd_file[0]} 2>>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
 			
 			if [[ -z $sector ]]
