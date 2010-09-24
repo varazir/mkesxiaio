@@ -93,42 +93,43 @@ array_version=(				#	Versions
 )
 
 array_auto_flag=(
--a							#0	Need to be there to run the script non interactiv
--v							#1	Version you are going to make
---ssh						#2	If you like to enable SSH
---sftp						#3	If you like to download and enable sftp
---ftp						#4	If you like to download and enable ftp
---wget						#5	If you like downloading wget from vm-help.com
---rsync						#6	If you like downloading rsync from vm-help.com
---iso						#7	Need to be set when runing the script non interactiv
---oem						#8	You need to set the oem file you ar egoing to use
--c							#9	If you have more files in the custom-esx directory
--d							#10	USB device 
--i							#11	Installtion typ
--h							#12	Help
--q							#13	skipp install
--clean							#14	Clean up folders
+-q							#0	skipp install
+-a							#1	Need to be there to run the script non interactiv
+-v							#2	Version you are going to make
+--ssh						#3	If you like to enable SSH
+--sftp						#4	If you like to download and enable sftp
+--ftp						#5	If you like to download and enable ftp
+--wget						#6	If you like downloading wget from vm-help.com
+--rsync						#7	If you like downloading rsync from vm-help.com
+--iso						#8	Need to be set when runing the script non interactiv
+--oem						#9	You need to set the oem file you ar egoing to use
+-c							#10	If you have more files in the custom-esx directory
+-d							#11	USB device 
+-i							#12	Installtion typ
+-h							#13	Help
+-clean						#14	Clean up folders
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
-func_auto_set_flag			#0
-func_version				#1
-func_add_ssh				#2
-func_add_sftp				#3
-func_add_ftp				#4
-func_add_wget				#5
-func_add_rsync				#6
-func_check_iso				#7
-func_check_oem				#8
-func_auto_add_custom_files	#9
-func_auto_usb_device		#10
-func_main_menu				#11
-func_help_info				#12
-func_skipp_install			#13
+func_skipp_install			#0
+func_auto_set_flag			#1
+func_version				#2
+func_add_ssh				#3
+func_add_sftp				#4
+func_add_ftp				#5
+func_add_wget				#6
+func_add_rsync				#7
+func_check_iso				#8
+func_check_oem				#9
+func_auto_add_custom_files	#10
+func_auto_usb_device		#11
+func_main_menu				#12
+func_help_info				#13
 func_auto_clean				#14
 )
 
 array_auto_help_text=(		#	The help text 
+"		Used to skipp the installstion"
 "		Need to be there to run the script non interactiv"
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
@@ -142,7 +143,6 @@ array_auto_help_text=(		#	The help text
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
 "		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
-"		Used to skipp the installstion"
 "		If you aborted the script and lik eto clean up the folders"
 )
 
@@ -665,15 +665,15 @@ function func_version(){								#	Version ?
 	fi
 
 	case "$menu" in
-		2 | 4.0 ) 
+		"2" | "4.0" ) 
 			esxi_version="4.0"
 			clear
 		;;
-		1 | 3.5 )
+		"1" | "3.5" )
 			esxi_version="3.5"
 			clear
 		;;
-		3 | 4.1 )
+		"3" | "4.1" )
 			esxi_version="4.1"
 			clear
 		;;
