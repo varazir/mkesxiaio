@@ -253,7 +253,7 @@ func_create_folders								#	Create folders
 
 function func_add_ssh(){ 								#	Adds ssh support for 3.5 and 4.0 
 
-if [[ "$1" != "y" || -z "$auto_flag" ]]
+if [[ "$1" != "y" && -z "$auto_flag" ]]
 	then
 		local menu
 		
@@ -1017,7 +1017,7 @@ function func_set_file_rights(){						#	Change the ownership and permissions for
 function func_check_files(){							#	Check if the files is in the folder
 	
 	shopt -s nullglob
-	local i=($1/*)
+	local i=($install_path/$1/*)
 		if [ -z "$i" ]
 			then
 				func_text_red " There is no files in $install_path/$1 please check the dir/files"
