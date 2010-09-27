@@ -1043,6 +1043,32 @@ function func_move_files(){							#	To move the work file / dir to the save fold
 
 }
 
+function func_redo(){				#	Redo the operation 
+
+local redo=$1
+local key
+
+func_text_green "Do you like to create another? \e[00m [y/N] "
+	if [[ -z $auto_flag ]]
+		then
+			read key
+		else
+			key="N"
+	fi
+
+case "$key" in
+	"Y" | "y" )
+		$redo
+		;;
+	"N" | "n" | '' )
+		;;
+	* )
+		func_redo $redo
+		;;
+esac
+
+}
+
 function func_main_menu(){ 							#	Main menu function 
 	
 	clear 												# 	Clear the screen.
