@@ -157,7 +157,7 @@ usb_check_cmd="udevadm"
 first_time=0
 all_installed=0
 esx_bytes="bytes"
-
+fdisk_cmd="fdisk"
 #	Extra options 
 
 shopt -s dotglob										#	To make * include hidden directorys/files 
@@ -478,9 +478,9 @@ function func_check_menu() {							#	Checking for files menu
 	
 	clear 							#	Clear the screen.
 	
-	PS3='With file are you going to use ?  '
+	PS3='Which file are you going to use?  '
 
-	func_text_green "There are more then one ${array_check[0]} file"
+	func_text_green "There is more then one ${array_check[0]} file"
 	echo
 
 	select check_files 
@@ -1243,28 +1243,28 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	
 	local sector
 	local number
-	
+		
 	if hash fdisk 2>>/dev/null
 		then 
-			sector=$( fdisk -ul ${dd_file[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
+			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 			
 			if [[ -z $sector ]]
 				then
 					sector="512"
 			fi
-			number=$( fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
+			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
 
 		else 
-			find_fdisk=$( find / -name fdisk -type f -print0)
+			fdisk_cmd=$( find / -name fdisk -type f -print0)
 			
-			sector=$( $find_fdisk -ul ${dd_file[0]} 2>>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
+			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
 			
 			if [[ -z $sector ]]
 				then
 					esx_sector="512"
 			fi
 	
-			number=$( $find_fdisk -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
+			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
 	fi
 
 	func_text_green "Mounting $dd_file to $install_path/${array_work_dir[4]}"
@@ -1396,11 +1396,11 @@ function func_check_usb() {							#	Gather data for the USB menu
 			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"									#	Checking witch device is a USB
 				then
 					usb_dev_info=("${i##*/}")																						#	Sets the device
-					usb_dev=$(fdisk -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')											#	Checks witch partition to use / mount
+					usb_dev=$($fdisk_cmd -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')											#	Checks witch partition to use / mount
 					usb_name_info=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/ATTRS{product}==/ { print $0;exit }')		#	Get's the product name of the USB
 					usb_name_mfg=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/ATTRS{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
-					usb_size=$(fdisk -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')									#	The size of the USB in MB
-					usb_size_name=$(fdisk -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
+					usb_size=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')									#	The size of the USB in MB
+					usb_size_name=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
 					usb_name_col=${usb_name_info%\"*}																			#	Removing the " and the text after it
 					usb_name_mfg_col=${usb_name_mfg%\"*}																		#	Removing the " and the text after it
 					array_usb_dev_list+=("$usb_dev")																			#	Creating a array of the USB devices
