@@ -143,7 +143,7 @@ array_auto_help_text=(		#	The help text
 "		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
 "		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
-"		If you aborted the script and lik eto clean up the folders"
+"	If you aborted the script and like to clean up the folders"
 )
 
 #	Variables 
@@ -253,7 +253,7 @@ func_create_folders								#	Create folders
 
 function func_add_ssh(){ 								#	Adds ssh support for 3.5 and 4.0 
 
-if [[ "$1" != "y" ]]
+if [[ "$1" != "y" || -z "$auto_flag" ]]
 	then
 		local menu
 		
