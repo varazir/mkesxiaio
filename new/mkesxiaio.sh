@@ -1656,9 +1656,8 @@ if [[ -z $auto_flag ]]
 		func_install_cmd								#	Checks if apt-get is installed 
 		func_pkg_inst									#	Install the pkg's needed
 		func_create_folders								#	Create folders 
+		func_version									#	To check with version to use.
+		func_check_iso									#	Check if you have any ISO file in the same folder as this script 
+		func_main_menu
 fi
-
-func_version											#	To check with version to use.
-func_check_iso											#	Check if you have any ISO file in the same folder as this script 
-func_main_menu
 func_clean												#	Deletes work folders if there is any
