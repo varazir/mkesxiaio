@@ -157,7 +157,7 @@ usb_check_cmd="udevadm"
 first_time=0
 all_installed=0
 esx_bytes="bytes"
-usb_check_cmd="udevadm"
+
 #	Extra options 
 
 shopt -s dotglob										#	To make * include hidden directorys/files 
@@ -1382,6 +1382,14 @@ function func_check_usb() {							#	Gather data for the USB menu
 	local usb_size
 	local usb_name_col
 	local usb_name_mfg_col
+	
+	
+	if hash $usb_check_cmd 2>/dev/null
+		then
+			usb_check_cmd="udevadm"
+		else
+			usb_check_cmd="udevinfo"
+	fi
 
 	for i in /sys/block/[sh]d?
 		do
