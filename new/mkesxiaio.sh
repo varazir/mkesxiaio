@@ -53,6 +53,7 @@ tar												#6	Used to extract files from compressed files
 bzip2											#7	Used to compress the dd file 
 bunzip2										#8	Used to extract bz2 files
 md5sum											#9	Is need to create the md5 file on the 4.1 iso
+parted											#10	add the Boot flag to the USB 
 )
 
 array_main_menu=(												#	Main menu (Array)
