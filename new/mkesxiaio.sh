@@ -908,13 +908,13 @@ if [[ -z $auto_flag ]]
 								exit 0
 								;;
 							"U" | "u" )
-								if [[ "$esx_inst_type" == "usb" ]]
+								if [[ "$install_inst_type" == "usb" ]]
 									then
 										func_usb_finish
 										func_clean
 										exit
 									else
-										if [[ "$esx_inst_type" == "dd" ]]
+										if [[ "$install_inst_type" == "dd" ]]
 											then
 												func_dd_finish
 												func_clean
@@ -930,6 +930,8 @@ if [[ -z $auto_flag ]]
 							esac
 				fi
 		fi
+	else
+		rm -rf $install_path/$save_dir/$esxi_finish
 fi
 }
 
@@ -1424,8 +1426,8 @@ function func_check_usb() {							#	Gather data for the USB menu
 				then
 					usb_dev_info=("${i##*/}")																						#	Sets the device
 					usb_dev=$($fdisk_cmd -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')											#	Checks witch partition to use / mount
-					usb_name_info=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/ATTRS{product}==/ { print $0;exit }')		#	Get's the product name of the USB
-					usb_name_mfg=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/ATTRS{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
+					usb_name_info=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/{product}==/ { print $0;exit }')		#	Get's the product name of the USB
+					usb_name_mfg=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
 					usb_size=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')									#	The size of the USB in MB
 					usb_size_name=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
 					usb_name_col=${usb_name_info%\"*}																			#	Removing the " and the text after it
