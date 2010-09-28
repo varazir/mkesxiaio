@@ -175,6 +175,7 @@ all_installed=1
 function func_auto_clean() {
 
 func_clean
+
 exit 0
 
 }
@@ -435,10 +436,8 @@ if [[ "$all_installed" == 0 ]]
 					fi
 					func_text_green "	${array_pkg_install["$pkgbin"]}  is now installed"
 					
-					if hash ! ${array_pkg_install["$pkgbin"]} 2>/dev/null 
-						then
-							array_pkg_install["$pkgbin"]=$( find / -name ${array_pkg_install["$pkgbin"]} -type f -print0)
-					fi
+					array_pkg_install["$pkgbin"]=$( find / -name ${array_pkg_install["$pkgbin"]} -type f -print0)
+
 					
 					echo
 					sleep 2
@@ -1509,6 +1508,8 @@ function func_usb_use(){								#	Witch USB drive to use menu
 
 function func_usb_finish(){							#	To confirm that the user really like to continue with the USB installation 	$usb_install
 														#	Moving the and renaming the USB installation folder
+	
+	local install
 	
 	if [[ $esxi_version == "4.0" ]]
 		then
