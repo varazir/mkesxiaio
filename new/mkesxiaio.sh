@@ -1406,8 +1406,6 @@ function func_check_usb() {							#	Gather data for the USB menu
 
 	local usb_dev
 	local usb_dev_info
-	local usb_name_info
-	local usb_name_mfg
 	local usb_size
 	local usb_name_col
 	local usb_name_mfg_col
@@ -1422,21 +1420,17 @@ function func_check_usb() {							#	Gather data for the USB menu
 
 	for i in /sys/block/[sh]d?
 		do
-			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"									#	Checking witch device is a USB
+			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"																							#	Checking witch device is a USB
 				then
-					usb_dev_info=("${i##*/}")																						#	Sets the device
-					usb_dev=$($fdisk_cmd -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')											#	Checks witch partition to use / mount
-					usb_name_info=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/{product}==/ { print $0;exit }')		#	Get's the product name of the USB
-					usb_name_mfg=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk '/{manufacturer}==/ { print $0;exit }')	#	Get's the vendor name of the USB
-					usb_size=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')									#	The size of the USB in MB
+					usb_dev_info=("${i##*/}")																																			#	Sets the device
+					usb_dev=$($fdisk_cmd -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')																						#	Checks witch partition to use / mount
+					array_usb_name_list+=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk -F '[{]product[}]=="' 'NF>1{sub(/".*/,"",$2);print $2;exit}') 		#	Get's the product name of the USB
+					array_usb_mfg_list+=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk -F '[{]manufacturer[}]=="' 'NF>1{sub(/".*/,"",$2);print $2;exit}') #	Get's the manufacturer name of the USB
+					usb_size=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')																				#	The size of the USB in MB
 					usb_size_name=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
-					usb_name_col=${usb_name_info%\"*}																			#	Removing the " and the text after it
-					usb_name_mfg_col=${usb_name_mfg%\"*}																		#	Removing the " and the text after it
-					array_usb_dev_list+=("$usb_dev")																			#	Creating a array of the USB devices
-					array_usb_name_list+=("${usb_name_col#*\"}")																#	Creating a array of USB product
-					array_usb_mfg_list+=("${usb_name_mfg_col#*\"}")																#	Creating a array of USB vendor
-					array_usb_size_list+=("$usb_size")																			#	Creating a array of USB Size
-					array_usb_size_name_list+=("$usb_size_name")																#	Creating a array of USB Size type MB/GB
+					array_usb_dev_list+=("$usb_dev")																																	#	Creating a array of the USB devices
+					array_usb_size_list+=("$usb_size")																																	#	Creating a array of USB Size
+					array_usb_size_name_list+=("$usb_size_name")																														#	Creating a array of USB Size type MB/GB
 			fi
 		done
 	shopt -s nullglob
