@@ -1046,7 +1046,7 @@ function func_move_files(){							#	To move the work file / dir to the save fold
 
 }
 
-function func_redo(){				#	Redo the operation 
+function func_redo(){									#	Redo the operation 
 
 local redo=$1
 local key
