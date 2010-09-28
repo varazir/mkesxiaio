@@ -428,7 +428,7 @@ if [[ "$all_installed" == 0 ]]
 					if [ ! $? -eq 0 ]
 						then
 							echo
-							func_text_red "	Script encountered an error during package installation.  \n	Check errors and retry"
+							func_text_red "	Script encountered an error during package installation.$pkgbin  \n	Check errors and retry"
 							echo
 							exit 0
 					fi
@@ -1563,7 +1563,13 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			
 			func_text_green "Making the USB bootable"
 			${array_pkg_install[1]} $usb_install																#	Using syslinux to make the USB bootable
-			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on								#	Add the boot flag to the USB 
+			
+			if ! hash ${array_pkg_install[10]} 2>/dev/null
+					then
+						${array_pkg_install[10]}=$( find / -name ${array_pkg_install[10]} -type f -print0)
+			fi
+			
+			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on							#	Add the boot flag to the USB 
 			func_text_done
 
 			func_text_green "Mounting the $usb_install to $install_path/${array_work_dir[6]}/ "
