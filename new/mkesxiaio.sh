@@ -609,14 +609,14 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 			custom_name=${custom_name}$5
 			
 		else
-			func_text_green "Do you like to download $2 ? \e[00m [Y/n] "
+			func_text_green "Do you like to download $1 ? \e[00m [Y/n] "
 			read download
 
 	
 			case $download in
 				
 				"Y" | "y" | "" )
-				func_text_green "Downloading $2 to $3"
+				func_text_green "Downloading $1 to $3"
 				${array_pkg_install[2]} -q $1 2>/dev/null
 				func_text_done
 				func_check $2 $2 "please check your internet connection and try again"
@@ -628,7 +628,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				;;
 				
 				*)
-				func_text_green "Downloading $2 to $3"
+				func_text_green "Downloading $1 to $3"
 				${array_pkg_install[2]} -q $1 2>/dev/null
 				func_check $2 $2 "please check your internet connection and try again"
 				mv $2 $3
@@ -839,7 +839,8 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 				func_add_ssh 
 				func_add_wget 
 				func_add_rsync 
-				func_add_sftp 
+				func_add_sftp
+				func_add_ftp 				
 				;;
 				
 				* )
