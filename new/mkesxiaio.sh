@@ -53,7 +53,8 @@ tar												#6	Used to extract files from compressed files
 bzip2											#7	Used to compress the dd file 
 bunzip2										#8	Used to extract bz2 files
 md5sum											#9	Is need to create the md5 file on the 4.1 iso
-parted											#10	add the Boot flag to the USB 
+parted											#10	Add the Boot flag to the USB 
+fdisk											#11	Used to get mount info 
 )
 
 array_main_menu=(												#	Main menu (Array)
@@ -416,23 +417,29 @@ local pkgbin
 
 if [[ "$all_installed" == 0 ]]
 	then
-		for pkgbin in ${array_pkg_install[*]}
+		for pkgbin in ${!array_pkg_install[@]}
 		do	
-			if hash $pkgbin 2>/dev/null
+			if hash ${array_pkg_install["$pkgbin"]} 2>/dev/null
 				then 
-					func_text_green "	$pkgbin is already installed"
+					func_text_green "	${array_pkg_install["$pkgbin"]}  is already installed"
 					echo
 					sleep 2
 				else
-					$install_cmd $pkgbin 2>/dev/null
+					$install_cmd ${array_pkg_install["$pkgbin"]} 2>/dev/null
 					if [ ! $? -eq 0 ]
 						then
 							echo
-							func_text_red "	Script encountered an error during package installation.$pkgbin  \n	Check errors and retry"
+							func_text_red "	Script encountered an error during package installation. ${array_pkg_install["$pkgbin"]}   \n	Check errors and retry"
 							echo
-							exit 0
+							exit 1
 					fi
-					func_text_green "	$pkgbin is now installed"
+					func_text_green "	${array_pkg_install["$pkgbin"]}  is now installed"
+					
+					if hash ! ${array_pkg_install["$pkgbin"]} 2>/dev/null 
+						then
+							array_pkg_install["$pkgbin"]=$( find / -name ${array_pkg_install["$pkgbin"]} -type f -print0)
+					fi
+					
 					echo
 					sleep 2
 			fi
@@ -1273,28 +1280,15 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	local sector
 	local number
 		
-	if hash fdisk 2>/dev/null
-		then 
-			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
-			
-			if [[ -z $sector ]]
-				then
-					sector="512"
-			fi
-			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
-
-		else 
-			fdisk_cmd=$( find / -name fdisk -type f -print0)
-			
-			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
-			
-			if [[ -z $sector ]]
-				then
-					esx_sector="512"
-			fi
+	sector=$( ${array_pkg_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 	
-			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
+	if [[ -z $sector ]]
+		then
+			sector="512"
 	fi
+	number=$( ${array_pkg_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
+
+
 
 	func_text_green "Mounting $dd_file to $install_path/${array_work_dir[4]}"
 	mount -o loop,offset=$(($sector*$number)) $dd_file $install_path/${array_work_dir[4]}/								#	Mounting the 5th partition of the DD file to esx-5
@@ -1418,21 +1412,16 @@ function func_check_usb() {							#	Gather data for the USB menu
 			usb_check_cmd="udevinfo"
 	fi
 	
-	if ! hash fdisk 2>/dev/null
-		then
-			fdisk_cmd=$( find / -name fdisk -type f -print0)
-	fi
-	
 	for i in /sys/block/[sh]d?
 		do
 			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"																							#	Checking witch device is a USB
 				then
 					usb_dev_info=("${i##*/}")																																			#	Sets the device
-					usb_dev=$($fdisk_cmd -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')																						#	Checks witch partition to use / mount
+					usb_dev=$(${array_pkg_install[11]} -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')																						#	Checks witch partition to use / mount
 					array_usb_name_list+=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk -F '[{]product[}]=="' 'NF>1{sub(/".*/,"",$2);print $2;exit}') 		#	Get's the product name of the USB
 					array_usb_mfg_list+=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk -F '[{]manufacturer[}]=="' 'NF>1{sub(/".*/,"",$2);print $2;exit}') #	Get's the manufacturer name of the USB
-					usb_size=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')																				#	The size of the USB in MB
-					usb_size_name=$($fdisk_cmd -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
+					usb_size=$(${array_pkg_install[11]} -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')																				#	The size of the USB in MB
+					usb_size_name=$(${array_pkg_install[11]} -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
 					array_usb_dev_list+=("$usb_dev")																																	#	Creating a array of the USB devices
 					array_usb_size_list+=("$usb_size")																																	#	Creating a array of USB Size
 					array_usb_size_name_list+=("$usb_size_name")																														#	Creating a array of USB Size type MB/GB
@@ -1532,12 +1521,12 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			fi
 	fi	
 	
-	func_move_files $install_path/${array_work_dir[5]}														#	Rename the build folder
+	func_move_files $install_path/${array_work_dir[5]}		#	Rename the build folder
 	
-	clear 		#	Clear the screen.
+	clear 													#	Clear the screen.
 	if [[ -z $auto_flag ]]
 		then
-			func_usb_use			#	Getting the usb device to use
+			func_usb_use									#	Getting the usb device to use
 	fi
 	
 	clear 																										#	Clear the screen.
@@ -1562,14 +1551,8 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			"Y" | "y" )
 			
 			func_text_green "Making the USB bootable"
-			${array_pkg_install[1]} $usb_install																#	Using syslinux to make the USB bootable
-			
-			if ! hash ${array_pkg_install[10]} 2>/dev/null
-					then
-						${array_pkg_install[10]}=$( find / -name ${array_pkg_install[10]} -type f -print0)
-			fi
-			
-			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on							#	Add the boot flag to the USB 
+			${array_pkg_install[1]} $usb_install																			#	Using syslinux to make the USB bootable
+			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on										#	Add the boot flag to the USB 
 			func_text_done
 
 			func_text_green "Mounting the $usb_install to $install_path/${array_work_dir[6]}/ "
@@ -1577,15 +1560,15 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			func_text_done
 
 			func_text_green "Copy the installation media to the mounted USB"
-			cp $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/										#	Copying the files from the installation folder to the USB
+			cp $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/							#	Copying the files from the installation folder to the USB
 			func_text_done
 
 			func_text_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
-			mv $install_path/${array_work_dir[6]}/isolinux.cfg $install_path/${array_work_dir[6]}/SYSlinux.cfg						#	renaming the isolinux.cfg to SYSlinux.cfg
+			mv $install_path/${array_work_dir[6]}/isolinux.cfg $install_path/${array_work_dir[6]}/SYSlinux.cfg			#	renaming the isolinux.cfg to SYSlinux.cfg
 			func_text_done
 
 			func_text_green "U mounting the USB drive"
-			umount $install_path/${array_work_dir[6]}/																		#	U mounting the usb drive
+			umount $install_path/${array_work_dir[6]}/																	#	U mounting the usb drive
 			func_text_done
 			echo
 			func_text_green "Now your usb ready to install from \n just plug it into the system you like to install ESXi on"
