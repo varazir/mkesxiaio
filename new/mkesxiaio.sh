@@ -131,7 +131,7 @@ func_auto_clean				#14
 )
 
 array_auto_help_text=(		#	The help text 
-"		Used to skipp the installstion"
+"		Used to skipp the installstion Can't be used with -a "
 "		Need to be there to run the script non interactiv"
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
@@ -440,7 +440,6 @@ if [[ "$all_installed" == 0 ]]
 
 					
 					echo
-					sleep 2
 			fi
 		done
 		sleep 2
@@ -1552,7 +1551,7 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			"Y" | "y" )
 			
 			func_text_green "Making the USB bootable"
-			${array_pkg_install[1]} $usb_install																			#	Using syslinux to make the USB bootable
+			${array_pkg_install[1]} $usb_install 2>/dev/null																#	Using syslinux to make the USB bootable
 			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on										#	Add the boot flag to the USB 
 			func_text_done
 
@@ -1572,9 +1571,7 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			umount $install_path/${array_work_dir[6]}/																	#	U mounting the usb drive
 			func_text_done
 			echo
-			func_text_green "Now your usb ready to install from \n just plug it into the system you like to install ESXi on"
-			echo
-			func_text_red usb_finish
+			func_text_green "Now your usb ready to install from \njust plug it into the system you like to install ESXi on"
 			echo
 			echo
 			sleep 2
