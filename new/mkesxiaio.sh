@@ -312,7 +312,7 @@ function func_add_ftp(){ 								#	Adds FTP suuport
 
 			cd $install_path/${array_work_dir[7]}
 			
-			${array_pkg_install[3]} -qq proftpd.zip 2>>/dev/null
+			${array_pkg_install[3]} -qq proftpd.zip 2>/dev/null
 			
 			cd $install_path/${array_work_dir[7]}/proftpd
 			
@@ -418,13 +418,13 @@ if [[ "$all_installed" == 0 ]]
 	then
 		for pkgbin in ${array_pkg_install[*]}
 		do	
-			if hash $pkgbin 2>>/dev/null
+			if hash $pkgbin 2>/dev/null
 				then 
 					func_text_green "	$pkgbin is already installed"
 					echo
 					sleep 2
 				else
-					$install_cmd $pkgbin 2>>/dev/null
+					$install_cmd $pkgbin 2>/dev/null
 					if [ ! $? -eq 0 ]
 						then
 							echo
@@ -597,7 +597,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
 			func_text_green "Downloading $1 to $3"
-			${array_pkg_install[2]} -q $1 2>>/dev/null
+			${array_pkg_install[2]} -q $1 2>/dev/null
 			func_text_done
 			func_check $2 $2 "please check your internet connection and try again"
 			mv $2 $3
@@ -612,7 +612,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				
 				"Y" | "y" | "" )
 				func_text_green "Downloading $2 to $3"
-				${array_pkg_install[2]} -q $1 2>>/dev/null
+				${array_pkg_install[2]} -q $1 2>/dev/null
 				func_text_done
 				func_check $2 $2 "please check your internet connection and try again"
 				mv $2 $3
@@ -624,7 +624,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				
 				*)
 				func_text_green "Downloading $2 to $3"
-				${array_pkg_install[2]} -q $1 2>>/dev/null
+				${array_pkg_install[2]} -q $1 2>/dev/null
 				func_check $2 $2 "please check your internet connection and try again"
 				mv $2 $3
 				custom_name=${custom_name}$5
@@ -973,7 +973,7 @@ function func_edit(){									#	Edit files
 	case $edfile in
 		
 		"Y" | "y" )
-			if hash ${array_pkg_install[5]} 2>>/dev/null
+			if hash ${array_pkg_install[5]} 2>/dev/null
 				then 
 					${array_pkg_install[5]} $loop
 					clear
@@ -1273,27 +1273,27 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	local sector
 	local number
 		
-	if hash fdisk 2>>/dev/null
+	if hash fdisk 2>/dev/null
 		then 
-			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
+			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 			
 			if [[ -z $sector ]]
 				then
 					sector="512"
 			fi
-			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
+			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
 
 		else 
 			fdisk_cmd=$( find / -name fdisk -type f -print0)
 			
-			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
+			sector=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null |  awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )	#   Checking the number of sectors
 			
 			if [[ -z $sector ]]
 				then
 					esx_sector="512"
 			fi
 	
-			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
+			number=$( $fdisk_cmd -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' )								#	Checking where the 5th partition starts
 	fi
 
 	func_text_green "Mounting $dd_file to $install_path/${array_work_dir[4]}"
@@ -1392,7 +1392,7 @@ function func_iso_finish(){							#	Making the ISO file
 			fi
 	fi	
 	
-	${array_pkg_install[0]} -o $install_path/$save_dir/$esxi_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>>/dev/null
+	${array_pkg_install[0]} -o $install_path/$save_dir/$esxi_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>/dev/null
 
 	clear 												#	Clear the screen.
 	func_text_green " You can find the iso file at \n $install_path/$save_dir/$esxi_finish"
@@ -1417,7 +1417,12 @@ function func_check_usb() {							#	Gather data for the USB menu
 		else
 			usb_check_cmd="udevinfo"
 	fi
-
+	
+	if ! hash fdisk 2>/dev/null
+		then
+			fdisk_cmd=$( find / -name fdisk -type f -print0)
+	fi
+	
 	for i in /sys/block/[sh]d?
 		do
 			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"																							#	Checking witch device is a USB
@@ -1641,7 +1646,7 @@ function func_dd_finish(){								#	To confirm that the user really like to cont
 			"Y" | "y" )
 
 			func_text_green "Writing DD image to the usb device $usb_install "
-			dd bs=1M if=$install_path/$save_dir/$esxi_finish of=${usb_install%[0-9]} 2>>/dev/null
+			dd bs=1M if=$install_path/$save_dir/$esxi_finish of=${usb_install%[0-9]} 2>/dev/null
 			func_text_done
 			sleep 2
 			func_redo func_dd_finish
