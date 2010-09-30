@@ -42,7 +42,7 @@ esx-ftp											#7	Where the proftpd.zip will be extracted
 esx-download									#8	Where I download all files needed during the script
 )
 
-array_pkg_install=( 							#	Pkg's that is needed for this script (Array)
+array_cmd_install=( 							#	Pkg's that is needed for this script (Array)
 mkisofs		 									#0	Needed to create the ISO file
 syslinux 										#1	Needed to make the USB drive bootable
 wget											#2	To download the proftp server from vm-help 
@@ -73,7 +73,7 @@ array_main_menu=(												#	Main menu (Array)
 )
 
 array_install_text=(
-"Installing ${array_pkg_install[*]}"				#0	Install app info
+"Installing ${array_cmd_install[*]}"				#0	Install app info
 )
 
 array_version=(				#	Versions
@@ -285,7 +285,7 @@ func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar
 
 	if [[ -e $install_path/${array_work_dir[7]}/sftp-server.tar.gz ]]
 		then
-			${array_pkg_install[6]} -xzf $install_path/${array_work_dir[7]}/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
+			${array_cmd_install[6]} -xzf $install_path/${array_work_dir[7]}/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
 	fi
 
 }
@@ -302,7 +302,7 @@ function func_add_ftp(){ 								#	Adds FTP support
 
 			cd $install_path/${array_work_dir[7]}
 			
-			${array_pkg_install[3]} -qq proftpd.zip 2>/dev/null
+			${array_cmd_install[3]} -qq proftpd.zip 2>/dev/null
 			
 			cd $install_path/${array_work_dir[7]}/proftpd
 			
@@ -406,25 +406,25 @@ local pkgbin
 
 if [[ "$all_installed" == 0 ]]
 	then
-		for pkgbin in ${!array_pkg_install[@]}
+		for pkgbin in ${!array_cmd_install[@]}
 		do	
-			if hash ${array_pkg_install["$pkgbin"]} 2>/dev/null
+			if hash ${array_cmd_install["$pkgbin"]} 2>/dev/null
 				then 
-					func_text_green "	${array_pkg_install["$pkgbin"]}  is already installed"
+					func_text_green "	${array_cmd_install["$pkgbin"]}  is already installed"
 					echo
 					sleep 2
 				else
-					$install_cmd ${array_pkg_install["$pkgbin"]} 2>/dev/null
+					$install_cmd ${array_cmd_install["$pkgbin"]} 2>/dev/null
 					if [ ! $? -eq 0 ]
 						then
 							echo
-							func_text_red "	Script encountered an error during package installation. ${array_pkg_install["$pkgbin"]}   \n	Check errors and retry"
+							func_text_red "	Script encountered an error during package installation. ${array_cmd_install["$pkgbin"]}   \n	Check errors and retry"
 							echo
 							exit 1
 					fi
-					func_text_green "	${array_pkg_install["$pkgbin"]}  is now installed"
+					func_text_green "	${array_cmd_install["$pkgbin"]}  is now installed"
 					
-					array_pkg_install["$pkgbin"]=$( find / -name ${array_pkg_install["$pkgbin"]} -type f -print0)
+					array_cmd_install["$pkgbin"]=$( find / -name ${array_cmd_install["$pkgbin"]} -type f -print0)
 
 					
 					echo
@@ -557,7 +557,7 @@ function func_check_oem() {							#	Check if there is more then one oem $esxi_oe
 	fi
 	
 	func_text_green "Untar $esxi_oem_file to $install_path/${array_work_dir[3]}"
-	${array_pkg_install[6]} -xzf $install_path/$esxi_oem_file -C $install_path/${array_work_dir[3]}						#	Untaring the oem.tgz
+	${array_cmd_install[6]} -xzf $install_path/$esxi_oem_file -C $install_path/${array_work_dir[3]}						#	Untaring the oem.tgz
 	func_text_done
 	
 	
@@ -590,7 +590,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 	if [[ "$auto_flag" || "$4" == "y" ]]
 		then
 			func_text_green "Downloading $1 to $3"
-			${array_pkg_install[2]} -q $1 2>/dev/null
+			${array_cmd_install[2]} -q $1 2>/dev/null
 			func_text_done
 			func_check $2 $2 "please check your internet connection and try again"
 			mv $2 $3
@@ -605,7 +605,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				
 				"Y" | "y" | "" )
 				func_text_green "Downloading $1 to $3"
-				${array_pkg_install[2]} -q $1 2>/dev/null
+				${array_cmd_install[2]} -q $1 2>/dev/null
 				func_text_done
 				func_check $2 $2 "please check your Internet connection and try again"
 				mv $2 $3
@@ -617,7 +617,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				
 				*)
 				func_text_green "Downloading $1 to $3"
-				${array_pkg_install[2]} -q $1 2>/dev/null
+				${array_cmd_install[2]} -q $1 2>/dev/null
 				func_check $2 $2 "please check your Internet connection and try again"
 				mv $2 $3
 				custom_name=${custom_name}$5
@@ -846,7 +846,7 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 function func_edit_file() {							#	Change a files 
 	
 	func_text_green "Replacing $1 with $2 in $3"
-	${array_pkg_install[4]} -s $3 <<< ",s/$1/$2/g"$'\nw'
+	${array_cmd_install[4]} -s $3 <<< ",s/$1/$2/g"$'\nw'
 	func_text_done
 	sleep 1
 }
@@ -967,12 +967,12 @@ function func_edit(){									#	Edit files
 	case $edfile in
 		
 		"Y" | "y" )
-			if hash ${array_pkg_install[5]} 2>/dev/null
+			if hash ${array_cmd_install[5]} 2>/dev/null
 				then 
-					${array_pkg_install[5]} $loop
+					${array_cmd_install[5]} $loop
 					clear
 				else
-					func_text_red "\n \n ${array_pkg_install[5]} is not installed \n Please install it manually  and rerun the script"
+					func_text_red "\n \n ${array_cmd_install[5]} is not installed \n Please install it manually  and rerun the script"
 			fi
 		;;
 		
@@ -1224,7 +1224,7 @@ function func_dd_start(){								#	Extracting DD file
 	if [[ $esxi_version == "3.5" ]]
 		then
 			func_text_green "Untar install.tgz to $install_path/${array_work_dir[1]}"
-			${array_pkg_install[6]} -xzf $install_path/${array_work_dir[5]}/install.tgz -C $install_path/${array_work_dir[1]}						#	Untaring the installation.tgz file to get the dd file
+			${array_cmd_install[6]} -xzf $install_path/${array_work_dir[5]}/install.tgz -C $install_path/${array_work_dir[1]}						#	Untaring the installation.tgz file to get the dd file
 			func_text_done
 			cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer/
 
@@ -1232,7 +1232,7 @@ function func_dd_start(){								#	Extracting DD file
 			if [[ $esxi_version == "4.0" ]]
 				then
 					func_text_green "Untar image.tgz to $install_path/${array_work_dir[1]}"
-					${array_pkg_install[6]} -xzf $install_path/${array_work_dir[5]}/image.tgz -C $install_path/${array_work_dir[1]}						#	Untaring the installation.tgz file to get the dd file
+					${array_cmd_install[6]} -xzf $install_path/${array_work_dir[5]}/image.tgz -C $install_path/${array_work_dir[1]}						#	Untaring the installation.tgz file to get the dd file
 					func_text_done
 					cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer/
 
@@ -1246,8 +1246,8 @@ function func_dd_start(){								#	Extracting DD file
 	
 	dd_file=(*.bz2)
 
-	func_text_green "${array_pkg_install[8]} ${dd_file[0]} "
-	${array_pkg_install[8]} ${dd_file[0]}				#	Uncompressing the bz2 file
+	func_text_green "${array_cmd_install[8]} ${dd_file[0]} "
+	${array_cmd_install[8]} ${dd_file[0]}				#	Uncompressing the bz2 file
 	func_text_done
 
 	dd_file=(*dd)
@@ -1267,13 +1267,13 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	local sector
 	local number
 		
-	sector=$( ${array_pkg_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
+	sector=$( ${array_cmd_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 	
 	if [[ -z $sector ]]
 		then
 			sector="512"
 	fi
-	number=$( ${array_pkg_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
+	number=$( ${array_cmd_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
 
 
 
@@ -1303,7 +1303,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	
 	func_text_green "Rebuilding $install_path/${array_work_dir[5]}/oem.tgz using $install_path/${array_work_dir[3]}"
 	cd $install_path/${array_work_dir[3]}
-	${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/oem.tgz *													#	Rebuilding the oem.tgz file
+	${array_cmd_install[6]} czf $install_path/${array_work_dir[5]}/oem.tgz *													#	Rebuilding the oem.tgz file
 	cd $install_path/
 	func_text_done
 	sleep 3
@@ -1322,15 +1322,15 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 				then
 					cd $install_path/${array_work_dir[5]}/
 					func_text_green "Bzip2 the $dd_file"
-					${array_pkg_install[7]} $dd_file																			#	Compressing the dd file
+					${array_cmd_install[7]} $dd_file																			#	Compressing the dd file
 					func_text_done
 					dd_file=(*.bz2)
-					${array_pkg_install[9]} $dd_file > ${dd_file%.bz2}.md5
+					${array_cmd_install[9]} $dd_file > ${dd_file%.bz2}.md5
 					func_edit_file "$dd_file" "VMware-VMvisor-big-260247-x86_64.dd.bz2" ${dd_file%.bz2}.md5
 			else
 					cd $install_path/${array_work_dir[1]}/usr/lib/vmware/installer
 					func_text_green "Bzip2 the $dd_file"
-					${array_pkg_install[7]} $dd_file																			#	Compressing the dd file
+					${array_cmd_install[7]} $dd_file																			#	Compressing the dd file
 					func_text_done
 			fi
 			
@@ -1338,14 +1338,14 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 				then
 					func_text_green "Rebuilding install.tgz"
 					cd $install_path/${array_work_dir[1]}/
-					${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
+					${array_cmd_install[6]} czf $install_path/${array_work_dir[5]}/install.tgz sbin/ usr/		#	Rebuilding install.tgz
 					func_text_done
 				else
 					if [[ $esxi_version == "4.0" ]]
 						then
 							func_text_green "Rebuilding image.tgz"
 							cd $install_path/${array_work_dir[1]}/
-							${array_pkg_install[6]} czf $install_path/${array_work_dir[5]}/image.tgz usr/		#	Rebuilding install.tgz
+							${array_cmd_install[6]} czf $install_path/${array_work_dir[5]}/image.tgz usr/		#	Rebuilding install.tgz
 							func_text_done
 					fi
 			fi
@@ -1373,7 +1373,7 @@ function func_iso_finish(){							#	Making the ISO file
 			fi
 	fi	
 	
-	${array_pkg_install[0]} -o $install_path/$save_dir/$esxi_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>/dev/null
+	${array_cmd_install[0]} -o $install_path/$save_dir/$esxi_finish -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -input-charset utf-8 ../${array_work_dir[5]} 2>/dev/null
 
 	clear 												#	Clear the screen.
 	func_text_green " You can find the iso file at \n $install_path/$save_dir/$esxi_finish"
@@ -1404,11 +1404,11 @@ function func_check_usb() {							#	Gather data for the USB menu
 			if $usb_check_cmd info -a -p "$i" | grep -qF 'usb'	#	DRIVERS=="usb-storage"																							#	Checking witch device is a USB
 				then
 					usb_dev_info=("${i##*/}")																																			#	Sets the device
-					usb_dev=$(${array_pkg_install[11]} -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')																						#	Checks witch partition to use / mount
+					usb_dev=$(${array_cmd_install[11]} -l /dev/$usb_dev_info | awk '/^\/dev/ {print $1}')																						#	Checks witch partition to use / mount
 					array_usb_name_list+=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk -F '[{]product[}]=="' 'NF>1{sub(/".*/,"",$2);print $2;exit}') 		#	Get's the product name of the USB
 					array_usb_mfg_list+=$($usb_check_cmd info -a -p "/sys/block/$usb_dev_info" | awk -F '[{]manufacturer[}]=="' 'NF>1{sub(/".*/,"",$2);print $2;exit}') #	Get's the manufacturer name of the USB
-					usb_size=$(${array_pkg_install[11]} -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')																				#	The size of the USB in MB
-					usb_size_name=$(${array_pkg_install[11]} -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
+					usb_size=$(${array_cmd_install[11]} -l "/dev/$usb_dev_info" | awk '/dev/ { print $3;exit }')																				#	The size of the USB in MB
+					usb_size_name=$(${array_cmd_install[11]} -l "/dev/$usb_dev_info" | awk '/dev/ { print $4;exit }')
 					array_usb_dev_list+=("$usb_dev")																																	#	Creating a array of the USB devices
 					array_usb_size_list+=("$usb_size")																																	#	Creating a array of USB Size
 					array_usb_size_name_list+=("$usb_size_name")																														#	Creating a array of USB Size type MB/GB
@@ -1540,8 +1540,8 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			"Y" | "y" )
 			
 			func_text_green "Making the USB bootable"
-			${array_pkg_install[1]} $usb_install 2>/dev/null																#	Using syslinux to make the USB bootable
-			${array_pkg_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on										#	Add the boot flag to the USB 
+			${array_cmd_install[1]} $usb_install 2>/dev/null																#	Using syslinux to make the USB bootable
+			${array_cmd_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on										#	Add the boot flag to the USB 
 			func_text_done
 
 			func_text_green "Mounting the $usb_install to $install_path/${array_work_dir[6]}/ "
