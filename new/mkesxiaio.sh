@@ -72,10 +72,6 @@ array_main_menu=(												#	Main menu (Array)
 " "
 )
 
-array_install_text=(
-"Installing ${array_cmd_install[*]}"				#0	Install app info
-)
-
 array_version=(				#	Versions
 "3.5"
 "4.0"
