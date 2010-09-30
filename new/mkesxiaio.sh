@@ -72,18 +72,6 @@ array_main_menu=(												#	Main menu (Array)
 " "
 )
 
-array_extra_menu=(									#	Extra menu
-"     Extra support "								#0
-" "													#1
-"	1)	FTP support"								#3	If there are going to be FTP support enabled
-"	2)	SFTP support"								#4	If there are going to be sFTP support enabled
-"	3)	SSH support"								#5	If there are going to be SSH support enabled
-"	4)	SSH + FTP support"							#6	If there are going to be FTP and SSH support enabled
-"	5)	SSH + sFTP support"							#7	If there are going to be sFTP and SSH support enabled
-"	6)	FTP + sFTP support"							#8	If there are going to be sFTP and FTP support enabled
-"	7)	SSH + FTP + sFTP support"					#9	If there are going to be FTP and SSH support enabled
-"	8)	Continue without any of them"				#10	Exit the ssh/ftp menu without doing anything
-)
 array_install_text=(
 "Installing ${array_pkg_install[*]}"				#0	Install app info
 )
