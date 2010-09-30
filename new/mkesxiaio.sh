@@ -83,19 +83,19 @@ array_version=(				#	Versions
 )
 
 array_auto_flag=(
--q							#0	skipp install
--a							#1	Need to be there to run the script non interactiv
+-q							#0	Skipp install
+-a							#1	Need to be there to run the script non interactive
 -v							#2	Version you are going to make
 --ssh						#3	If you like to enable SSH
 --sftp						#4	If you like to download and enable sftp
 --ftp						#5	If you like to download and enable ftp
 --wget						#6	If you like downloading wget from vm-help.com
 --rsync						#7	If you like downloading rsync from vm-help.com
---iso						#8	Need to be set when runing the script non interactiv
---oem						#9	You need to set the oem file you ar egoing to use
+--iso						#8	Need to be set when ruining the script non interactive
+--oem						#9	You need to set the oem file you are going to use
 -c							#10	If you have more files in the custom-esx directory
 -d							#11	USB device 
--i							#12	Installtion typ
+-i							#12	Installation type
 -h							#13	Help
 -clean						#14	Clean up folders
 )
@@ -119,8 +119,8 @@ func_auto_clean				#14
 )
 
 array_auto_help_text=(		#	The help text 
-"		Used to skipp the installstion Can't be used with -a "
-"		Need to be there to run the script non interactiv"
+"		Used to skip the installation Can't be used with -a "
+"		Need to be there to run the script non interactive"
 "		Version you are going to create 3.5 , 4.0 or 4.1 eg. -v=4.1 "
 "		If you like to enable SSH, OBS with 4.1 you do not need to enable SSH"
 "	If you like to enable SFTP, You can read more here http://thebsdbox.co.uk/?p=224"
@@ -130,8 +130,8 @@ array_auto_help_text=(		#	The help text
 "		The name of the iso file you are going to use -iso=vmware.iso"
 "		Set the name of the oem file you like to use --oem=oem.tgz"
 "		If you have more files in the custom-esx folder."
-"		If you are creating a USB installtion or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
-"		Installtion typ ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
+"		If you are creating a USB installation or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
+"		Installation type ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
 "	If you aborted the script and like to clean up the folders"
 )
@@ -150,7 +150,7 @@ esx_bytes="bytes"
 fdisk_cmd="fdisk"
 #	Extra options 
 
-shopt -s dotglob										#	To make * include hidden directorys/files 
+shopt -s dotglob										#	To make * include hidden directories/files 
 
 #	Functions
 
@@ -201,7 +201,7 @@ function func_help_info() {							#	The help menu
 
 }
 
-function func_auto_flag() {							#	To grep the flags used when running the script noninteractiv 
+function func_auto_flag() {							#	To grep the flags used when running the script noninteracting 
 														#	http://mywiki.wooledge.org/BashFAQ/035
 	local flag=$1
 	shift
@@ -216,7 +216,7 @@ function func_auto_flag() {							#	To grep the flags used when running the scri
 	return 1
 }
 
-function func_auto_loop(){								#	Noninteractiv loop 
+function func_auto_loop(){								#	Noninteracting loop 
 
 	local flags
 	
@@ -249,7 +249,7 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 		local menu
 		
 		func_text_green "Do you like to add ssh? \e[00m [Y/n]"
-		read meny
+		read menu
 		
 		case $menu in 
 		
@@ -290,7 +290,7 @@ func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar
 
 }
 
-function func_add_ftp(){ 								#	Adds FTP suuport
+function func_add_ftp(){ 								#	Adds FTP support
 
 	func_download "http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip" "proftpd.zip" "$install_path/${array_work_dir[7]}" $1
 	
@@ -607,7 +607,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				func_text_green "Downloading $1 to $3"
 				${array_pkg_install[2]} -q $1 2>/dev/null
 				func_text_done
-				func_check $2 $2 "please check your internet connection and try again"
+				func_check $2 $2 "please check your Internet connection and try again"
 				mv $2 $3
 				custom_name=${custom_name}$5
 				;;
@@ -618,7 +618,7 @@ function func_download() {								#	Used to download files, URL, file , dest , A
 				*)
 				func_text_green "Downloading $1 to $3"
 				${array_pkg_install[2]} -q $1 2>/dev/null
-				func_check $2 $2 "please check your internet connection and try again"
+				func_check $2 $2 "please check your Internet connection and try again"
 				mv $2 $3
 				custom_name=${custom_name}$5
 				;;
@@ -810,7 +810,7 @@ function func_add_service(){							#	Calls the add functions for wget,rsync,ftp,
 			
 			local menu
 
-			func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or seperate[n] ? \e[00m [Y/n]"
+			func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or separate[n] ? \e[00m [Y/n]"
 			read menu
 			
 			case $menu in
@@ -1088,7 +1088,7 @@ function func_main_menu(){ 							#	Main menu function
 		else
 			if [[ -z $1 ]]													#	If you are using the auto function and haven't set -i it till stop the script
 				then
-					func_text_red "You have to set type of installtion -i=ISO ..."
+					func_text_red "You have to set type of installation -i=ISO ..."
 					echo
 					sleep 3
 					exit
@@ -1099,7 +1099,7 @@ function func_main_menu(){ 							#	Main menu function
 	case "$menu" in
 		1 | ISO | iso )
 			install_inst_type="iso"				#	Setting the installation type to ISO
-			func_check_oem $esxi_oem_file		#	Check witch OEM file to use, if the script run in non interactiv $esxi_oem_file allready set
+			func_check_oem $esxi_oem_file		#	Check witch OEM file to use, if the script run in non interactive $esxi_oem_file already set
 			func_copy_iso						#	Copy the iso to the hdd
 			func_add_service y					#	Adds SSH, FTP, wget, rsync, sftp
 			func_file_name						#	Set's the file/folder name
@@ -1661,7 +1661,7 @@ function func_dd_finish(){								#	To confirm that the user really like to cont
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_clean
-func_auto_loop "$@"										#	To make the script nonintractiv
+func_auto_loop "$@"										#	To make the script noninteracting
 
 if [[ -z $auto_flag ]]
 	then
