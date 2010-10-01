@@ -440,7 +440,7 @@ function func_check() {								#	Checking for files $file_to_use
 	shopt -s nullglob
 	local array_check_files=($2)							#	Creating a array if there is more then one file
 		
-		if [[ ${#array_check_files[@]} == 0 ]]
+		if [[ "${#array_check_files[@]}" == 0 ]]
 			then
 				clear 										#	Clear the screen.
 				echo
@@ -453,7 +453,7 @@ function func_check() {								#	Checking for files $file_to_use
 		fi
 	shopt -u nullglob
 	
-	if [ "${#array_check_files[@]}" -gt 1 ]					#	If there is more then one file
+	if [[ "${#array_check_files[@]}" -gt 1 ]	]				#	If there is more then one file
 		then
 			array_check_files[100]="Exit"
 			func_check_menu ${array_check_files[@]:0}
