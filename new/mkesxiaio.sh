@@ -366,7 +366,7 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 		
 		"Y" | "y" )
 			
-		cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
+		cp -r $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 			
 		;;
 		"N" | "n" | "" | * )
@@ -375,7 +375,7 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 		
 	else
 		
-		cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
+		cp -r $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 		
 fi
 
