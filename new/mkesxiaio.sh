@@ -1309,6 +1309,9 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	
 	if [[ -z $auto_flag ]]
 		then
+		
+			func_add_custom_files
+			
 			func_edit $install_path/${array_work_dir[3]}/etc/inetd.conf
 	
 			if [[ $esxi_version == "4.0" || $esxi_version == "4.1" ]]
@@ -1320,7 +1323,7 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 			func_edit $install_path/${array_work_dir[3]}/etc/vmware/simple.map
 	fi
 	
-	func_add_custom_files
+	
 	
 	
 	func_text_green "Rebuilding $install_path/${array_work_dir[5]}/oem.tgz using $install_path/${array_work_dir[3]}"
