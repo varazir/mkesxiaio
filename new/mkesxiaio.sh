@@ -453,7 +453,7 @@ function func_check() {								#	Checking for files $file_to_use
 		fi
 	shopt -u nullglob
 	
-	if [[ "${#array_check_files[@]}" -gt 1 ]	]				#	If there is more then one file
+	if [[ "${#array_check_files[@]}" -gt 1 ]]				#	If there is more then one file
 		then
 			array_check_files[100]="Exit"
 			func_check_menu ${array_check_files[@]:0}
