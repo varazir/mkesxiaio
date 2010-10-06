@@ -354,7 +354,32 @@ func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync" "rsync" "$inst
 
 function func_add_custom_files(){ 						#	Add custom files from the custom-esx dir, 
 
-cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
+
+if [[ "$1" != "y" && -z "$auto_flag" ]]
+	then
+		local menu
+		
+		func_text_green "Do you like to add custom file from $custom_oem_dir ? \e[00m [Y/n]"
+		read menu
+		
+		case $menu in 
+		
+		"Y" | "y" | "" )
+			
+		cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
+			
+		;;
+		"N" | "n" | * )
+		;;
+		esac
+		
+	else
+		
+		cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
+		
+fi
+
+
 
 }
 
@@ -741,10 +766,8 @@ function func_clean(){									#	Cleans up after the script
 	fi
 	shopt -u nullglob
 
-	if [[ -u "$custom_name" ]]
-		then
-			chown --from=$USER $SUDO_UID:$SUDO_GID $install_path/*
-	fi
+	chown -R --from=$USER $SUDO_UID:$SUDO_GID $install_path/*
+
 }
 
 function func_create_folders() {						#	Create folders
@@ -1296,6 +1319,9 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 			fi
 			func_edit $install_path/${array_work_dir[3]}/etc/vmware/simple.map
 	fi
+	
+	func_add_custom_files
+	
 	
 	func_text_green "Rebuilding $install_path/${array_work_dir[5]}/oem.tgz using $install_path/${array_work_dir[3]}"
 	cd $install_path/${array_work_dir[3]}
