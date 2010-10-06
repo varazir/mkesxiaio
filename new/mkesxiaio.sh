@@ -359,17 +359,17 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 	then
 		local menu
 		
-		func_text_green "Do you like to add custom file from $custom_oem_dir ? \e[00m [Y/n]"
+		func_text_green "Do you like to add custom file from $custom_oem_dir ? \e[00m [y/N]"
 		read menu
 		
 		case $menu in 
 		
-		"Y" | "y" | "" )
+		"Y" | "y" )
 			
 		cp $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 			
 		;;
-		"N" | "n" | * )
+		"N" | "n" | "" | * )
 		;;
 		esac
 		
