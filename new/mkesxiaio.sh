@@ -281,7 +281,12 @@ func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar
 
 	if [[ -e $install_path/${array_work_dir[7]}/sftp-server.tar.gz ]]
 		then
+			func_text_green "Untar sftp-server.tar.gz to $install_path/${array_work_dir[3]}/sbin"
 			${array_cmd_install[6]} -xzf $install_path/${array_work_dir[7]}/sftp-server.tar.gz -C $install_path/${array_work_dir[3]}/sbin
+			func_text_done
+		else
+			func_text_red "No file was downnloaded, sftp is not installed"
+			sleep 3
 	fi
 
 }
@@ -365,18 +370,19 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 		case $menu in 
 		
 		"Y" | "y" )
-			
+		
+		func_text_green"Copy $install_path/$custom_oem_dir/ to $install_path/${array_work_dir[3]}/"
 		cp -r $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
-			
+		func_text_done
 		;;
 		"N" | "n" | "" | * )
 		;;
 		esac
 		
 	else
-		
+		func_text_green"Copy $install_path/$custom_oem_dir/ to $install_path/${array_work_dir[3]}/"
 		cp -r $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
-		
+		func_text_done
 fi
 
 
