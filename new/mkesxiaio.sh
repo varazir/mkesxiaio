@@ -371,7 +371,7 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 		
 		"Y" | "y" )
 		
-		func_text_green"Copy $install_path/$custom_oem_dir/ to $install_path/${array_work_dir[3]}/"
+		func_text_green "Copy $install_path/$custom_oem_dir/ to $install_path/${array_work_dir[3]}/"
 		cp -r $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 		func_text_done
 		;;
@@ -380,7 +380,7 @@ if [[ "$1" != "y" && -z "$auto_flag" ]]
 		esac
 		
 	else
-		func_text_green"Copy $install_path/$custom_oem_dir/ to $install_path/${array_work_dir[3]}/"
+		func_text_green "Copy $install_path/$custom_oem_dir/ to $install_path/${array_work_dir[3]}/"
 		cp -r $install_path/$custom_oem_dir/*  $install_path/${array_work_dir[3]}/
 		func_text_done
 fi
