@@ -1586,10 +1586,15 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			func_text_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
 			mv $install_path/${array_work_dir[6]}/isolinux.cfg $install_path/${array_work_dir[6]}/SYSlinux.cfg			#	renaming the isolinux.cfg to SYSlinux.cfg
 			func_text_done
+			
+			func_text_green "Removing isolinux.bin"
+			rm -rf $install_path/${array_work_dir[6]}/isolinux.bin
+			func_text_done
 
-			func_text_green "U mounting the USB drive"
+			func_text_green "Un mounting the USB drive"
 			umount $install_path/${array_work_dir[6]}/																	#	U mounting the usb drive
 			func_text_done
+			
 			echo
 			func_text_green "Now your usb ready to install from \njust plug it into the system you like to install ESXi on"
 			echo
