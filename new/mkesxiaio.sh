@@ -1695,6 +1695,61 @@ function func_dd_finish(){								#	To confirm that the user really like to cont
 	esac
 }
 
+function func_kickstart(){
+
+local array_kickstart=(
+"Ip adress"
+"Gateway"
+"DNS server"
+"Netmask"
+)
+
+local kickstart
+
+func_text_green "Do you like to add a kickstart file ?"
+
+	if [[ -z $auto_flag ]]
+		then
+			read kickstart
+		else
+			kickstart="Y"
+	fi
+
+	case $kickstart in
+
+		"Y" | "y" )
+			for ks in ${!array_kickstart[@]}
+				do 
+					func_text_green "Please type in the ${array_kickstart["$ks"]}"
+					local input
+					read input
+					${array_kickstart["$ks"]}=$input
+				done
+		;;
+		"N" | "n" | "" )
+		
+		;;
+	esac
+				
+
+local array_kscfg=(
+"vmaccepteula"
+"rootpw cluster"
+"autopart --firstdisk --overwritevmfs"
+"install usb"
+"network --bootproto=static --ip=${array_kickstart[0]} --gateway=${array_kickstart[1]} --hostname=sumavihv --device=vmnic0 --nameserver=${array_kickstart[2]} --netmask=${array_kickstart[3]}"
+)
+
+
+printf %s\\n "${array_kscfg[@]}" >> $install_path/${array_work_dir[5]}/ks.cfg
+
+func_edit $install_path/${array_work_dir[5]}/ks.cfg
+
+func_edit_file "vmkboot.gz" "vmkboot.gz ks=usb" "$install_path/${array_work_dir[5]}/isolinux.cfg"
+
+
+}
+
 func_checkRoot ./$0										#	Starts with a check that you are superuser
 func_clean
 func_auto_loop "$@"										#	To make the script noninteracting
