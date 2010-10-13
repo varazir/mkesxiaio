@@ -677,7 +677,7 @@ function func_version(){								#	Version ?
 			menu=$1
 	fi
 			
-	if [[ -z "$menu" AND "$menu" != "4.1" AND "$menu" != "4.0" AND "$menu" != "3.5" AND "$menu" != "1" AND "$menu" != "2" AND "$menu" != "3" ]]
+	if [[ -z "$menu" && "$menu" != "4.1" && "$menu" != "4.0" && "$menu" != "3.5" && "$menu" != "1" && "$menu" != "2" && "$menu" != "3" ]]
 		then 
 			func_text_red "You need to define the version of ESXi you like to create "
 			sleep 4
