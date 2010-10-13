@@ -183,7 +183,7 @@ function func_help_info() {							#	The help menu
 	echo
 	for index in ${!array_auto_flag[@]};
 		do
-			func_text_green "%s%s" "${array_auto_flag[index]}" "${array_auto_help_text[index]}"
+			func_text_green "%s%s" "${array_auto_flag["$index"]}" "${array_auto_help_text["$index"]}"
 			echo
 		done
 	echo
@@ -668,7 +668,7 @@ function func_version(){								#	Version ?
 			for index in ${!array_version[@]}
 				do
 					((count++))
-					func_text_green "\n	[$count] %s" "${array_version[index]}";
+					func_text_green "\n	["$count"] %s" "${array_version["$index"]}";
 				done
 				echo
 			func_text_green "	Select:"
@@ -1091,6 +1091,66 @@ esac
 
 }
 
+function func_kickstart(){								#	If you like to add a kickstart file, it force the system to USB device and you can set ip adress etc 
+
+local array_kickstart=(
+"Ipadress"
+"Gateway"
+"DNS server"
+"Netmask"
+)
+
+local kickstart
+
+func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
+
+	if [[ -z $auto_flag ]]
+		then
+			read kickstart
+		else
+			kickstart="N"
+	fi
+
+	case $kickstart in
+
+		"Y" | "y" )
+			for ks in ${!array_kickstart[@]}
+				do 
+					func_text_green "Please type in the ${array_kickstart["$ks"]} for your ESXi system"
+					local input
+					read input
+					${array_kickstart_setting["$ks"]}=$input
+				done
+		;;
+		"N" | "n" | "" )
+		
+		;;
+	esac
+				
+
+local array_kscfg=(
+"vmaccepteula"
+"rootpw cluster"
+"autopart --firstdisk --overwritevmfs"
+"install usb"
+"network --bootproto=static --ip=${array_kickstart_setting[0]} --gateway=${array_kickstart_setting[1]} --hostname=sumavihv --device=vmnic0 --nameserver=${array_kickstart_setting[2]} --netmask=${array_kickstart_setting[3]}"
+)
+
+func_text_green "Creating the kickstart config file"
+printf %s\\n "${array_kscfg[@]}" >> $install_path/${array_work_dir[5]}/ks.cfg
+func_text_done
+
+func_text_green "Please make sure the ks.cfg is correct"
+sleep 3
+
+func_edit $install_path/${array_work_dir[5]}/ks.cfg
+
+func_text_green "Adding the kickstart to isolinux.cfg"
+func_edit_file "vmkboot.gz" "vmkboot.gz ks=usb" "$install_path/${array_work_dir[5]}/isolinux.cfg"
+func_text_done
+
+}
+
 function func_main_menu(){ 							#	Main menu function 
 	
 	clear 												# 	Clear the screen.
@@ -1106,7 +1166,7 @@ function func_main_menu(){ 							#	Main menu function
 		then
 			for index in ${!array_main_menu[@]}
 				do
-					func_text_green "	%s\n" "${array_main_menu[index]}";	#	Creates the main menu 
+					func_text_green "	%s\n" "${array_main_menu["$index"]}";	#	Creates the main menu 
 				done
 			func_text_green " Choose what you like to do: "
 			read menu
@@ -1515,7 +1575,7 @@ function func_usb_use(){								#	Witch USB drive to use menu
 	echo
 	for index in ${!array_usb_dev_list[@]};
 		do
-			printf " %s is %s - %s  %s %s" "${array_usb_dev_list[index]}" "${array_usb_name_list[index]}" "${array_usb_mfg_list[index]}" "${array_usb_size_list[index]}" "${array_usb_size_name_list[index]}" ;
+			printf " %s is %s - %s  %s %s" "${array_usb_dev_list["$index"]}" "${array_usb_name_list["$index"]}" "${array_usb_mfg_list["$index"]}" "${array_usb_size_list["$index"]}" "${array_usb_size_name_list["$index"]}" ;
 			echo
 			echo
 		done
@@ -1541,9 +1601,12 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 			fi
 	fi	
 	
-	func_move_files $install_path/${array_work_dir[5]}		#	Rename the build folder
+	func_kickstart											#	To add the kickstart file
+		
+	func_move_files $install_path/${array_work_dir[5]}	#	Rename the build folder
 	
 	clear 													#	Clear the screen.
+	
 	if [[ -z $auto_flag ]]
 		then
 			func_usb_use									#	Getting the usb device to use
@@ -1693,61 +1756,6 @@ function func_dd_finish(){								#	To confirm that the user really like to cont
 			func_dd_finish
 			;;
 	esac
-}
-
-function func_kickstart(){
-
-local array_kickstart=(
-"Ip adress"
-"Gateway"
-"DNS server"
-"Netmask"
-)
-
-local kickstart
-
-func_text_green "Do you like to add a kickstart file ?"
-
-	if [[ -z $auto_flag ]]
-		then
-			read kickstart
-		else
-			kickstart="Y"
-	fi
-
-	case $kickstart in
-
-		"Y" | "y" )
-			for ks in ${!array_kickstart[@]}
-				do 
-					func_text_green "Please type in the ${array_kickstart["$ks"]}"
-					local input
-					read input
-					${array_kickstart["$ks"]}=$input
-				done
-		;;
-		"N" | "n" | "" )
-		
-		;;
-	esac
-				
-
-local array_kscfg=(
-"vmaccepteula"
-"rootpw cluster"
-"autopart --firstdisk --overwritevmfs"
-"install usb"
-"network --bootproto=static --ip=${array_kickstart[0]} --gateway=${array_kickstart[1]} --hostname=sumavihv --device=vmnic0 --nameserver=${array_kickstart[2]} --netmask=${array_kickstart[3]}"
-)
-
-
-printf %s\\n "${array_kscfg[@]}" >> $install_path/${array_work_dir[5]}/ks.cfg
-
-func_edit $install_path/${array_work_dir[5]}/ks.cfg
-
-func_edit_file "vmkboot.gz" "vmkboot.gz ks=usb" "$install_path/${array_work_dir[5]}/isolinux.cfg"
-
-
 }
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
