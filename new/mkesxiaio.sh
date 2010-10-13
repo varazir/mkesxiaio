@@ -676,14 +676,6 @@ function func_version(){								#	Version ?
 		else
 			menu=$1
 	fi
-			
-	if [[ -z "$menu" && "$menu" != "4.1" && "$menu" != "4.0" && "$menu" != "3.5" && "$menu" != "1" && "$menu" != "2" && "$menu" != "3" ]]
-		then 
-			func_text_red "You need to define the version of ESXi you like to create "
-			sleep 4
-			clear
-			exit 
-	fi
 
 	case "$menu" in
 		"2" | "4.0" ) 
@@ -699,11 +691,17 @@ function func_version(){								#	Version ?
 			clear
 		;;
 		* )
-			func_text_red "That's not a valid option"
-			sleep 1
-			clear 					#	Clear the screen.
-			func_version			#	Loop the menu
-		;;
+			if [[ -z $auto_flag ]]
+				then
+					func_text_red "You need to define the version of ESXi you like to create "
+					sleep 4
+					clear
+					exit 1
+				else
+					func_text_red "That's not a valid option"
+					sleep 1
+					clear 					#	Clear the screen.
+					func_version			#	Loop the menu
 	esac
 	
 	func_check_inetd									#	Check and download the correct inetd.conf file
