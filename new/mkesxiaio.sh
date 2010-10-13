@@ -702,6 +702,7 @@ function func_version(){								#	Version ?
 					sleep 1
 					clear 					#	Clear the screen.
 					func_version			#	Loop the menu
+		;;
 	esac
 	
 	func_check_inetd									#	Check and download the correct inetd.conf file
