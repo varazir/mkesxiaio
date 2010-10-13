@@ -677,12 +677,12 @@ function func_version(){								#	Version ?
 			menu=$1
 	fi
 			
-	if [[ -z $menu ]]
+	if [[ -z "$menu" ]]
 		then 
 			func_text_red "You need to define the version of ESXi you like to create "
 			sleep 4
 			clear
-			exit
+			exit 
 	fi
 
 	case "$menu" in
@@ -1506,7 +1506,7 @@ function func_check_usb() {							#	Gather data for the USB menu
 			fi
 		done
 	shopt -s nullglob
-		if [  ${#array_usb_name_list[*]} != 0 ]
+		if [[  "${#array_usb_name_list[*]}" != 0 ]]
 			then
 				usb_menu_text=("There are one or more USB drive installed")
 				usb_menu_question=('Witch USB drive are you going to use ?  ')
