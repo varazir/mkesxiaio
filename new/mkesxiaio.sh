@@ -1097,6 +1097,7 @@ local array_kickstart=(
 "Gateway"
 "DNS server"
 "Netmask"
+"Hostname"
 )
 
 local kickstart
@@ -1132,7 +1133,7 @@ local array_kscfg=(
 "rootpw cluster"
 "autopart --firstdisk --overwritevmfs"
 "install usb"
-"network --bootproto=static --ip=${array_kickstart_setting[0]} --gateway=${array_kickstart_setting[1]} --hostname=sumavihv --device=vmnic0 --nameserver=${array_kickstart_setting[2]} --netmask=${array_kickstart_setting[3]}"
+"network --bootproto=static --ip=${array_kickstart_setting[0]} --gateway=${array_kickstart_setting[1]} --hostname=${array_kickstart_setting[4]} --device=vmnic0 --nameserver=${array_kickstart_setting[2]} --netmask=${array_kickstart_setting[3]}"
 )
 
 func_text_green "Creating the kickstart config file"
@@ -1145,6 +1146,7 @@ sleep 3
 func_edit $install_path/${array_work_dir[5]}/ks.cfg
 
 func_text_green "Adding the kickstart to isolinux.cfg"
+echo
 func_edit_file "vmkboot.gz" "vmkboot.gz ks=usb" "$install_path/${array_work_dir[5]}/isolinux.cfg"
 func_text_done
 
