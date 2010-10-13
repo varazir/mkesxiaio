@@ -677,7 +677,7 @@ function func_version(){								#	Version ?
 			menu=$1
 	fi
 			
-	if [[ -z "$menu" ]]
+	if [[ -z "$menu" || "$menu" != "4.1" || "$menu" != "4.0" || "$menu" != "3.5" ]]
 		then 
 			func_text_red "You need to define the version of ESXi you like to create "
 			sleep 4
@@ -1116,10 +1116,10 @@ func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
 		"Y" | "y" )
 			for ks in ${!array_kickstart[@]}
 				do 
-					func_text_green "Please type in the ${array_kickstart["$ks"]} for your ESXi system"
+					func_text_green "Please type in the ${array_kickstart["$ks"]} for your ESXi system: "
 					local input
 					read input
-					${array_kickstart_setting["$ks"]}=$input
+					array_kickstart_setting["$ks"]="$input"
 				done
 		;;
 		"N" | "n" | "" )
@@ -1602,7 +1602,15 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 	fi	
 	
 	func_kickstart											#	To add the kickstart file
-		
+	
+	func_text_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
+	mv $install_path/${array_work_dir[5]}/isolinux.cfg $install_path/${array_work_dir[5]}/SYSlinux.cfg			#	renaming the isolinux.cfg to SYSlinux.cfg
+	func_text_done
+	
+	func_text_green "Removing isolinux.bin"
+	rm -rf $install_path/${array_work_dir[5]}/isolinux.bin
+	func_text_done
+	
 	func_move_files $install_path/${array_work_dir[5]}	#	Rename the build folder
 	
 	clear 													#	Clear the screen.
@@ -1644,14 +1652,6 @@ function func_usb_finish(){							#	To confirm that the user really like to cont
 
 			func_text_green "Copy the installation media to the mounted USB"
 			cp $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/							#	Copying the files from the installation folder to the USB
-			func_text_done
-
-			func_text_green "Renaming  the file isolinux.cfg to SYSlinux.cfg"
-			mv $install_path/${array_work_dir[6]}/isolinux.cfg $install_path/${array_work_dir[6]}/SYSlinux.cfg			#	renaming the isolinux.cfg to SYSlinux.cfg
-			func_text_done
-			
-			func_text_green "Removing isolinux.bin"
-			rm -rf $install_path/${array_work_dir[6]}/isolinux.bin
 			func_text_done
 
 			func_text_green "Un mounting the USB drive"
