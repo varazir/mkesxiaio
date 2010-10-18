@@ -1123,8 +1123,7 @@ func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
 				done
 		;;
 		"N" | "n" | "" )
-		
-		;;
+		return 0
 	esac
 				
 
