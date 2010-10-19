@@ -167,7 +167,14 @@ exit 0
 }
 
 function func_text_done() {							#	The [Done] echo after every step
-	echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
+
+if [[ $? == 0 ]]
+	then
+		echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
+	else
+		echo -e "\e[00;31m	[\e[00mFail\e[00;31m]\e[00m"
+fi
+
 }
 
 function func_text_green() {							#	Change the text to Green
