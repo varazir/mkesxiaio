@@ -113,6 +113,7 @@ func_auto_usb_device		#11
 func_main_menu				#12
 func_help_info				#13
 func_auto_clean				#14
+func_test_part				#15
 )
 
 array_auto_help_text=(		#	The help text 
