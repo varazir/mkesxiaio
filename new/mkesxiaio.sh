@@ -93,7 +93,8 @@ array_auto_flag=(
 -d							#11	USB device 
 -i							#12	Installation type
 -h							#13	Help
--clean						#14	Clean up folders
+--clean						#14	Clean up folders
+--test						#15 used to test function in the script
 )
 
 array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -225,6 +226,14 @@ function func_auto_loop(){								#	Noninteracting loop
 			fi
 		fi
 	done
+
+}
+
+function func_test_part(){
+
+$1
+
+exit 0
 
 }
 
