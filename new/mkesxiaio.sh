@@ -1112,8 +1112,8 @@ local array_kickstart=(
 
 local kickstart
 
+func_text_red "The default setting for this kickstart \n is to install ESXi to the first disk \n you will be able to edit the file later \n"
 func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
-func_text_red "The default setting for this kickstart \n is to install ESXi to the first disk \n you will be able to edit the file later"
 	if [[ -z $auto_flag ]]
 		then
 			read kickstart
