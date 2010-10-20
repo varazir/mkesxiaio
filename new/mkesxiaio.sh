@@ -125,7 +125,7 @@ array_auto_help_text=(		#	The help text
 "		If you like to enable FTP, downloaded from http://www.vm-help.com"
 "	Downloading wget and rsync from vm-help.com."
 "	Downloading rsync from vm-help.com."
-"		The name of the iso file you are going to use -iso=vmware.iso"
+"		The name of the iso file you are going to use --iso=vmware.iso"
 "		Set the name of the oem file you like to use --oem=oem.tgz"
 "		If you have more files in the custom-esx folder."
 "		If you are creating a USB installation or boot, -d=/dev/  . ONLY used with -i=USB, -i=DD"
@@ -196,7 +196,7 @@ function func_help_info() {							#	The help menu
 			echo
 		done
 	echo
-	func_text_green "	e.g. $0 -a -v=4.0 -e -i=ISO --ssh"
+	func_text_green "	e.g. $0 -a -v=4.0 -i=ISO --ssh"
 	echo
 	echo
 	func_clean											#	Deletes work folders if there is any
