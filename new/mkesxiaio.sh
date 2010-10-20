@@ -249,6 +249,7 @@ function func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates
 
 auto_flag=1
 
+func_clean
 func_install_cmd								#	Checks if apt-get is installed 
 func_pkg_inst									#	Install the pkg's needed
 func_create_folders								#	Create folders 
@@ -793,6 +794,8 @@ function func_clean(){									#	Cleans up after the script
 }
 
 function func_create_folders() {						#	Create folders
+
+	func_clean
 
 	cd $install_path									#	Change so the start path is correct
 		
@@ -1777,7 +1780,6 @@ function func_dd_finish(){								#	To confirm that the user really like to cont
 }
 
 func_checkRoot ./$0										#	Starts with a check that you are superuser
-func_clean
 func_auto_loop "$@"										#	To make the script noninteracting
 
 if [[ -z $auto_flag ]]
