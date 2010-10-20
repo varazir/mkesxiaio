@@ -1146,8 +1146,8 @@ func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
 
 local array_kscfg=(
 "vmaccepteula"
-"# rootpw cluster"
-"# autopart --firstdisk --overwritevmfs # remove the first # if you like it to install to the first "
+"# rootpw cluster	# Remove the first # and change the password if you like it to be autoset"
+"# autopart --firstdisk --overwritevmfs	# Remove the first # if you like it to install to the first disk"
 "install usb"
 "network --bootproto=static --ip=${array_kickstart_setting[0]} --gateway=${array_kickstart_setting[1]} --hostname=${array_kickstart_setting[4]} --device=vmnic0 --nameserver=${array_kickstart_setting[2]} --netmask=${array_kickstart_setting[3]}"
 )
