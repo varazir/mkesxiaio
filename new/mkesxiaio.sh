@@ -1119,7 +1119,7 @@ local array_kickstart=(
 
 local kickstart
 
-func_text_red "A kickstart file is for to autoinstall ESXi \nmake sure you know what you are doing \nyou will be able to edit the file later \n"
+func_text_red "A kickstart file is used to autoinstall ESXi \nmake sure you know what you are doing \nyou will be able to edit the file later \n"
 func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
 	if [[ -z $auto_flag ]]
 		then
@@ -1147,7 +1147,7 @@ func_text_green "Do you like to add a kickstart file ? \e[00m [y/N] "
 local array_kscfg=(
 "vmaccepteula"
 "# rootpw cluster"
-"# autopart --firstdisk --overwritevmfs"
+"# autopart --firstdisk --overwritevmfs # remove the first # if you like it to install to the first "
 "install usb"
 "network --bootproto=static --ip=${array_kickstart_setting[0]} --gateway=${array_kickstart_setting[1]} --hostname=${array_kickstart_setting[4]} --device=vmnic0 --nameserver=${array_kickstart_setting[2]} --netmask=${array_kickstart_setting[3]}"
 )
