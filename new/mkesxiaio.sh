@@ -132,6 +132,7 @@ array_auto_help_text=(		#	The help text
 "		Installation type ISO USB(install from USB) DD (Boot from USB), -i=ISO, -i=DD or -i=USB"
 "		This help"
 "	If you aborted the script and like to clean up the folders"
+"		Used to debug functions in the script"
 )
 
 #	Variables 
