@@ -1374,13 +1374,13 @@ function func_dd_end(){								#	Add the customized to the DD file and the build
 	local sector
 	local number
 		
-	sector=$( ${array_cmd_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
+	sector=$( ${array_cmd_install[11]} -u -l ${dd_file[0]} 2>/dev/null | awk -v pat=$esx_bytes '$0 ~ pat {print $9}' )			#   Checking the number of sectors
 	
 	if [[ -z $sector ]]
 		then
 			sector="512"
 	fi
-	number=$( ${array_cmd_install[11]} -ul ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
+	number=$( ${array_cmd_install[11]} -u -l ${dd_file[0]} 2>/dev/null | awk '/dd5/ {print $2}' ) 									#	Checking where the 5th partition starts
 
 
 
