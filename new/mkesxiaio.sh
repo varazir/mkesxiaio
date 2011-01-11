@@ -174,6 +174,7 @@ if [[ $? == 0 ]]
 		echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
 	else
 		echo -e "\e[00;31m	[\e[00mFail\e[00;31m]\e[00m"
+		exit 1
 fi
 
 }
@@ -1570,11 +1571,11 @@ function func_usb_menu() {								#	Menu for the USB $usb_install
 						else
 							if [[ "$usb_dev_menu" == "Update" ]]
 								then
-									unset "array_usb_dev_list[*]"
-									unset "array_usb_name_list[*]"
-									unset "array_usb_mfg_list[*]"
-									unset "array_usb_size_list[*]"
-									unset "array_usb_size_name_list[*]"
+									unset "array_usb_dev_list"
+									unset "array_usb_name_list"
+									unset "array_usb_mfg_list"
+									unset "array_usb_size_list"
+									unset "array_usb_size_name_list"
 									func_usb_use
 								else
 								usb_install="$usb_dev_menu"
