@@ -174,6 +174,11 @@ if [[ $? == 0 ]]
 		echo -e "\e[01;32m	[\e[00mDone\e[01;32m]\e[00m"
 	else
 		echo -e "\e[00;31m	[\e[00mFail\e[00;31m]\e[00m"
+		
+		echo
+		
+		func_text_red "The script failed for som reason, \n if you can't solve it your self please make a post on http://vm-help.com/forum"
+		
 		exit 1
 fi
 
