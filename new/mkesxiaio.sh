@@ -113,7 +113,7 @@ func_auto_usb_device		#11
 func_main_menu				#12
 func_help_info				#13
 func_auto_clean				#14
-func_test_part				#15
+func_debug					#15
 )
 
 array_auto_help_text=(		#	The help text 
@@ -149,17 +149,17 @@ esx_bytes="bytes"
 fdisk_cmd="fdisk"
 #	Extra options 
 
-shopt -s dotglob										#	To make * include hidden directories/files 
+shopt -s dotglob							#	To make * include hidden directories/files 
 
 #	Functions
 
-func_skipp_install() {
+func_skipp_install() {						#	Used to skip the installtion if you run script several times using -q 
 
 all_installed=1
 
 }
 
-func_auto_clean() {
+func_auto_clean() {							#	If you like just like to clean up the folders using --clean 
 
 func_clean
 
@@ -239,7 +239,7 @@ func_auto_loop(){							#	Noninteracting loop
 
 }
 
-func_test_part(){
+func_debug(){								#	Added so I can test/debug a function in the script 
 
 $1
 
