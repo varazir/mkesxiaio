@@ -1679,7 +1679,7 @@ func_usb_finish(){							#	To confirm that the user really like to continue with
 			func_text_done
 
 			func_text_green "Copy the installation media to the mounted USB"
-			cp $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/							#	Copying the files from the installation folder to the USB
+			cp -R $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/							#	Copying the files from the installation folder to the USB
 			func_text_done
 
 			func_text_green "Un mounting the USB drive"
