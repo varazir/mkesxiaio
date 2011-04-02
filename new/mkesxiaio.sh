@@ -1295,7 +1295,7 @@ func_main_menu(){ 							#	Main menu function
 func_copy_iso() {							#	Copy the files on the ISO to the build folder
 	
 	func_text_green "Mounting $install_path/$esxi_iso_file file to $install_path/${array_work_dir[0]}"
-	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]}								#	Mounting the ISO file to the esx-cd folder
+	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]} >/dev/null 2>&1	#	Mounting the ISO file to the esx-cd folder
 	func_text_done
 
 	func_check_files "esx-cd"
@@ -1670,12 +1670,12 @@ func_usb_finish(){							#	To confirm that the user really like to continue with
 			"Y" | "y" )
 			
 			func_text_green "Making the USB bootable"
-			${array_cmd_install[1]} $usb_install 2>/dev/null																#	Using syslinux to make the USB bootable
+			${array_cmd_install[1]} $usb_install 2>/dev/null																							#	Using syslinux to make the USB bootable
 			${array_cmd_install[10]} ${usb_install:0:8} set ${usb_install: -1} boot on										#	Add the boot flag to the USB 
 			func_text_done
 
 			func_text_green "Mounting the $usb_install to $install_path/${array_work_dir[6]}/ "
-			mount -o loop $usb_install $install_path/${array_work_dir[6]}												#	mounting the USB device
+			mount -o loop $usb_install $install_path/${array_work_dir[6]} >/dev/null 2>&1									#	mounting the USB device
 			func_text_done
 
 			func_text_green "Copy the installation media to the mounted USB"
