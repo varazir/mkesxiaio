@@ -861,7 +861,7 @@ func_add_service(){							#	Calls the add functions for wget,rsync,ftp,sftp and 
 			
 			local menu
 
-			func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or separate[n] ? \e[00m [Y/n]"
+			func_text_green "Do you like to install All[Y] (wget, rsync, ftp, sftp and ssh) or [s]eparate or [n]one ? \e[00m [Y/s/n]"
 			read menu
 			
 			case $menu in
@@ -874,12 +874,16 @@ func_add_service(){							#	Calls the add functions for wget,rsync,ftp,sftp and 
 				func_add_ftp $loop
 				;;
 				
-				"N" | "n" )
+				"S" | "s" )
 				func_add_ssh 
 				func_add_wget 
 				func_add_rsync 
 				func_add_sftp
 				func_add_ftp 				
+				;;
+
+				"N" | "n" )
+				echo
 				;;
 				
 				* )
@@ -1650,7 +1654,7 @@ func_usb_finish(){							#	To confirm that the user really like to continue with
 	
 	clear 																										#	Clear the screen.
 	echo
-	func_text_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it.\n		OBS !!! You need 700 MB free on the USB"
+	func_text_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it.\n	You need to unmount the device manually \n	OBS !!! You need 700 MB free on the USB"
 	echo
 	func_text_red "Using $usb_install"
 	echo
