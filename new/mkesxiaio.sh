@@ -30,21 +30,21 @@
 
 
 #  Array
-array_work_dir=(								#	Work directories (Array)
-esx-cd 											#0	Mount point for the ISO file will
-esx-temp 										#1	Where the install.tgz will be extracted
-esx-ienv 										#2	Where the ienviron.tgz will be extracted
-esx-oem 										#3	Where the OEM file will be extracted
-esx-5 											#4	Mount point for the dd file
-esx-build										#5	The work directory
-esx-usb											#6	Mount point for the USB drive
-esx-ftp											#7	Where the proftpd.zip will be extracted
-esx-download									#8	Where I download all files needed during the script
+array_work_dir=(					#	Work directories (Array)
+esx-cd 										#0	Mount point for the ISO file will
+esx-temp 									#1	Where the install.tgz will be extracted
+esx-ienv 									#2	Where the ienviron.tgz will be extracted
+esx-oem 									#3	Where the OEM file will be extracted
+esx-5 										#4	Mount point for the dd file
+esx-build									#5	The work directory
+esx-usb										#6	Mount point for the USB drive
+esx-ftp										#7	Where the proftpd.zip will be extracted
+esx-download							#8	Where I download all files needed during the script
 )
 
-array_cmd_install=( 							#	Pkg's that is needed for this script (Array)
-mkisofs		 									#0	Needed to create the ISO file
-syslinux 										#1	Needed to make the USB drive bootable
+array_cmd_install=( 			#	Pkg's that is needed for this script (Array)
+mkisofs		 								#0	Needed to create the ISO file
+syslinux 									#1	Needed to make the USB drive bootable
 wget											#2	To download the proftp server from vm-help 
 unzip											#3	For the installation of proftp
 ed												#4	Used to edit text inside files
@@ -52,22 +52,22 @@ nano											#5	Used to manually edit files
 tar												#6	Used to extract files from compressed files 
 bzip2											#7	Used to compress the dd file 
 bunzip2										#8	Used to extract bz2 files
-md5sum											#9	Is need to create the md5 file on the 4.1 iso
-parted											#10	Add the Boot flag to the USB 
+md5sum										#9	Is need to create the md5 file on the 4.1 iso
+parted										#10	Add the Boot flag to the USB 
 fdisk											#11	Used to get mount info 
 )
 
 array_main_menu=(												#	Main menu (Array)
 "Adding customized files to a VMware ESXi installation"			#0	Topic
-""																#1
-"   	Using"													#2	Iso file going to be used
-""																#3
-"	1) ISO installation"										#4	To create a ISO file to burn on a CD for installation
-"	2) USB installation"										#5	Creates custom made files that can be copied to a bootable USB drive for installation
-"	3) USB boot"												#6	Creates a custom DD file that can be written to a USB to boot and run ESXi
-"	4) USB installation without custom files"					#7	Copies the files from the ISO and make the USB bootable
-"	5) USB boot without custom files"							#8	Extract the DD and writes it to a USB drive to boot and run ESXi
-"	6) Exit!"													#9	Just exiting the script
+""																													#1
+"   	Using"																								#2	Iso file going to be used
+""																													#3
+"	1) ISO installation"																			#4	To create a ISO file to burn on a CD for installation
+"	2) USB installation"																			#5	Creates custom made files that can be copied to a bootable USB drive for installation
+"	3) USB boot"																							#6	Creates a custom DD file that can be written to a USB to boot and run ESXi
+"	4) USB installation without custom files"									#7	Copies the files from the ISO and make the USB bootable
+"	5) USB boot without custom files"													#8	Extract the DD and writes it to a USB drive to boot and run ESXi
+"	6) Exit!"																									#9	Just exiting the script
 " "
 " "
 )
@@ -83,37 +83,37 @@ array_auto_flag=(
 -a							#1	Need to be there to run the script non interactive
 -v							#2	Version you are going to make
 --ssh						#3	If you like to enable SSH
---sftp						#4	If you like to download and enable sftp
+--sftp					#4	If you like to download and enable sftp
 --ftp						#5	If you like to download and enable ftp
---wget						#6	If you like downloading wget from vm-help.com
---rsync						#7	If you like downloading rsync from vm-help.com
+--wget					#6	If you like downloading wget from vm-help.com
+--rsync					#7	If you like downloading rsync from vm-help.com
 --iso						#8	Need to be set when ruining the script non interactive
 --oem						#9	You need to set the oem file you are going to use
 -c							#10	If you have more files in the custom-esx directory
 -d							#11	USB device 
 -i							#12	Installation type
 -h							#13	Help
---clean						#14	Clean up folders
---test						#15 used to test function in the script
+--clean					#14	Clean up folders
+--test					#15 used to test function in the script
 )
 
-array_auto_func=(			#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
-func_skipp_install			#0
-func_auto_set_flag			#1
-func_version				#2
-func_add_ssh				#3
-func_add_sftp				#4
-func_add_ftp				#5
-func_add_wget				#6
-func_add_rsync				#7
-func_check_iso				#8
-func_check_oem				#9
+array_auto_func=(						#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
+func_skipp_install					#0
+func_auto_set_flag					#1
+func_version								#2
+func_add_ssh								#3
+func_add_sftp								#4
+func_add_ftp								#5
+func_add_wget								#6
+func_add_rsync							#7
+func_check_iso							#8
+func_check_oem							#9
 func_auto_add_custom_files	#10
-func_auto_usb_device		#11
-func_main_menu				#12
-func_help_info				#13
-func_auto_clean				#14
-func_debug					#15
+func_auto_usb_device				#11
+func_main_menu							#12
+func_help_info							#13
+func_auto_clean							#14
+func_debug									#15
 )
 
 array_auto_help_text=(		#	The help text 
@@ -153,13 +153,13 @@ shopt -s dotglob							#	To make * include hidden directories/files
 
 #	Functions
 
-func_skipp_install() {						#	Used to skip the installtion if you run script several times using -q 
+func_skipp_install() {	#	Used to skip the installtion if you run script several times using -q 
 
 all_installed=1
 
 }
 
-func_auto_clean() {							#	If you like just like to clean up the folders using --clean 
+func_auto_clean() {			#	If you like just like to clean up the folders using --clean 
 
 func_clean
 
@@ -167,7 +167,7 @@ exit 0
 
 }
 
-func_text_done() {							#	The [Done] echo after every step
+func_text_done() {			#	The [Done] echo after every step
 
 if [[ $? == 0 ]]
 	then
@@ -184,15 +184,15 @@ fi
 
 }
 
-func_text_green() {							#	Change the text to Green
+func_text_green() {			#	Change the text to Green
 	printf "\e[01;32m$*\e[00m"
 }
 
-func_text_red() {							#	Change the text to red
+func_text_red() {				#	Change the text to red
 	printf "\e[00;31m$*\e[00m"
 }
 
-func_help_info() {							#	The help menu 
+func_help_info() {			#	The help menu 
 	echo
 	func_text_green "$0 ${array_auto_flag[@]}"
 	echo
@@ -213,7 +213,7 @@ func_help_info() {							#	The help menu
 
 }
 
-func_auto_flag() {							#	To grep the flags used when running the script noninteracting 
+func_auto_flag() {			#	To grep the flags used when running the script noninteracting 
 														#	http://mywiki.wooledge.org/BashFAQ/035
 	local flag=$1
 	shift
@@ -228,7 +228,7 @@ func_auto_flag() {							#	To grep the flags used when running the script nonint
 	return 1
 }
 
-func_auto_loop(){							#	Noninteracting loop 
+func_auto_loop(){				#	Noninteracting loop 
 
 	local flags
 	
@@ -244,7 +244,7 @@ func_auto_loop(){							#	Noninteracting loop
 
 }
 
-func_debug(){								#	Added so I can test/debug a function in the script 
+func_debug(){						#	Added so I can test/debug a function in the script 
 
 $1
 
@@ -252,7 +252,7 @@ exit 0
 
 }
 
-func_auto_set_flag(){ 						#	Sets the auto flag, installs bin, creates folders
+func_auto_set_flag(){ 	#	Sets the auto flag, installs bin, creates folders
 
 auto_flag=1
 
@@ -263,7 +263,7 @@ func_create_folders								#	Create folders
 
 }
 
-func_add_ssh(){ 							#	Adds ssh support for 3.5 and 4.0 
+func_add_ssh(){ 				#	Adds ssh support for 3.5 and 4.0 
 
 if [[ "$1" != "y" && -z "$auto_flag" ]]
 	then
@@ -298,7 +298,7 @@ fi
 
 }
 
-func_add_sftp(){ 							#	Adds sftp support
+func_add_sftp(){ 				#	Adds sftp support
 
 func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
 
@@ -316,7 +316,7 @@ func_download "http://thebsdbox.co.uk/wp-content/uploads/2010/08/sftp-server.tar
 
 }
 
-func_add_ftp(){ 							#	Adds FTP support
+func_add_ftp(){ 				#	Adds FTP support
 
 	func_download "http://www.vm-help.com/esx/esx3i/ftp/proftpd.zip" "proftpd.zip" "$install_path/${array_work_dir[7]}" $1
 	
@@ -366,7 +366,7 @@ func_add_ftp(){ 							#	Adds FTP support
 	
 }
 
-func_add_wget(){ 							#	Downloads wget from vm-help.com
+func_add_wget(){ 				#	Downloads wget from vm-help.com
 
 func_check_dir $install_path/${array_work_dir[3]}/sbin
 
@@ -374,7 +374,7 @@ func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/wget" "wget" "$instal
 
 }
 
-func_add_rsync(){ 							#	Downloads rsync from vm-help.com 
+func_add_rsync(){ 			#	Downloads rsync from vm-help.com 
 
 func_check_dir $install_path/${array_work_dir[3]}/sbin
 
@@ -382,7 +382,7 @@ func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/rsync" "rsync" "$inst
 
 }
 
-func_add_custom_files(){ 					#	Add custom files from the custom-esx dir, 
+func_add_custom_files(){#	Add custom files from the custom-esx dir, 
 
 
 if [[ "$1" != "y" && -z "$auto_flag" ]]
@@ -414,13 +414,13 @@ fi
 
 }
 
-func_auto_usb_device(){						#	$usb_install Sets the USB device that are going to be used in the script
+func_auto_usb_device(){	#	$usb_install Sets the USB device that are going to be used in the script
 
 usb_install=$1
 
 }
 
-func_install_cmd(){							#	Check if apt-get/yum is there and if not asks for a new install bin
+func_install_cmd(){			#	Check if apt-get/yum is there and if not asks for a new install bin
 	
 	if [[ "$all_installed" == 0 ]]
 		then
@@ -452,7 +452,7 @@ func_install_cmd(){							#	Check if apt-get/yum is there and if not asks for a 
 	fi
 }
 
-func_pkg_inst(){							#	Loop to find binaries and installed them if need be
+func_pkg_inst(){				#	Loop to find binaries and installed them if need be
 
 local pkgbin
 
@@ -490,7 +490,7 @@ fi
 
 }
 
-func_check() {								#	Checking for files $file_to_use
+func_check() {					#	Checking for files $file_to_use
 	
 
 	shopt -s nullglob
@@ -518,7 +518,7 @@ func_check() {								#	Checking for files $file_to_use
 	fi
 }
 
-func_check_menu() {							#	Checking for files menu
+func_check_menu() {			#	Checking for files menu
 	
 	local check_files
 	
@@ -558,7 +558,7 @@ func_check_menu() {							#	Checking for files menu
 	clear
 }
 
-func_check_iso() {							#	Check if there is more then one iso file and sets the file to be used as $esxi_iso_file 
+func_check_iso() {			#	Check if there is more then one iso file and sets the file to be used as $esxi_iso_file 
 	
 	local array_check
 	
@@ -584,7 +584,7 @@ func_check_iso() {							#	Check if there is more then one iso file and sets the
 
 }
 
-func_check_oem() {							#	Check if there is more then one oem $esxi_oem_file 
+func_check_oem() {			#	Check if there is more then one oem $esxi_oem_file 
 
 
 	
@@ -615,7 +615,7 @@ func_check_oem() {							#	Check if there is more then one oem $esxi_oem_file
 	
 }
 
-func_check_inetd() {						#	Check if there is a inetd file $esx_inetd_file
+func_check_inetd() {		#	Check if there is a inetd file $esx_inetd_file
 
 
 	
@@ -633,7 +633,7 @@ func_check_inetd() {						#	Check if there is a inetd file $esx_inetd_file
 	esxi_inetd_file="$file_to_use"
 }
 
-func_download() {							#	Used to download files, URL, file , dest , Auto , what to add to the final name
+func_download() {				#	Used to download files, URL, file , dest , Auto , what to add to the final name
 
 	cd $install_path/${array_work_dir[8]}
 
@@ -679,7 +679,7 @@ func_download() {							#	Used to download files, URL, file , dest , Auto , what
 	fi
 }
 
-func_version(){								#	Version ?
+func_version(){					#	Version ?
 
 	clear
 	
@@ -734,14 +734,14 @@ func_version(){								#	Version ?
 	
 }
 
-func_checkRoot() {							#	To check if the script is run as a superuser
+func_checkRoot() {			#	To check if the script is run as a superuser
     if [ ! $( id -u ) -eq 0 ]
 		then
 			sudo $0
 	fi
 }
 
-func_clean(){								#	Cleans up after the script 
+func_clean(){						#	Cleans up after the script 
 
 	local clean_cd
 	local clean_5
@@ -800,7 +800,7 @@ func_clean(){								#	Cleans up after the script
 
 }
 
-func_create_folders() {						#	Create folders
+func_create_folders() {	#	Create folders
 
 	func_clean
 
@@ -842,7 +842,7 @@ func_create_folders() {						#	Create folders
 	array_folders[8]=custom-esx							#8	Where you can add files you like to be added to the oem file.
 }
 
-func_check_dir() {							#	Checks the dir given 
+func_check_dir() {			#	Checks the dir given 
 	
 	if [ ! -d $1	]; then							#	Check if there is all ready a folder
 		func_text_green "Creating $1"
@@ -852,7 +852,7 @@ func_check_dir() {							#	Checks the dir given
 	fi
 }
 
-func_add_service(){							#	Calls the add functions for wget,rsync,ftp,sftp and ssh
+func_add_service(){			#	Calls the add functions for wget,rsync,ftp,sftp and ssh
 
 	local loop=$1
 
@@ -898,7 +898,7 @@ func_add_service(){							#	Calls the add functions for wget,rsync,ftp,sftp and 
 	fi
 }
 
-func_edit_file() {							#	Change a files 
+func_edit_file() {			#	Change a files 
 	
 	func_text_green "Replacing $1 with $2 in $3"
 	${array_cmd_install[4]} -s $3 <<< ",s/$1/$2/g"$'\nw'
@@ -906,13 +906,13 @@ func_edit_file() {							#	Change a files
 	sleep 1
 }
 
-func_file_name(){							#	Sets the name on the file / folder $esxi_finish
+func_file_name(){				#	Sets the name on the file / folder $esxi_finish
 	
 	esxi_finish="$custom_name${esxi_oem_file%*.tgz}.$install_inst_type"
 	
 }
 
-func_check_old() {							#	Checking for old custom files/folders
+func_check_old() {			#	Checking for old custom files/folders
 
 if [[ -z $auto_flag ]]
 	then
@@ -984,7 +984,7 @@ if [[ -z $auto_flag ]]
 fi
 }
 
-func_edit(){								#	Edit files
+func_edit(){						#	Edit files
 	
 	local loop=$1
 	local orgfile=$1
@@ -1049,7 +1049,7 @@ func_edit(){								#	Edit files
 	
 }
 
-func_set_file_rights(){						#	Change the ownership and permissions for files
+func_set_file_rights(){	#	Change the ownership and permissions for files
 	
 	if [[ $esxi_version == "3.5" ]]
 		then 
@@ -1066,7 +1066,7 @@ func_set_file_rights(){						#	Change the ownership and permissions for files
 	fi
 }
 
-func_check_files(){							#	Check if the files is in the folder
+func_check_files(){			#	Check if the files is in the folder
 	
 	shopt -s nullglob
 	local i=($install_path/$1/*)
@@ -1080,7 +1080,7 @@ func_check_files(){							#	Check if the files is in the folder
 	shopt -u nullglob;
 }
 
-func_move_files(){							#	To move the work file / dir to the save folder
+func_move_files(){			#	To move the work file / dir to the save folder
 
 	if [[ ! -e $install_path/$save_dir/$esxi_finish ]]
 		then
@@ -1095,7 +1095,7 @@ func_move_files(){							#	To move the work file / dir to the save folder
 
 }
 
-func_redo(){								#	Redo the operation 
+func_redo(){						#	Redo the operation 
 
 local redo=$1
 local key
@@ -1121,7 +1121,7 @@ esac
 
 }
 
-func_kickstart(){							#	If you like to add a kickstart file, it force the system to USB device and you can set ip adress etc 
+func_kickstart(){				#	If you like to add a kickstart file, it force the system to USB device and you can set ip adress etc 
 
 local array_kickstart=(
 "Ipadress"
@@ -1183,7 +1183,7 @@ func_edit_file "vmkboot.gz" "vmkboot.gz ks=usb" "$install_path/${array_work_dir[
 
 }
 
-func_main_menu(){ 							#	Main menu function 
+func_main_menu(){ 			#	Main menu function 
 	
 	clear 												# 	Clear the screen.
 	
@@ -1296,7 +1296,7 @@ func_main_menu(){ 							#	Main menu function
 
 }
 
-func_copy_iso() {							#	Copy the files on the ISO to the build folder
+func_copy_iso() {				#	Copy the files on the ISO to the build folder
 	
 	func_text_green "Mounting $install_path/$esxi_iso_file file to $install_path/${array_work_dir[0]}"
 	mount -o loop $install_path/$esxi_iso_file $install_path/${array_work_dir[0]} >/dev/null 2>&1	#	Mounting the ISO file to the esx-cd folder
@@ -1336,7 +1336,7 @@ func_copy_iso() {							#	Copy the files on the ISO to the build folder
 	clear
 }
 
-func_dd_start(){							#	Extracting DD file
+func_dd_start(){				#	Extracting DD file
 
 	if [[ $esxi_version == "3.5" ]]
 		then
@@ -1370,7 +1370,7 @@ func_dd_start(){							#	Extracting DD file
 	dd_file=(*dd)
 }
 
-func_dd_end(){								#	Add the customized to the DD file and the build folder
+func_dd_end(){					#	Add the customized to the DD file and the build folder
 
 	if [[ $esxi_version == "4.1" ]]
 		then 
@@ -1477,7 +1477,7 @@ func_dd_end(){								#	Add the customized to the DD file and the build folder
 	fi 
 }
 
-func_iso_finish(){							#	Making the ISO file
+func_iso_finish(){			#	Making the ISO file
 
 	func_set_file_rights
 	
@@ -1506,7 +1506,7 @@ func_iso_finish(){							#	Making the ISO file
 
 }
 
-func_check_usb() {							#	Gather data for the USB menu
+func_check_usb() {			#	Gather data for the USB menu
 
 	local usb_dev
 	local usb_dev_info
@@ -1549,7 +1549,7 @@ func_check_usb() {							#	Gather data for the USB menu
 	shopt -u nullglob
 }
 
-func_usb_menu() {							#	Menu for the USB $usb_install
+func_usb_menu() {				#	Menu for the USB $usb_install
 
 	PS3=$usb_menu_question
 
@@ -1597,7 +1597,7 @@ func_usb_menu() {							#	Menu for the USB $usb_install
 		done
 }
 
-func_usb_use(){								#	Witch USB drive to use menu
+func_usb_use(){					#	Witch USB drive to use menu
 
 	clear 							#	Clear the screen.
 
@@ -1617,7 +1617,7 @@ func_usb_use(){								#	Witch USB drive to use menu
 
 }
 
-func_usb_finish(){							#	To confirm that the user really like to continue with the USB installation 	$usb_install
+func_usb_finish(){			#	To confirm that the user really like to continue with the USB installation 	$usb_install
 														#	Moving the and renaming the USB installation folder
 	
 	local install
@@ -1679,7 +1679,7 @@ func_usb_finish(){							#	To confirm that the user really like to continue with
 			func_text_done
 
 			func_text_green "Mounting the $usb_install to $install_path/${array_work_dir[6]}/ "
-			mount -o loop $usb_install $install_path/${array_work_dir[6]} >/dev/null 2>&1									#	mounting the USB device
+			mount -t auto $usb_install $install_path/${array_work_dir[6]} >/dev/null 2>&1									#	mounting the USB device
 			func_text_done
 
 			func_text_green "Copy the installation media to the mounted USB"
@@ -1716,7 +1716,7 @@ func_usb_finish(){							#	To confirm that the user really like to continue with
 
 }
 
-func_dd_finish(){							#	To confirm that the user really like to continue with the USB installation 	Moving and renaming the DD ( USB boot file)
+func_dd_finish(){				#	To confirm that the user really like to continue with the USB installation 	Moving and renaming the DD ( USB boot file)
 
 	if [[ $esxi_version == "4.1" ]]
 		then
