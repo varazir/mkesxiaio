@@ -1654,7 +1654,7 @@ func_usb_finish(){			#	To confirm that the user really like to continue with the
 	
 	clear 																										#	Clear the screen.
 	echo
-	func_text_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it.\n	You need to unmount the device manually \n	OBS !!! You need 700 MB free on the USB"
+	func_text_red "Next step will be to make the USB drive bootable \n and copy the installations files to the it.\n	You need to unmount the device manually \n	Need to be fat16 or fat32 \n OBS !!! You need 700 MB free on the USB"
 	echo
 	func_text_red "Using $usb_install"
 	echo
@@ -1669,7 +1669,7 @@ func_usb_finish(){			#	To confirm that the user really like to continue with the
 			install="Y"
 	fi
 	
-	case $install in
+	case $install in 
 
 			"Y" | "y" )
 			
