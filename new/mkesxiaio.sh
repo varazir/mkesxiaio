@@ -1308,6 +1308,8 @@ func_copy_iso() {				#	Copy the files on the ISO to the build folder
 	cp -r -p $install_path/${array_work_dir[0]}/* $install_path/${array_work_dir[5]}							#	Copying files from ISO to the build folder keeping attributes
 	func_text_done
 
+	sleep 3		# To make sure that the device isn't busy
+	
 	func_text_green "U mounting $install_path/${array_work_dir[0]}"
 	umount $install_path/${array_work_dir[0]}															#	U mounting the ISO
 	func_text_done
@@ -1435,6 +1437,8 @@ func_dd_end(){					#	Add the customized to the DD file and the build folder
 	cp $install_path/${array_work_dir[5]}/oem.tgz $install_path/${array_work_dir[4]}/oem.tgz								#	Copy the custom oem file to the mounted dd file
 	func_text_done
 
+	sleep 3		# To make sure that the device isn't busy
+	
 	func_text_green "U mounting $install_path/${array_work_dir[4]}"
 	umount $install_path/${array_work_dir[4]}																					#	U mounting the dd file
 	func_text_done
@@ -1686,8 +1690,10 @@ func_usb_finish(){			#	To confirm that the user really like to continue with the
 			cp -r $install_path/$save_dir/$esxi_finish/* $install_path/${array_work_dir[6]}/							#	Copying the files from the installation folder to the USB
 			func_text_done
 
+			sleep 3		# To make sure that the device isn't busy
+			
 			func_text_green "Un mounting the USB drive"
-			umount $install_path/${array_work_dir[6]}/																	#	U mounting the usb drive
+			umount $install_path/${array_work_dir[6]}/																										#	U mounting the usb drive
 			func_text_done
 			
 			echo
