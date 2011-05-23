@@ -86,15 +86,16 @@ array_auto_flag=(
 --sftp					#4	If you like to download and enable sftp
 --ftp						#5	If you like to download and enable ftp
 --wget					#6	If you like downloading wget from vm-help.com
---rsync					#7	If you like downloading rsync from vm-help.com
---iso						#8	Need to be set when ruining the script non interactive
---oem						#9	You need to set the oem file you are going to use
--c							#10	If you have more files in the custom-esx directory
--d							#11	USB device 
--i							#12	Installation type
--h							#13	Help
---clean					#14	Clean up folders
---test					#15 used to test function in the script
+--iperf					#7	Adds support to use iperf
+--rsync					#8	If you like downloading rsync from vm-help.com
+--iso						#9	Need to be set when ruining the script non interactive
+--oem						#10	You need to set the oem file you are going to use
+-c							#11	If you have more files in the custom-esx directory
+-d							#12	USB device 
+-i							#13	Installation type
+-h							#14	Help
+--clean					#15	Clean up folders
+--test					#16 used to test function in the script
 )
 
 array_auto_func=(						#	The function that is called in the func_auto_loop , it's indexed with array_auto_flag
@@ -105,15 +106,16 @@ func_add_ssh								#3
 func_add_sftp								#4
 func_add_ftp								#5
 func_add_wget								#6
-func_add_rsync							#7
-func_check_iso							#8
-func_check_oem							#9
-func_auto_add_custom_files	#10
-func_auto_usb_device				#11
-func_main_menu							#12
-func_help_info							#13
-func_auto_clean							#14
-func_debug									#15
+func_add_iperf							#7
+func_add_rsync							#8
+func_check_iso							#9
+func_check_oem							#10
+func_auto_add_custom_files	#11
+func_auto_usb_device				#12
+func_main_menu							#13
+func_help_info							#14
+func_auto_clean							#15
+func_debug									#16
 )
 
 array_auto_help_text=(		#	The help text 
@@ -371,6 +373,24 @@ func_add_wget(){ 				#	Downloads wget from vm-help.com
 func_check_dir $install_path/${array_work_dir[3]}/sbin
 
 func_download "http://www.vm-help.com/esx/esx3i/Enable_FTP/wget" "wget" "$install_path/${array_work_dir[3]}/sbin" "$1" "wget_"
+
+}
+
+func_add_iperf(){ 				#	Adds iperf support
+
+func_check_dir $install_path/${array_work_dir[3]}/sbin	#	Check if there is all ready a sbin folder
+
+func_download "http://www.vm-help.com/Other/iperf_oem.tgz" "iperf_oem.tgz" "$install_path/${array_work_dir[7]}/" "$1" "iperf_"
+
+	if [[ -e $install_path/${array_work_dir[7]}/iperf_oem.tgz ]]
+		then
+			func_text_green "Untar iperf_oem.tgz to $install_path/${array_work_dir[3]}/"
+			${array_cmd_install[6]} -xzf $install_path/${array_work_dir[7]}/iperf_oem.tgz -C $install_path/${array_work_dir[3]}/
+			func_text_done
+		else
+			func_text_red "No file was downnloaded, iperf is not installed"
+			sleep 3
+	fi
 
 }
 
@@ -872,6 +892,7 @@ func_add_service(){			#	Calls the add functions for wget,rsync,ftp,sftp and ssh
 				func_add_rsync $loop
 				func_add_sftp $loop
 				func_add_ftp $loop
+				func_add_iperf $loop
 				;;
 				
 				"S" | "s" )
@@ -880,6 +901,7 @@ func_add_service(){			#	Calls the add functions for wget,rsync,ftp,sftp and ssh
 				func_add_rsync 
 				func_add_sftp
 				func_add_ftp 				
+				func_add_iperf
 				;;
 
 				"N" | "n" )
